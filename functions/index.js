@@ -40,3 +40,4 @@ ${p.pecas.map(x => `• ${x.descricao} (${x.quantidade})`).join("\n")}
 
     return null;
   });
+
