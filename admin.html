@@ -13,6 +13,7 @@ body {
   background:#f2f2f2;
   padding:15px;
 }
+
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:160px; width:100%; }
 
@@ -33,14 +34,18 @@ footer {
 }
 
 h2 { text-align:center; }
-input { padding:6px; margin-top:4px; }
+
+input {
+  padding:6px;
+  margin-top:4px;
+}
 
 button {
-  padding:6px 10px;
-  margin:2px;
+  padding:8px 12px;
   cursor:pointer;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
+  font-size:14px;
 }
 
 .aprovar { background:#16a34a; color:#fff; }
@@ -52,6 +57,46 @@ button {
   color:#dc2626;
   font-size:16px;
   cursor:pointer;
+}
+
+/* 🔘 BOTÕES TOPO */
+.top-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+
+.btn-sair {
+  background:#111827;
+  color:#fff;
+}
+
+.btn-refresh {
+  background:#2563eb;
+  color:#fff;
+}
+
+/* 📄 RELATÓRIOS */
+.relatorio-box {
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  background:#f9fafb;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.relatorio-box div {
+  display:flex;
+  flex-direction:column;
+}
+
+.relatorio-box button {
+  background:#4f46e5;
+  color:#fff;
 }
 
 table {
@@ -73,14 +118,10 @@ th { background:#f3f4f6; }
 .status-aprovado { color:#16a34a; font-weight:bold; }
 .status-reprovado { color:#dc2626; font-weight:bold; }
 
-/* 🔥 VISUAL ANTIGO PARA PEDIDO PENDENTE */
+/* 🔥 VISUAL ANTIGO – PENDENTE */
 tr.card-pendente {
   background:#fffbeb;
   border-left:6px solid #f59e0b;
-}
-
-tr.card-pendente td {
-  background:transparent;
 }
 
 /* 📱 MOBILE */
@@ -119,6 +160,10 @@ tr.card-pendente td {
     width:100%;
     margin-top:6px;
   }
+
+  .relatorio-box {
+    flex-direction:column;
+  }
 }
 </style>
 </head>
@@ -144,24 +189,25 @@ tr.card-pendente td {
 <div class="painel" id="painel" style="display:none">
   <h2>📦 Pedidos Recebidos</h2>
 
-  <button onclick="logout()" style="background:#111827;color:#fff;margin-bottom:10px">
-    🚪 Sair
-  </button>
+  <div class="top-actions">
+    <button class="btn-sair" onclick="logout()">🚪 Sair</button>
+    <button class="btn-refresh" onclick="carregarPedidos()">🔄 Atualizar pedidos</button>
+  </div>
 
-  <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap">
-    <button onclick="gerarRelatorio()">📄 Relatório do dia (PDF)</button>
+  <div class="relatorio-box">
+    <button onclick="gerarRelatorio()">📄 Relatório do dia</button>
 
     <div>
-      <label>Data inicial</label><br>
+      <label>Data inicial</label>
       <input type="date" id="dataInicio">
     </div>
 
     <div>
-      <label>Data final</label><br>
+      <label>Data final</label>
       <input type="date" id="dataFim">
     </div>
 
-    <button onclick="gerarRelatorioPeriodo()">📄 Relatório por período (PDF)</button>
+    <button onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
   </div>
 
   <table>
@@ -181,9 +227,12 @@ tr.card-pendente td {
   </table>
 </div>
 
+<!-- 🔧 JS ORIGINAL MANTIDO -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
+<!-- 👉 SCRIPT MODULE (IGUAL AO SEU, SEM REMOÇÕES) -->
+<!-- permanece exatamente como você enviou -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
