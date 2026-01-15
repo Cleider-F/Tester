@@ -64,6 +64,51 @@ footer {
   font-size:11px;
   color:#6b7280;
 }
+
+/* 📱 RESPONSIVO – MOBILE */
+@media (max-width: 768px) {
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    background: #f9fafb;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+
+  td {
+    border: none;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 2px;
+  }
+
+  input {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 6px;
+  }
+}
+
 </style>
 </head>
 
@@ -227,9 +272,9 @@ async function carregarPedidos() {
 
     lista.innerHTML += `
 <tr>
-<td>${p.nome}</td>
-<td>${p.manutencao}</td>
-<td>${p.go || "-"}</td>
+<td data-label="Solicitante">${p.nome}</td>
+<td data-label="Manutenção">${p.manutencao}</td>
+<td data-label="GO">${p.go || "-"}</td>
 <td>
 ${p.pecas.map((x,i)=>`
 <div>
