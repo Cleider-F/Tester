@@ -16,13 +16,13 @@ body {
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:160px; width:100%; }
 
- footer {
+footer {
   text-align:center;
   margin-top:25px;
   font-size:11px;
   color:#6b7280;
 }
-  
+
 .login, .painel {
   max-width:1200px;
   margin:auto;
@@ -46,6 +46,14 @@ button {
 .aprovar { background:#16a34a; color:#fff; }
 .reprovar { background:#dc2626; color:#fff; }
 
+.btn-excluir {
+  background:none;
+  border:none;
+  color:#dc2626;
+  font-size:16px;
+  cursor:pointer;
+}
+
 table {
   width:100%;
   border-collapse:collapse;
@@ -65,104 +73,38 @@ th { background:#f3f4f6; }
 .status-aprovado { color:#16a34a; font-weight:bold; }
 .status-reprovado { color:#dc2626; font-weight:bold; }
 
-
-
-/* 📱 RESPONSIVO – MOBILE */
+/* 📱 MOBILE */
 @media (max-width: 768px) {
-
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
-
-  thead {
-    display: none;
-  }
+  table, thead, tbody, th, td, tr { display:block }
+  thead { display:none }
 
   tr {
-    background: #f9fafb;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    background:#fff;
+    margin-bottom:15px;
+    border-radius:12px;
+    padding:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
   }
 
   td {
-    border: none;
-    padding: 6px 0;
-    font-size: 14px;
+    border:none;
+    padding:6px 0;
+    font-size:14px;
   }
 
   td::before {
     content: attr(data-label);
-    display: block;
-    font-weight: bold;
-    color: #374151;
-    margin-bottom: 2px;
+    font-weight:bold;
+    display:block;
+    color:#374151;
+    margin-bottom:2px;
   }
 
-  input {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  button {
-    width: 100%;
-    margin-top: 6px;
-  }
-
-  /**/
-
-  /* 📱 MOBILE – transformar tabela em cards */
-@media (max-width: 768px) {
-
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
-
-  thead {
-    display: none;
-  }
-
-  tr {
-    background: #fff;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    padding: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.08);
-    border-left: 6px solid #e5e7eb;
-  }
-
-  /* 🔥 destaque pendente */
-  tr.status-pendente-card {
-    border-left-color: #f59e0b;
-    background: #fffbeb;
-  }
-
-  td {
-    border: none;
-    padding: 6px 0;
-    font-size: 14px;
-  }
-
-  td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    display: block;
-    color: #374151;
-    margin-bottom: 2px;
-  }
-
-  /* Botões grandes no mobile */
   .acoes-mobile button {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    margin-top: 6px;
+    width:100%;
+    margin-top:6px;
   }
 }
-
-}
-
 </style>
 </head>
 
@@ -173,8 +115,8 @@ th { background:#f3f4f6; }
     <img src="suzano-logo.png">
   </a>
 </div>
-  
- <footer>
+
+<footer>
   Criado e Desenvolvido por Cleider Filho
 </footer>
 
@@ -224,7 +166,6 @@ th { background:#f3f4f6; }
   </table>
 </div>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
@@ -232,17 +173,15 @@ th { background:#f3f4f6; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore, collection, getDocs,
-  doc, updateDoc, getDoc, query, orderBy, addDoc
+  doc, updateDoc, getDoc, query, orderBy,
+  addDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
 const app = initializeApp({
-  apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
-  authDomain: "testeer-1516c.firebaseapp.com",
-  projectId: "testeer-1516c",
-  storageBucket: "testeer-1516c.firebasestorage.app",
-  messagingSenderId: "1030430919430",
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
+  apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
+  authDomain: "pedidos-almoxarifado.firebaseapp.com",
+  projectId: "pedidos-almoxarifado"
 });
 const db = getFirestore(app);
 
@@ -250,52 +189,10 @@ const db = getFirestore(app);
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003646317990";
 
-/* USUÁRIOS */
-const USUARIOS = {
-  "otto2026": "Leonardo Otto",
-  "salles2026": "Douglas Salles",
-  "robson2026": "Robson dos Santos",
-  "gleyson2026": "Gleyson Murça",
-  "cleiton2026": "Cleiton Castro",
-  "junior2026": "Geraldo Junior",
-  "amanda2026": "Amanda",
-  "mariana2026": "Mariana",
-  "breno2026": "Breno",
-  "luiz2026": "Luis",
-  "cleider": "Cleider Filho"
-};
-
-/* NORMALIZAÇÃO */
-function normalizar(txt) {
-  return txt
-    .toUpperCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .trim();
-}
-
-/* BUSCAR NI NO APRENDIZADO */
-async function buscarNIporAprendizado(descricao) {
-  const termo = normalizar(descricao);
-  const snap = await getDocs(collection(db,"ni_aprendizado"));
-
-  let encontrado = null;
-  snap.forEach(d=>{
-    const a = d.data();
-    if (termo.includes(a.termo)) {
-      encontrado = a.ni;
-    }
-  });
-
-  return encontrado;
-}
-
 /* LOGIN */
 btnLogin.onclick = () => {
-  const nome = USUARIOS[senha.value];
-  if (!nome) return alert("Senha incorreta");
   localStorage.setItem("adminLogado","true");
-  localStorage.setItem("adminNome",nome);
+  localStorage.setItem("adminNome","Admin");
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
@@ -308,117 +205,49 @@ window.logout = () => {
 
 /* LISTAR PEDIDOS */
 async function carregarPedidos() {
-  lista.innerHTML = "";
-  const q = query(collection(db,"pedidos"), orderBy("criadoEm","desc"));
-  const snap = await getDocs(q);
+  lista.innerHTML="";
+  const q=query(collection(db,"pedidos"),orderBy("criadoEm","desc"));
+  const snap=await getDocs(q);
 
   for (const d of snap.docs) {
-    const p = d.data();
+    const p=d.data();
 
-    for (let i=0;i<p.pecas.length;i++) {
-      if (!p.pecas[i].ni) {
-        const niAprendido = await buscarNIporAprendizado(p.pecas[i].descricao);
-        if (niAprendido) {
-          p.pecas[i].ni = niAprendido;
-          await updateDoc(doc(db,"pedidos",d.id),{ pecas:p.pecas });
-        }
-      }
-    }
-
-   const classeStatus = p.status === "Pendente"
-  ? "status-pendente-card"
-  : "";
-
-lista.innerHTML += `
-<tr class="${classeStatus}">
+    lista.innerHTML+=`
+<tr>
   <td data-label="Solicitante">${p.nome}</td>
-
   <td data-label="Manutenção">${p.manutencao}</td>
-
-  <td data-label="GO">${p.go || "-"}</td>
-
+  <td data-label="GO">${p.go||"-"}</td>
   <td data-label="Peças">
     ${p.pecas.map((x,i)=>`
-      <div style="margin-bottom:8px">
+      <div>
         <b>${x.descricao}</b> (${x.quantidade})<br>
         NI:
-        <input
-          value="${x.ni ?? ""}"
-          onchange="atualizarNI('${d.id}',${i},'${x.descricao}',this.value)"
-          style="width:110px"
-        >
+        <input value="${x.ni ?? ""}"
+          onchange="atualizarNI('${d.id}',${i},'${x.descricao}',this.value)">
       </div>
     `).join("<hr>")}
   </td>
-
-  <td data-label="Criado em">
-    ${new Date(p.criadoEm.seconds*1000).toLocaleString("pt-BR")}
-  </td>
-
-  <td data-label="Aprovado">
-    ${p.aprovadoPor || "-"}
-  </td>
-
-  <td data-label="Status">
-    <span class="status-${p.status.toLowerCase()}">${p.status}</span>
-  </td>
-
+  <td data-label="Criado em">${new Date(p.criadoEm.seconds*1000).toLocaleString("pt-BR")}</td>
+  <td data-label="Aprovado">${p.aprovadoPor||"-"}</td>
+  <td data-label="Status"><span class="status-${p.status.toLowerCase()}">${p.status}</span></td>
   <td data-label="Ações" class="acoes-mobile">
-    ${p.status==="Pendente"
-      ? `<button class="aprovar" onclick="mudarStatus('${d.id}','Aprovado')">✅ Aprovar</button>
-         <button class="reprovar" onclick="mudarStatus('${d.id}','Reprovado')">❌ Reprovar</button>`
-      : "—"}
+    ${(p.status==="Pendente"||p.status==="Reprovado") ? `
+      ${p.status==="Pendente" ? `
+        <button class="aprovar" onclick="mudarStatus('${d.id}','Aprovado')">✅ Aprovar</button>
+        <button class="reprovar" onclick="mudarStatus('${d.id}','Reprovado')">❌ Reprovar</button>
+      ` : ``}
+      <button class="btn-excluir" onclick="excluirPedido('${d.id}')">❌ Excluir</button>
+    ` : "—"}
   </td>
-</tr>
-`;
-
+</tr>`;
   }
 }
 
-/* ATUALIZAR NI + APRENDER */
-window.atualizarNI = async (id, idx, descricao, ni) => {
-  const ref = doc(db,"pedidos",id);
-  const snap = await getDoc(ref);
-  const p = snap.data();
-
-  p.pecas[idx].ni = ni || null;
-  await updateDoc(ref,{ pecas:p.pecas });
-
-  if (ni) {
-    await addDoc(collection(db,"ni_aprendizado"),{
-      termo: normalizar(descricao),
-      ni
-    });
-  }
-};
-
-/* 📲 TELEGRAM – NOTIFICAÇÃO DE APROVAÇÃO */
-window.notificarAprovacao = function (p) {
-  const texto = `
-✅ PEDIDO APROVADO
-
-Solicitante: ${p.nome}
-Manutenção: ${p.manutencao}
-GO: ${p.go || "-"}
-
-Peças:
-${p.pecas.map(x =>
-`- ${x.descricao}
-NI: ${x.ni ?? "NÃO INFORMADO"}
-Qtd: ${x.quantidade}`
-).join("\n\n")}
-
-Aprovado por: ${localStorage.getItem("adminNome")}
-`;
-
-  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: texto
-    })
-  });
+/* EXCLUIR */
+window.excluirPedido = async (id) => {
+  if (!confirm("Excluir este pedido definitivamente?")) return;
+  await deleteDoc(doc(db,"pedidos",id));
+  carregarPedidos();
 };
 
 /* STATUS */
@@ -427,71 +256,60 @@ window.mudarStatus = async (id, status) => {
   const snap = await getDoc(ref);
   const p = snap.data();
 
-  if (p.status !== "Pendente") return;
-
   const aprovadoPor = localStorage.getItem("adminNome");
 
-  await updateDoc(ref,{
-    status,
-    aprovadoEm: new Date(),
-    aprovadoPor
-  });
+  await updateDoc(ref,{ status, aprovadoPor, aprovadoEm:new Date() });
 
-  // 🔔 TELEGRAM (AGORA FUNCIONA)
-  if (status === "Aprovado") {
-    p.status = "Aprovado";
-    p.aprovadoPor = aprovadoPor;
+  if (status==="Aprovado") {
+    p.status="Aprovado";
+    p.aprovadoPor=aprovadoPor;
     notificarAprovacao(p);
   }
 
   carregarPedidos();
 };
 
+/* TELEGRAM */
+window.notificarAprovacao = (p) => {
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      chat_id:TELEGRAM_CHAT_ID,
+      text:`✅ PEDIDO APROVADO\n\nSolicitante: ${p.nome}\nManutenção: ${p.manutencao}`
+    })
+  });
+};
 
 /* RELATÓRIOS */
 window.gerarRelatorio = () => gerarRelatorioPeriodo(true);
-
-window.gerarRelatorioPeriodo = async (somenteHoje=false)=>{
+window.gerarRelatorioPeriodo = async (somenteHoje=false) => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("landscape");
-
-  const inicio = somenteHoje
-    ? new Date(new Date().setHours(0,0,0,0))
-    : new Date(dataInicio.value+"T00:00:00");
-
-  const fim = somenteHoje
-    ? new Date(new Date().setHours(23,59,59,999))
-    : new Date(dataFim.value+"T23:59:59");
 
   const snap = await getDocs(collection(db,"pedidos"));
   const linhas = [];
 
   snap.forEach(d=>{
     const p=d.data();
-    if(!p.criadoEm) return;
-    const criado=new Date(p.criadoEm.seconds*1000);
-    if(criado<inicio||criado>fim) return;
     linhas.push([
       p.nome,p.manutencao,p.go||"-",
       p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
-      criado.toLocaleString("pt-BR"),
-      p.aprovadoPor||"-",
       p.status
     ]);
   });
 
   pdf.autoTable({
     startY:20,
-    head:[["Solicitante","Manutenção","GO","Peças","Pedido","Aprovado","Status"]],
-    body:linhas,
-    styles:{fontSize:9}
+    head:[["Solicitante","Manutenção","GO","Peças","Status"]],
+    body:linhas
   });
 
   pdf.save("relatorio-pedidos.pdf");
 };
 
 /* AUTO LOGIN */
-if (localStorage.getItem("adminLogado")==="true") {
+if(localStorage.getItem("adminLogado")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
