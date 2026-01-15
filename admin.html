@@ -73,6 +73,16 @@ th { background:#f3f4f6; }
 .status-aprovado { color:#16a34a; font-weight:bold; }
 .status-reprovado { color:#dc2626; font-weight:bold; }
 
+/* 🔥 VISUAL ANTIGO PARA PEDIDO PENDENTE */
+tr.card-pendente {
+  background:#fffbeb;
+  border-left:6px solid #f59e0b;
+}
+
+tr.card-pendente td {
+  background:transparent;
+}
+
 /* 📱 MOBILE */
 @media (max-width: 768px) {
   table, thead, tbody, th, td, tr { display:block }
@@ -84,6 +94,11 @@ th { background:#f3f4f6; }
     border-radius:12px;
     padding:12px;
     box-shadow:0 4px 10px rgba(0,0,0,.08);
+  }
+
+  tr.card-pendente {
+    background:#fffbeb;
+    border-left:6px solid #f59e0b;
   }
 
   td {
@@ -174,7 +189,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import {
   getFirestore, collection, getDocs,
   doc, updateDoc, getDoc, query, orderBy,
-  addDoc, deleteDoc
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
@@ -211,9 +226,10 @@ async function carregarPedidos() {
 
   for (const d of snap.docs) {
     const p=d.data();
+    const classe = p.status==="Pendente" ? "card-pendente" : "";
 
     lista.innerHTML+=`
-<tr>
+<tr class="${classe}">
   <td data-label="Solicitante">${p.nome}</td>
   <td data-label="Manutenção">${p.manutencao}</td>
   <td data-label="GO">${p.go||"-"}</td>
@@ -255,7 +271,6 @@ window.mudarStatus = async (id, status) => {
   const ref = doc(db,"pedidos",id);
   const snap = await getDoc(ref);
   const p = snap.data();
-
   const aprovadoPor = localStorage.getItem("adminNome");
 
   await updateDoc(ref,{ status, aprovadoPor, aprovadoEm:new Date() });
@@ -283,7 +298,7 @@ window.notificarAprovacao = (p) => {
 
 /* RELATÓRIOS */
 window.gerarRelatorio = () => gerarRelatorioPeriodo(true);
-window.gerarRelatorioPeriodo = async (somenteHoje=false) => {
+window.gerarRelatorioPeriodo = async () => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF("landscape");
 
