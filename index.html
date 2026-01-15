@@ -80,7 +80,7 @@ input:disabled {
 
 <div class="container">
   <div class="logo">
-    <img src="suzano-logo.png" alt="Suzano">
+    <img src="suzano-logo.png">
   </div>
 
   <h1>Pedido de Peças – Almoxarifado CMC</h1>
@@ -140,9 +140,6 @@ const firebaseConfig = {
   apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
   authDomain: "testeer-1516c.firebaseapp.com",
   projectId: "testeer-1516c",
-  storageBucket: "testeer-1516c.firebasestorage.app",
-  messagingSenderId: "1030430919430",
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -189,98 +186,34 @@ window.removerPeca = (btn) => {
   btn.parentElement.remove();
 };
 
-/* 🧠 SINÔNIMOS CONTROLADOS */
-const SINONIMOS = {
-  PORCA: ["POLCA", "POCA", "PORKA"],
-  ARRUELA: ["ARUELA", "ARRELA"],
-  PARAFUSO: ["PARAFUZO", "PARAFUSU"],
-  CONECTOR: ["CONECTO", "CONEKTOR"],
-  LAMPADA: ["LAMP"]
-};
-
-function aplicarSinonimos(txt) {
-  let t = txt;
-  Object.entries(SINONIMOS).forEach(([padrao, vars]) => {
-    vars.forEach(v => {
-      t = t.replace(new RegExp(`\\b${v}\\b`, "g"), padrao);
-    });
-  });
-  return t;
-}
-
-function normalizarTexto(txt) {
-  return aplicarSinonimos(
-    txt.toUpperCase()
-       .normalize("NFD")
-       .replace(/[\u0300-\u036f]/g, "")
-       .trim()
-  );
-}
-
+/* NORMALIZAÇÃO + SINÔNIMOS */
 function normalizar(txt) {
-  let t = txt.toUpperCase()
+  return txt.toUpperCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/\bPOLCA\b|\bPOCA\b/g,"PORCA")
+    .replace(/\bARUELA\b/g,"ARRUELA")
+    .replace(/\bPARAFUZO\b/g,"PARAFUSO")
     .trim();
-
-  const SINONIMOS = {
-    PORCA: ["POLCA", "POCA"],
-    ARRUELA: ["ARUELA"],
-    PARAFUSO: ["PARAFUZO"],
-    CONECTOR: ["CONECTO"]
-  };
-
-  Object.entries(SINONIMOS).forEach(([correto, vars]) => {
-    vars.forEach(v => {
-      t = t.replace(new RegExp(`\\b${v}\\b`, "g"), correto);
-    });
-  });
-
-  return t;
 }
 
-
-/* 🔎 BUSCA INTELIGENTE DE NI */
+/* BUSCA DE NI */
 function buscarNI(descricao) {
   if (!window.LISTA_NI) return null;
 
   const desc = normalizar(descricao);
-  const numsDesc = desc.match(/\d+/g) || [];
-  const palavrasDesc = desc
-    .replace(/\d+/g, "")
-    .split(" ")
-    .filter(p => p.length > 2);
-
   let melhorNI = null;
   let melhorScore = 0;
 
   window.LISTA_NI.forEach(item => {
     const prod = normalizar(item.produto);
-    const numsProd = prod.match(/\d+/g) || [];
-    const palavrasProd = prod
-      .replace(/\d+/g, "")
-      .split(" ")
-      .filter(p => p.length > 2);
+    let score = 0;
 
-    /* 🔒 Regra de números (evita 5 vias x 5ª roda) */
-    if (numsDesc.length || numsProd.length) {
-      if (
-        numsDesc.length !== numsProd.length ||
-        !numsDesc.every(n => numsProd.includes(n))
-      ) return;
-    }
+    prod.split(" ").forEach(p => {
+      if (p.length > 2 && desc.includes(p)) score++;
+    });
 
-    const palavrasComuns = palavrasDesc.filter(p =>
-      palavrasProd.includes(p)
-    );
-
-    let score = palavrasComuns.length;
-
-    /* 🎯 REGRA INTELIGENTE */
-    const minimoNecessario =
-      palavrasProd.length === 1 ? 1 : 2;
-
-    if (score >= minimoNecessario && score > melhorScore) {
+    if (score > melhorScore) {
       melhorScore = score;
       melhorNI = item.ni;
     }
@@ -289,34 +222,29 @@ function buscarNI(descricao) {
   return melhorNI;
 }
 
-
-/* 📲 TELEGRAM */
+/* TELEGRAM */
 function notificarTelegram(pedido) {
   const texto = `
-📦 NOVO PEDIDO DE PEÇAS
+📦 NOVO PEDIDO
 
 Solicitante: ${pedido.nome}
 Manutenção: ${pedido.manutencao}
 GO: ${pedido.go || "-"}
 
-Peças:
-${pedido.pecas.map(p => 
+${pedido.pecas.map(p =>
 `- ${p.descricao}
-  NI: ${p.ni ?? "NÃO INFORMADO"}
-  Qtd: ${p.quantidade}`).join("\n\n")}
+NI: ${p.ni ?? "NÃO INFORMADO"}
+Qtd: ${p.quantidade}`).join("\n\n")}
 `;
 
-  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: texto
-    })
+    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
   });
 }
 
-/* 🚀 SUBMIT */
+/* SUBMIT */
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
