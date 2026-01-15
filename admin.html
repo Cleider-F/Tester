@@ -271,21 +271,61 @@ window.atualizarNI = async (id, idx, descricao, ni) => {
   }
 };
 
+/* 📲 TELEGRAM – NOTIFICAÇÃO DE APROVAÇÃO */
+window.notificarAprovacao = function (p) {
+  const texto = `
+✅ PEDIDO APROVADO
+
+Solicitante: ${p.nome}
+Manutenção: ${p.manutencao}
+GO: ${p.go || "-"}
+
+Peças:
+${p.pecas.map(x =>
+`- ${x.descricao}
+NI: ${x.ni ?? "NÃO INFORMADO"}
+Qtd: ${x.quantidade}`
+).join("\n\n")}
+
+Aprovado por: ${localStorage.getItem("adminNome")}
+`;
+
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: texto
+    })
+  });
+};
+
 /* STATUS */
-window.mudarStatus = async (id,status)=>{
+window.mudarStatus = async (id, status) => {
   const ref = doc(db,"pedidos",id);
   const snap = await getDoc(ref);
   const p = snap.data();
-  if (p.status!=="Pendente") return;
+
+  if (p.status !== "Pendente") return;
+
+  const aprovadoPor = localStorage.getItem("adminNome");
 
   await updateDoc(ref,{
     status,
-    aprovadoEm:new Date(),
-    aprovadoPor:localStorage.getItem("adminNome")
+    aprovadoEm: new Date(),
+    aprovadoPor
   });
+
+  // 🔔 TELEGRAM (AGORA FUNCIONA)
+  if (status === "Aprovado") {
+    p.status = "Aprovado";
+    p.aprovadoPor = aprovadoPor;
+    notificarAprovacao(p);
+  }
 
   carregarPedidos();
 };
+
 
 /* RELATÓRIOS */
 window.gerarRelatorio = () => gerarRelatorioPeriodo(true);
