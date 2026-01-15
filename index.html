@@ -75,7 +75,7 @@ input:disabled {
 
 <body>
 
-<!-- 📦 LISTA DE NI -->
+<!-- 📦 LISTA OFICIAL DE NI -->
 <script src="lista_NI.js"></script>
 
 <div class="container">
@@ -132,16 +132,19 @@ input:disabled {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getFirestore, collection, addDoc, getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* 🔥 FIREBASE */
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
   authDomain: "testeer-1516c.firebaseapp.com",
   projectId: "testeer-1516c",
-};
-const app = initializeApp(firebaseConfig);
+  storageBucket: "testeer-1516c.firebasestorage.app",
+  messagingSenderId: "1030430919430",
+  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
+});
 const db = getFirestore(app);
 
 /* 📲 TELEGRAM */
@@ -186,7 +189,7 @@ window.removerPeca = (btn) => {
   btn.parentElement.remove();
 };
 
-/* NORMALIZAÇÃO + SINÔNIMOS */
+/* 🧠 NORMALIZAÇÃO ÚNICA */
 function normalizar(txt) {
   return txt.toUpperCase()
     .normalize("NFD")
@@ -197,23 +200,57 @@ function normalizar(txt) {
     .trim();
 }
 
-/* BUSCA DE NI */
+/* 📚 APRENDIZADO (SOMENTE INDEX) */
+let APRENDIZADO_NI = [];
+
+async function carregarAprendizadoNI() {
+  const snap = await getDocs(collection(db,"aprendizado_ni"));
+  APRENDIZADO_NI = snap.docs.map(d => d.data());
+}
+
+/* 🔎 BUSCA DE NI */
 function buscarNI(descricao) {
+  const descNorm = normalizar(descricao);
+
+  /* 1️⃣ aprendizado */
+  const aprendido = APRENDIZADO_NI.find(x =>
+    x.descricao_normalizada === descNorm
+  );
+  if (aprendido) return aprendido.ni;
+
+  /* 2️⃣ lista oficial */
   if (!window.LISTA_NI) return null;
 
-  const desc = normalizar(descricao);
+  const numsDesc = descNorm.match(/\d+/g) || [];
+  const palavrasDesc = descNorm
+    .replace(/\d+/g,"")
+    .split(" ")
+    .filter(p => p.length > 2);
+
   let melhorNI = null;
   let melhorScore = 0;
 
   window.LISTA_NI.forEach(item => {
     const prod = normalizar(item.produto);
-    let score = 0;
+    const numsProd = prod.match(/\d+/g) || [];
+    const palavrasProd = prod
+      .replace(/\d+/g,"")
+      .split(" ")
+      .filter(p => p.length > 2);
 
-    prod.split(" ").forEach(p => {
-      if (p.length > 2 && desc.includes(p)) score++;
-    });
+    if (
+      numsDesc.length !== numsProd.length ||
+      !numsDesc.every(n => numsProd.includes(n))
+    ) return;
 
-    if (score > melhorScore) {
+    const comuns = palavrasDesc.filter(p =>
+      palavrasProd.includes(p)
+    );
+
+    const score = comuns.length;
+    const minimo = palavrasProd.length === 1 ? 1 : 2;
+
+    if (score >= minimo && score > melhorScore) {
       melhorScore = score;
       melhorNI = item.ni;
     }
@@ -222,32 +259,32 @@ function buscarNI(descricao) {
   return melhorNI;
 }
 
-/* TELEGRAM */
+/* 📲 TELEGRAM */
 function notificarTelegram(pedido) {
   const texto = `
-📦 NOVO PEDIDO
+📦 NOVO PEDIDO DE PEÇAS
 
 Solicitante: ${pedido.nome}
 Manutenção: ${pedido.manutencao}
 GO: ${pedido.go || "-"}
 
-${pedido.pecas.map(p =>
+Peças:
+${pedido.pecas.map(p => 
 `- ${p.descricao}
-NI: ${p.ni ?? "NÃO INFORMADO"}
-Qtd: ${p.quantidade}`).join("\n\n")}
+  NI: ${p.ni ?? "NÃO INFORMADO"}
+  Qtd: ${p.quantidade}`).join("\n\n")}
 `;
 
   fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
+    body:JSON.stringify({ chat_id:TELEGRAM_CHAT_ID, text:texto })
   });
 }
 
-/* SUBMIT */
+/* 🚀 SUBMIT */
 form.addEventListener("submit", async e => {
   e.preventDefault();
-
   try {
     const pecas = [];
     document.querySelectorAll(".peca").forEach(p => {
@@ -266,7 +303,7 @@ form.addEventListener("submit", async e => {
       pecas
     };
 
-    await addDoc(collection(db,"pedidos"), {
+    await addDoc(collection(db,"pedidos"),{
       ...pedido,
       status:"Pendente",
       criadoEm:new Date()
@@ -277,14 +314,16 @@ form.addEventListener("submit", async e => {
     mensagem.textContent = "✅ Pedido enviado com sucesso!";
     mensagem.className = "mensagem sucesso";
     form.reset();
-
-  } catch (err) {
+  } catch(err) {
     console.error(err);
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
   }
 });
-</script>
 
+/* ⏳ carregar aprendizado ao abrir */
+await carregarAprendizadoNI();
+
+</script>
 </body>
 </html>

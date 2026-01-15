@@ -26,7 +26,6 @@ body {
 }
 
 h2 { text-align:center; }
-
 input { padding:6px; margin-top:4px; }
 
 button {
@@ -175,6 +174,22 @@ function normalizar(txt) {
     .trim();
 }
 
+/* BUSCAR NI NO APRENDIZADO */
+async function buscarNIporAprendizado(descricao) {
+  const termo = normalizar(descricao);
+  const snap = await getDocs(collection(db,"ni_aprendizado"));
+
+  let encontrado = null;
+  snap.forEach(d=>{
+    const a = d.data();
+    if (termo.includes(a.termo)) {
+      encontrado = a.ni;
+    }
+  });
+
+  return encontrado;
+}
+
 /* LOGIN */
 btnLogin.onclick = () => {
   const nome = USUARIOS[senha.value];
@@ -191,39 +206,25 @@ window.logout = () => {
   location.reload();
 };
 
-/* TELEGRAM */
-function notificarAprovacao(p) {
-  const texto = `
-✅ PEDIDO APROVADO
-
-Solicitante: ${p.nome}
-Manutenção: ${p.manutencao}
-GO: ${p.go || "-"}
-
-Peças:
-${p.pecas.map(x =>
-`- ${x.descricao}
-NI: ${x.ni ?? "NÃO INFORMADO"}
-Qtd: ${x.quantidade}`
-).join("\n")}
-
-Aprovado por: ${localStorage.getItem("adminNome")}
-`;
-  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id:TELEGRAM_CHAT_ID, text:texto })
-  });
-}
-
 /* LISTAR PEDIDOS */
 async function carregarPedidos() {
   lista.innerHTML = "";
   const q = query(collection(db,"pedidos"), orderBy("criadoEm","desc"));
   const snap = await getDocs(q);
 
-  snap.forEach(d => {
+  for (const d of snap.docs) {
     const p = d.data();
+
+    for (let i=0;i<p.pecas.length;i++) {
+      if (!p.pecas[i].ni) {
+        const niAprendido = await buscarNIporAprendizado(p.pecas[i].descricao);
+        if (niAprendido) {
+          p.pecas[i].ni = niAprendido;
+          await updateDoc(doc(db,"pedidos",d.id),{ pecas:p.pecas });
+        }
+      }
+    }
+
     lista.innerHTML += `
 <tr>
 <td>${p.nome}</td>
@@ -250,7 +251,7 @@ ${p.status==="Pendente"
 : "—"}
 </td>
 </tr>`;
-  });
+  }
 }
 
 /* ATUALIZAR NI + APRENDER */
@@ -283,7 +284,6 @@ window.mudarStatus = async (id,status)=>{
     aprovadoPor:localStorage.getItem("adminNome")
   });
 
-  if (status==="Aprovado") notificarAprovacao(p);
   carregarPedidos();
 };
 
