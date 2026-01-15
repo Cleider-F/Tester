@@ -286,12 +286,31 @@ window.mudarStatus = async (id, status) => {
 
 /* TELEGRAM */
 window.notificarAprovacao = (p) => {
+  const pecas = p.pecas
+    .map(x => `• ${x.descricao} (${x.quantidade})`)
+    .join("\n");
+
+  const mensagem =
+`✅ *PEDIDO APROVADO*
+
+👤 *Solicitante:* ${p.nome}
+🛠 *Manutenção:* ${p.manutencao}
+📄 *GO:* ${p.go || "-"}
+
+📦 *Peças:*
+${pecas}
+
+👨‍🔧 *Aprovado por:* ${p.aprovadoPor}
+⏰ *Data:* ${new Date().toLocaleString("pt-BR")}
+`;
+
   fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({
-      chat_id:TELEGRAM_CHAT_ID,
-      text:`✅ PEDIDO APROVADO\n\nSolicitante: ${p.nome}\nManutenção: ${p.manutencao}`
+      chat_id: TELEGRAM_CHAT_ID,
+      text: mensagem,
+      parse_mode: "Markdown"
     })
   });
 };
