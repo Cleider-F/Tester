@@ -127,7 +127,7 @@ window.LISTA_NI = [
 { produto: "LANTERNA DE PLACA (SEM LAMPADA)" , ni: 27019934 },
 { produto: "LAMPADA 69" , ni: 27019796 },
 { produto: "DISCO DE DESBASTE 4pol" , ni: 27033344 },
-{ produto: "TINTA SPRAY VERMELHA" , ni: 25582141 }
+{ produto: "TINTA SPRAY VERMELHA" , ni: 25582141 },
 { produto: "INDICADOR DE RODA" , ni: 27093316 },
 { produto: "FERRADURA 3,5pol" , ni: 27025440 },
 { produto: "DISCO DE DESBASTE 7pol" , ni: 27033492 },
