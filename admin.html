@@ -80,17 +80,10 @@ button{
   position:relative;
 }
 
-.info{
-  margin-bottom:8px;
-  font-size:14px;
-}
-
+.info{margin-bottom:8px;font-size:14px}
 .info b{display:block;color:#374151}
 
-.status{
-  font-weight:bold;
-  margin-bottom:8px;
-}
+.status{font-weight:bold;margin-bottom:8px}
 .status-pendente{color:#ca8a04}
 .status-aprovado{color:#16a34a}
 .status-reprovado{color:#dc2626}
@@ -181,6 +174,7 @@ import {
   doc, updateDoc, getDoc, query, orderBy, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* FIREBASE */
 const app=initializeApp({
   apiKey:"AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
   authDomain:"testeer-1516c.firebaseapp.com",
@@ -188,7 +182,20 @@ const app=initializeApp({
 });
 const db=getFirestore(app);
 
-const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+/* TELEGRAM */
+const TELEGRAM_TOKEN="8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
+const TELEGRAM_CHAT_ID="-1003208006500";
+
+async function enviarTelegram(msg){
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      chat_id:TELEGRAM_CHAT_ID,
+      text:msg
+    })
+  });
+}
 
 /* LOGIN */
 window.login=()=>{
@@ -199,7 +206,10 @@ window.login=()=>{
 }
 window.logout=()=>{localStorage.clear();location.reload()}
 
-/* CARREGAR PEDIDOS */
+/* NORMALIZAR */
+const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+
+/* CARREGAR */
 async function carregarPedidos(){
   lista.innerHTML="";
   const q=query(collection(db,"pedidos"),orderBy("criadoEm","desc"));
@@ -213,7 +223,6 @@ async function carregarPedidos(){
     lista.innerHTML+=`
 <div class="card">
 ${!finalizado?`<button class="btn-excluir" onclick="excluir('${d.id}')">❌</button>`:""}
-
 <div class="status status-${p.status.toLowerCase()}">${p.status}</div>
 
 <div class="info"><b>Solicitante</b>${p.nome}</div>
@@ -263,13 +272,24 @@ async function aprender(p){
   }
 }
 
-/* STATUS */
+/* STATUS + TELEGRAM */
 window.mudarStatus=async(id,status)=>{
   const ref=doc(db,"pedidos",id);
   const p=(await getDoc(ref)).data();
   if(p.status!=="Pendente")return;
+
   await updateDoc(ref,{status,finalizadoEm:new Date()});
   if(status==="Aprovado")await aprender(p);
+
+  await enviarTelegram(
+`📦 Pedido ${status}
+👤 ${p.nome}
+🛠 ${p.manutencao}
+📌 GO: ${p.go||"-"}
+🧾 Peças:
+${p.pecas.map(x=>`- ${x.descricao} (${x.quantidade}) NI:${x.ni||"-"}`).join("\n")}`
+  );
+
   carregarPedidos();
 }
 
