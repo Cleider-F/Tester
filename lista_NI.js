@@ -127,6 +127,27 @@ window.LISTA_NI = [
 { produto: "LANTERNA DE PLACA (SEM LAMPADA)" , ni: 27019934 },
 { produto: "LAMPADA 69" , ni: 27019796 },
 { produto: "DISCO DE DESBASTE 4pol" , ni: 27033344 },
-{ produto: "TINTA SPRAY VERMELHA" , ni: 25582141 }
+{ produto: "TINTA SPRAY VERMELHA" , ni: 25582141 },
+{ produto: "INDICADOR DE RODA" , ni: 27093316 },
+{ produto: "FERRADURA 3,5pol" , ni: 27025440 },
+{ produto: "DISCO DE DESBASTE 7pol" , ni: 27033492 },
+{ produto: "MOLA DO GAVIÃO" , ni: 27036837 },
+{ produto: "GANCHO PNEUMATICO WDS" , ni: 27177164 },
+{ produto: "VALVULA NIVELADORA" , ni: 27033850 },
+{ produto: "REPARO DA NIVELADORA" , ni: 27033342 },
+{ produto: "BUCHA TRIFUNCIONAL LIBRELATO" , ni: 27095008 },
+{ produto: "ARRUELA CONICA" , ni: 27094288 },
+{ produto: "ENGATE RAPIDO" , ni: 27018183 },
+{ produto: "DISCO FLAP" , ni: 25250241 },
+{ produto: "ARRUELA DE 6" , ni: 27033564 },
+{ produto: "ARRUELA CONICA" , ni: 27094288 },
+{ produto: "PARAFUSO DA TRIFUNCIONAL LIBRELATO" , ni: 27130048 },
+{ produto: "EMENDA DE 12 (ferro)" , ni: 27019822 },
+{ produto: "INSERTO DE 12" , ni: 27017956 },
+{ produto: "MANGUEIRA DE 12" , ni: 27017983 },
+{ produto: "PARAFUSO 10X60" , ni: 27033737 },
+{ produto: "PORCA DE 10" , ni: 27033309 },
+{ produto: "BATERIA 180Ah" , ni: 25568503 }
+
 
 ];
