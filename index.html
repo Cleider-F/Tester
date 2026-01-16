@@ -50,22 +50,7 @@ textarea { min-height:50px; }
   margin-top:10px;
 }
 
-.ni-linha {
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.ni-ok {
-  color:#16a34a;
-  font-size:18px;
-  display:none;
-}
-
-.ni-info {
-  font-size:12px;
-  color:#6b7280;
-}
+.ni-info { font-size:12px; color:#6b7280; }
 
 button {
   width:100%;
@@ -78,6 +63,7 @@ button {
   font-size:15px;
 }
 
+button:hover { background:#15803d; }
 .secundario { background:#2563eb; }
 .remover { background:#dc2626; }
 .admin-btn { background:#111827; }
@@ -93,28 +79,33 @@ footer {
   margin-top:15px;
 }
 
+input:disabled {
+  background:#e5e7eb;
+  cursor:not-allowed;
+}
+
 /* 🔎 AUTOCOMPLETE */
 .autocomplete-box { position: relative; }
 
 .sugestoes {
-  position: absolute;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  width: 100%;
-  max-height: 160px;
-  overflow-y: auto;
-  z-index: 1000;
+  position:absolute;
+  background:#fff;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  width:100%;
+  max-height:160px;
+  overflow-y:auto;
+  z-index:1000;
 }
 
 .sugestoes div {
-  padding: 8px;
-  cursor: pointer;
-  font-size: 14px;
+  padding:8px;
+  cursor:pointer;
+  font-size:14px;
 }
 
 .sugestoes div:hover {
-  background: #e5e7eb;
+  background:#e5e7eb;
 }
 </style>
 </head>
@@ -132,7 +123,24 @@ footer {
 
   <form id="formPedido">
 
-    <div id="listaPecas"></div>
+    <div id="listaPecas">
+      <div class="peca">
+        <label>Descrição da Peça</label>
+        <div class="autocomplete-box">
+          <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+          <div class="sugestoes" style="display:none"></div>
+        </div>
+
+        <label>NI (opcional)</label>
+        <input type="text" class="ni-manual" placeholder="Informe se souber">
+        <div class="ni-info">Se não informar, o sistema tentará identificar automaticamente</div>
+
+        <label>Quantidade</label>
+        <input type="number" class="quantidade" min="1" required>
+
+        <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
+      </div>
+    </div>
 
     <button type="button" class="secundario" onclick="adicionarPeca()">➕ Adicionar peça</button>
 
@@ -161,13 +169,14 @@ footer {
   </a>
 </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
+<footer>
+  Criado e Desenvolvido por Cleider Filho
+</footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* FIREBASE */
 const app = initializeApp({
   apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
   authDomain: "testeer-1516c.firebaseapp.com",
@@ -175,136 +184,167 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
-/* APRENDIZADO */
+const form = document.getElementById("formPedido");
+const mensagem = document.getElementById("mensagem");
+const lista = document.getElementById("listaPecas");
+const manutencaoSelect = document.getElementById("manutencao");
+const goInput = document.getElementById("go");
+
+manutencaoSelect.addEventListener("change", () => {
+  goInput.required = manutencaoSelect.value !== "Uso Geral";
+  goInput.disabled = manutencaoSelect.value === "Uso Geral";
+  if (goInput.disabled) goInput.value = "";
+});
+
+window.adicionarPeca = () => {
+  const div = document.createElement("div");
+  div.className = "peca";
+  div.innerHTML = `
+    <label>Descrição da Peça</label>
+    <div class="autocomplete-box">
+      <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+      <div class="sugestoes" style="display:none"></div>
+    </div>
+
+    <label>NI (opcional)</label>
+    <input type="text" class="ni-manual">
+
+    <label>Quantidade</label>
+    <input type="number" class="quantidade" min="1" required>
+
+    <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
+  `;
+  lista.appendChild(div);
+};
+
+window.removerPeca = (btn) => {
+  if (document.querySelectorAll(".peca").length === 1) return;
+  btn.parentElement.remove();
+};
+
+function normalizar(txt) {
+  return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+}
+
+/* 🔎 AUTOCOMPLETE (lista fixa + aprendizado real) */
 let aprendizadoNI = [];
 
-const snap = await getDocs(collection(db,"aprendizado_ni"));
-snap.forEach(d => aprendizadoNI.push(d.data()));
-
-function normalizar(txt){
-  return txt.toUpperCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .trim();
+async function carregarAprendizadoNI() {
+  const snap = await getDocs(collection(db,"aprendizado_ni"));
+  aprendizadoNI = snap.docs.map(d => ({
+    descricao: normalizar(d.data().descricao),
+    ni: d.data().ni
+  }));
 }
+await carregarAprendizadoNI();
 
-function buscarNI(desc){
-  const n = normalizar(desc);
-  let achado = aprendizadoNI.find(i => i.descricao === n);
-  if(achado) return achado.ni;
+window.sugerirPecas = (textarea) => {
+  const termo = normalizar(textarea.value);
+  const box = textarea.parentElement.querySelector(".sugestoes");
 
-  if(window.LISTA_NI){
-    const fixo = window.LISTA_NI.find(i => normalizar(i.produto) === n);
-    return fixo ? fixo.ni : null;
+  if (!termo || termo.length < 2) {
+    box.style.display = "none";
+    return;
   }
-  return null;
-}
 
-/* PEÇAS */
-window.adicionarPeca = ()=>{
-  const div=document.createElement("div");
-  div.className="peca";
-  div.innerHTML=`
-<label>Descrição da Peça</label>
-<div class="autocomplete-box">
-<textarea class="descricao" required></textarea>
-<div class="sugestoes" style="display:none"></div>
-</div>
+  let resultados = [];
 
-<label>NI (opcional)</label>
-<div class="ni-linha">
-<input class="ni-manual">
-<span class="ni-ok">✔️</span>
-</div>
-<div class="ni-info">NI identificado automaticamente ou informado manualmente</div>
-
-<label>Quantidade</label>
-<input type="number" class="quantidade" min="1" required>
-
-<button type="button" class="remover" onclick="this.parentElement.remove()">❌ Remover</button>
-`;
-  document.getElementById("listaPecas").appendChild(div);
-
-  const desc=div.querySelector(".descricao");
-  const ni=div.querySelector(".ni-manual");
-  const ok=div.querySelector(".ni-ok");
-
-  desc.oninput=()=>{
-    const encontrado=buscarNI(desc.value);
-    if(encontrado){
-      ni.value=encontrado;
-      ok.style.display="inline";
-    } else {
-      ok.style.display="none";
+  aprendizadoNI.forEach(i => {
+    if (i.descricao.includes(termo)) {
+      resultados.push({ produto:i.descricao, ni:i.ni });
     }
-  };
+  });
 
-  ni.oninput=()=>{
-    ok.style.display = ni.value.trim() ? "inline" : "none";
-  };
+  if (window.LISTA_NI) {
+    window.LISTA_NI.forEach(i => {
+      const prod = normalizar(i.produto);
+      if (prod.includes(termo) && !resultados.some(r => r.produto === prod)) {
+        resultados.push({ produto:prod, ni:i.ni });
+      }
+    });
+  }
+
+  resultados = resultados.slice(0,6);
+  if (!resultados.length) { box.style.display="none"; return; }
+
+  box.innerHTML = resultados.map(r => `
+    <div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
+      ${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
+    </div>
+  `).join("");
+
+  box.style.display="block";
 };
 
-/* INICIAL */
-adicionarPeca();
-
-/* GO */
-const manutencao=document.getElementById("manutencao");
-const go=document.getElementById("go");
-manutencao.onchange=()=>{
-  go.required = manutencao.value!=="Uso Geral";
-  go.disabled = manutencao.value==="Uso Geral";
-  if(go.disabled) go.value="";
+window.selecionarPeca = (el, produto, ni) => {
+  const peca = el.closest(".peca");
+  peca.querySelector(".descricao").value = produto;
+  peca.querySelector(".ni-manual").value = ni;
+  el.parentElement.style.display="none";
 };
 
-/* TELEGRAM */
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+/* 📲 TELEGRAM */
+const TELEGRAM_TOKEN = "SEU_TOKEN";
+const TELEGRAM_CHAT_ID = "SEU_CHAT_ID";
 
-function notificarTelegram(p){
-fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id:TELEGRAM_CHAT_ID,
-text:`📦 NOVO PEDIDO
+function notificarTelegram(pedido) {
+  const texto = `
+📦 NOVO PEDIDO DE PEÇAS
 
-Solicitante: ${p.nome}
-Manutenção: ${p.manutencao}
-GO: ${p.go||"-"}
+Solicitante: ${pedido.nome}
+Manutenção: ${pedido.manutencao}
+GO: ${pedido.go || "-"}
 
-${p.pecas.map(x=>`• ${x.descricao} | NI: ${x.ni||"N/I"} | Qtd: ${x.quantidade}`).join("\n")}`
-})
-});
+${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qtd: ${p.quantidade}`).join("\n")}
+`;
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
+  });
 }
 
-/* SUBMIT */
-formPedido.onsubmit=async e=>{
-e.preventDefault();
-const pecas=[];
-document.querySelectorAll(".peca").forEach(p=>{
-pecas.push({
-descricao:p.querySelector(".descricao").value,
-ni:p.querySelector(".ni-manual").value||buscarNI(p.querySelector(".descricao").value),
-quantidade:p.querySelector(".quantidade").value
-});
-});
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  try {
+    const pecas = [];
+    document.querySelectorAll(".peca").forEach(p => {
+      const desc = p.querySelector(".descricao").value;
+      const niManual = p.querySelector(".ni-manual").value.trim();
+      const niAuto = aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+        || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
 
-await addDoc(collection(db,"pedidos"),{
-nome:nome.value,
-manutencao:manutencao.value,
-go:go.value,
-pecas,
-status:"Pendente",
-criadoEm:new Date()
-});
+      pecas.push({
+        descricao: desc,
+        quantidade: p.querySelector(".quantidade").value,
+        ni: niManual || niAuto || null
+      });
+    });
 
-notificarTelegram({nome:nome.value,manutencao:manutencao.value,go:go.value,pecas});
-mensagem.textContent="✅ Pedido enviado com sucesso!";
-mensagem.className="mensagem sucesso";
-formPedido.reset();
-document.getElementById("listaPecas").innerHTML="";
-adicionarPeca();
-};
+    await addDoc(collection(db,"pedidos"),{
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      nome: document.getElementById("nome").value,
+      pecas,
+      status:"Pendente",
+      criadoEm:new Date()
+    });
+
+    notificarTelegram({
+      nome: document.getElementById("nome").value,
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      pecas
+    });
+
+    mensagem.textContent = "✅ Pedido enviado com sucesso!";
+    mensagem.className = "mensagem sucesso";
+    form.reset();
+  } catch {
+    mensagem.textContent = "❌ Erro ao enviar pedido";
+    mensagem.className = "mensagem erro";
+  }
+});
 </script>
 
 </body>
