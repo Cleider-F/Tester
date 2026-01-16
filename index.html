@@ -84,7 +84,6 @@ input:disabled {
   cursor:not-allowed;
 }
 
-/* 🔎 AUTOCOMPLETE */
 .autocomplete-box { position: relative; }
 
 .sugestoes {
@@ -132,7 +131,7 @@ input:disabled {
         </div>
 
         <label>NI (opcional)</label>
-        <input type="text" class="ni-manual" placeholder="Informe se souber">
+        <input type="text" class="ni-manual">
         <div class="ni-info">Se não informar, o sistema tentará identificar automaticamente</div>
 
         <label>Quantidade</label>
@@ -226,7 +225,7 @@ function normalizar(txt) {
   return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
 
-/* 🔎 AUTOCOMPLETE (lista fixa + aprendizado real) */
+/* 🔎 AUTOCOMPLETE */
 let aprendizadoNI = [];
 
 async function carregarAprendizadoNI() {
@@ -251,15 +250,16 @@ window.sugerirPecas = (textarea) => {
 
   aprendizadoNI.forEach(i => {
     if (i.descricao.includes(termo)) {
-      resultados.push({ produto:i.descricao, ni:i.ni });
+      resultados.push({ produto: i.descricao, ni: i.ni });
     }
   });
 
   if (window.LISTA_NI) {
     window.LISTA_NI.forEach(i => {
-      const prod = normalizar(i.produto);
-      if (prod.includes(termo) && !resultados.some(r => r.produto === prod)) {
-        resultados.push({ produto:prod, ni:i.ni });
+      const prodNorm = normalizar(i.produto);
+      if (prodNorm.includes(termo) &&
+          !resultados.some(r => normalizar(r.produto) === prodNorm)) {
+        resultados.push({ produto: i.produto, ni: i.ni });
       }
     });
   }
@@ -311,7 +311,8 @@ form.addEventListener("submit", async e => {
     document.querySelectorAll(".peca").forEach(p => {
       const desc = p.querySelector(".descricao").value;
       const niManual = p.querySelector(".ni-manual").value.trim();
-      const niAuto = aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+      const niAuto =
+        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
         || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
 
       pecas.push({
