@@ -2,111 +2,136 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Área de Pedidos – Almoxarifado CMC</title>
+<title>Área de Técnicos – Almoxarifado CMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest-admin.json">
 <meta name="theme-color" content="#111827">
 
 <style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background:#f2f2f2;
-  padding:15px;
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f3f4f6;
+  padding:12px;
 }
-.logo { text-align:center; margin-bottom:15px; }
-.logo img { max-width:160px; width:100%; }
+.logo{text-align:center;margin-bottom:10px}
+.logo img{max-width:150px;width:100%}
 
-footer {
+footer{
   text-align:center;
-  margin-top:25px;
+  margin-top:20px;
   font-size:11px;
   color:#6b7280;
 }
 
-.login, .painel {
+.login,.painel{
   max-width:1200px;
   margin:auto;
   background:#fff;
   padding:15px;
-  border-radius:12px;
+  border-radius:14px;
   box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
 
-h2 { text-align:center; }
+h2{text-align:center;margin-bottom:10px}
 
-button {
-  padding:8px 12px;
-  cursor:pointer;
-  border:none;
-  border-radius:8px;
-  font-size:14px;
-}
-
-.aprovar { background:#16a34a; color:#fff; }
-.reprovar { background:#dc2626; color:#fff; }
-.aprovar:disabled {
-  background:#9ca3af;
-  cursor:not-allowed;
-}
-
-.btn-excluir {
-  background:none;
-  border:none;
-  color:#dc2626;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.top-actions {
+.top-actions{
   display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
   gap:10px;
   margin-bottom:15px;
 }
 
-.btn-sair { background:#111827; color:#fff; }
-.btn-refresh { background:#2563eb; color:#fff; }
+button{
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
 
-.relatorio-box {
-  display:flex;
-  gap:15px;
-  flex-wrap:wrap;
-  align-items:flex-end;
+.btn-sair{background:#111827;color:#fff}
+.btn-refresh{background:#2563eb;color:#fff}
+
+.relatorio-box{
   background:#f9fafb;
   padding:12px;
-  border-radius:10px;
+  border-radius:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
   margin-bottom:15px;
 }
 
-table {
-  width:100%;
-  border-collapse:collapse;
+.relatorio-box button{background:#16a34a;color:#fff}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:12px;
 }
 
-th, td {
-  border:1px solid #ccc;
-  padding:6px;
-  font-size:13px;
-  vertical-align:top;
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  position:relative;
 }
 
-th { background:#f3f4f6; }
-
-.status-pendente { color:#ca8a04; font-weight:bold; }
-.status-aprovado { color:#16a34a; font-weight:bold; }
-.status-reprovado { color:#dc2626; font-weight:bold; }
-
-tr.card-pendente {
+.card-pendente{
   background:#fffbeb;
   border-left:6px solid #f59e0b;
 }
 
-.selo-finalizado {
-  background:#e5e7eb;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:12px;
+.status{
   font-weight:bold;
+  margin-bottom:6px;
+}
+.status-pendente{color:#ca8a04}
+.status-aprovado{color:#16a34a}
+.status-reprovado{color:#dc2626}
+
+.peca{
+  border-top:1px dashed #ddd;
+  padding-top:6px;
+  margin-top:6px;
+}
+
+.peca input{
+  width:100%;
+  padding:6px;
+  margin-top:4px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.acoes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+
+.aprovar{background:#16a34a;color:#fff}
+.reprovar{background:#dc2626;color:#fff}
+.aprovar:disabled{background:#9ca3af;cursor:not-allowed}
+
+.btn-excluir{
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:none;
+  color:#dc2626;
+  font-size:16px;
+}
+
+.selo{
+  background:#e5e7eb;
+  padding:6px;
+  border-radius:10px;
   text-align:center;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -117,12 +142,10 @@ tr.card-pendente {
   <img src="suzano-logo.png">
 </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
-
 <div class="login" id="loginBox">
   <h2>🔐 Área de Técnicos</h2>
   <input type="password" id="senha" placeholder="Senha">
-  <button id="btnLogin">Entrar</button>
+  <button onclick="login()">Entrar</button>
 </div>
 
 <div class="painel" id="painel" style="display:none">
@@ -134,26 +157,16 @@ tr.card-pendente {
   </div>
 
   <div class="relatorio-box">
-    <button onclick="gerarRelatorio()">📄 Relatório do dia</button>
-    <input type="date" id="dataInicio">
-    <input type="date" id="dataFim">
+    <button onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
+    <input type="date" id="inicio">
+    <input type="date" id="fim">
     <button onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Solicitante</th>
-        <th>Manutenção</th>
-        <th>GO</th>
-        <th>Peças (NI)</th>
-        <th>Status</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="lista"></tbody>
-  </table>
+  <div class="cards" id="lista"></div>
 </div>
+
+<footer>Criado e Desenvolvido por Cleider Filho</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -166,187 +179,135 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
-const app = initializeApp({
-  apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
-  authDomain: "testeer-1516c.firebaseapp.com",
-  projectId: "testeer-1516c"
+const app=initializeApp({
+  apiKey:"AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
+  authDomain:"testeer-1516c.firebaseapp.com",
+  projectId:"testeer-1516c"
 });
-const db = getFirestore(app);
+const db=getFirestore(app);
 
 /* TELEGRAM */
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+const TELEGRAM_TOKEN="SEU_TOKEN";
+const TELEGRAM_CHAT_ID="SEU_CHAT_ID";
 
 /* LOGIN */
-btnLogin.onclick = () => {
-  localStorage.setItem("adminLogado","true");
-  localStorage.setItem("adminNome","Técnico");
+window.login=()=>{
+  localStorage.setItem("admin","true");
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
-};
-
-window.logout = () => {
+}
+window.logout=()=>{
   localStorage.clear();
   location.reload();
-};
-
-/* NORMALIZAR */
-function normalizar(txt){
-  return txt.toUpperCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .trim();
 }
 
-/* LISTAR PEDIDOS */
-async function carregarPedidos() {
+/* NORMALIZAR */
+const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+
+/* CARREGAR */
+async function carregarPedidos(){
   lista.innerHTML="";
   const q=query(collection(db,"pedidos"),orderBy("criadoEm","desc"));
   const snap=await getDocs(q);
 
   snap.forEach(d=>{
     const p=d.data();
-    const finalizado = p.status!=="Pendente";
-    const faltaNI = p.pecas.some(x=>!x.ni);
+    const finalizado=p.status!=="Pendente";
+    const faltaNI=p.pecas.some(x=>!x.ni);
 
     lista.innerHTML+=`
-<tr class="${p.status==="Pendente"?"card-pendente":""}">
-<td>${p.nome}</td>
-<td>${p.manutencao}</td>
-<td>${p.go||"-"}</td>
-<td>
+<div class="card ${p.status==="Pendente"?"card-pendente":""}">
+${!finalizado?`<button class="btn-excluir" onclick="excluir('${d.id}')">❌</button>`:""}
+<div class="status status-${p.status.toLowerCase()}">${p.status}</div>
+<b>${p.nome}</b><br>
+${p.manutencao} | GO: ${p.go||"-"}
+
 ${p.pecas.map((x,i)=>`
-${x.descricao}<br>
-<input value="${x.ni||""}"
-${finalizado?"disabled":""}
+<div class="peca">
+${x.descricao} (${x.quantidade})
+<input value="${x.ni||""}" ${finalizado?"disabled":""}
 onchange="atualizarNI('${d.id}',${i},this.value)">
-`).join("<hr>")}
-</td>
-<td><span class="status-${p.status.toLowerCase()}">${p.status}</span></td>
-<td>
+</div>`).join("")}
+
+<div class="acoes">
 ${finalizado
-? `<div class="selo-finalizado">✔ Pedido Finalizado</div>`
-: `
+?`<div class="selo">✔ Pedido Finalizado</div>`
+:`
 <button class="aprovar" ${faltaNI?"disabled":""}
 onclick="mudarStatus('${d.id}','Aprovado')">Aprovar</button>
 <button class="reprovar"
-onclick="mudarStatus('${d.id}','Reprovado')">Reprovar</button>
-<button class="btn-excluir"
-onclick="excluirPedido('${d.id}')">❌</button>
-`}
-</td>
-</tr>`;
+onclick="mudarStatus('${d.id}','Reprovado')">Reprovar</button>`}
+</div>
+</div>`;
   });
 }
 
 /* ATUALIZAR NI */
-window.atualizarNI = async (id, idx, ni)=>{
+window.atualizarNI=async(id,i,ni)=>{
   const ref=doc(db,"pedidos",id);
-  const snap=await getDoc(ref);
-  const p=snap.data();
-  p.pecas[idx].ni=ni;
+  const p=(await getDoc(ref)).data();
+  p.pecas[i].ni=ni;
   await updateDoc(ref,{pecas:p.pecas});
-};
+}
 
-/* SALVAR APRENDIZADO */
-async function salvarAprendizado(pedido){
-  for(const p of pedido.pecas){
-    if(!p.ni) continue;
-    await addDoc(collection(db,"aprendizado_ni"),{
-      descricao: normalizar(p.descricao),
-      ni: p.ni,
-      validadoPor: localStorage.getItem("adminNome"),
-      validadoEm: new Date()
-    });
+/* APRENDIZADO */
+async function aprender(p){
+  for(const x of p.pecas){
+    if(x.ni){
+      await addDoc(collection(db,"aprendizado_ni"),{
+        descricao:norm(x.descricao),
+        ni:x.ni,
+        validadoEm:new Date()
+      });
+    }
   }
 }
 
 /* STATUS */
-window.mudarStatus = async (id, status)=>{
+window.mudarStatus=async(id,status)=>{
   const ref=doc(db,"pedidos",id);
-  const snap=await getDoc(ref);
-  const p=snap.data();
+  const p=(await getDoc(ref)).data();
+  if(p.status!=="Pendente")return;
 
-  if(p.status!=="Pendente"){
-    alert("Pedido já finalizado.");
-    return;
-  }
-
-  await updateDoc(ref,{
-    status,
-    aprovadoPor:localStorage.getItem("adminNome"),
-    aprovadoEm:new Date()
-  });
-
-  if(status==="Aprovado"){
-    await salvarAprendizado(p);
-    notificarAprovacao(p);
-  }
-
+  await updateDoc(ref,{status,finalizadoEm:new Date()});
+  if(status==="Aprovado")await aprender(p);
   carregarPedidos();
-};
-
-/* TELEGRAM APROVAÇÃO */
-function notificarAprovacao(p){
-  const pecas=p.pecas.map(x=>
-`• ${x.descricao} (${x.quantidade}) | NI: ${x.ni}`).join("\n");
-
-  const msg=
-`✅ PEDIDO APROVADO
-
-Solicitante: ${p.nome}
-Manutenção: ${p.manutencao}
-GO: ${p.go||"-"}
-
-Peças:
-${pecas}`;
-
-  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id:TELEGRAM_CHAT_ID, text:msg })
-  });
 }
 
 /* EXCLUIR */
-window.excluirPedido = async (id)=>{
-  if(!confirm("Excluir pedido pendente?")) return;
-  await deleteDoc(doc(db,"pedidos",id));
-  carregarPedidos();
-};
+window.excluir=async(id)=>{
+  if(confirm("Excluir pedido pendente?")){
+    await deleteDoc(doc(db,"pedidos",id));
+    carregarPedidos();
+  }
+}
 
 /* RELATÓRIOS */
-window.gerarRelatorio = () => gerarRelatorioPeriodo(true);
+window.gerarRelatorioDia=()=>gerarRelatorioPeriodo(true);
 
-window.gerarRelatorioPeriodo = async ()=>{
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("landscape");
-
-  const snap = await getDocs(collection(db,"pedidos"));
-  const linhas=[];
-
+window.gerarRelatorioPeriodo=async()=>{
+  const { jsPDF }=window.jspdf;
+  const pdf=new jsPDF("landscape");
+  const snap=await getDocs(collection(db,"pedidos"));
+  const rows=[];
   snap.forEach(d=>{
     const p=d.data();
-    linhas.push([
-      p.nome,
-      p.manutencao,
-      p.go||"-",
+    rows.push([
+      p.nome,p.manutencao,p.go||"-",
       p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
       p.status
     ]);
   });
-
   pdf.autoTable({
     head:[["Solicitante","Manutenção","GO","Peças","Status"]],
-    body:linhas
+    body:rows
   });
-
   pdf.save("relatorio-pedidos.pdf");
-};
+}
 
-/* AUTO LOGIN */
-if(localStorage.getItem("adminLogado")==="true"){
+/* AUTOLOGIN */
+if(localStorage.getItem("admin")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
