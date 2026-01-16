@@ -10,6 +10,7 @@
 <style>
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:180px; width:100%; }
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background:#f2f2f2;
@@ -19,6 +20,7 @@ body {
   min-height:100vh;
   flex-direction:column;
 }
+
 .container {
   background:#fff;
   max-width:480px;
@@ -27,8 +29,10 @@ body {
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
+
 h1 { text-align:center; font-size:20px; }
 label { font-weight:bold; margin-top:10px; display:block; }
+
 input, textarea, select {
   width:97%;
   padding:8px;
@@ -36,17 +40,21 @@ input, textarea, select {
   border-radius:6px;
   border:1px solid #ccc;
 }
+
 textarea { min-height:50px; }
+
 .peca {
   border:1px solid #e5e7eb;
   padding:10px;
   border-radius:8px;
   margin-top:10px;
 }
+
 .ni-info {
   font-size:12px;
   color:#6b7280;
 }
+
 button {
   width:100%;
   padding:12px;
@@ -57,22 +65,52 @@ button {
   color:#fff;
   font-size:15px;
 }
+
 button:hover { background:#15803d; }
 .secundario { background:#2563eb; }
 .remover { background:#dc2626; }
 .admin-btn { background:#111827; }
+
 .mensagem { text-align:center; font-weight:bold; margin-top:10px; }
 .sucesso { color:green; }
 .erro { color:red; }
+
 footer {
   text-align:center;
   font-size:11px;
   color:#6b7280;
   margin-top:15px;
 }
+
 input:disabled {
   background:#e5e7eb;
   cursor:not-allowed;
+}
+
+/* 🔎 AUTOCOMPLETE */
+.autocomplete-box {
+  position: relative;
+}
+
+.sugestoes {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  width: 100%;
+  max-height: 160px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sugestoes div {
+  padding: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sugestoes div:hover {
+  background: #e5e7eb;
 }
 </style>
 </head>
@@ -93,7 +131,10 @@ input:disabled {
     <div id="listaPecas">
       <div class="peca">
         <label>Descrição da Peça</label>
-        <textarea class="descricao" required></textarea>
+        <div class="autocomplete-box">
+          <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+          <div class="sugestoes" style="display:none"></div>
+        </div>
 
         <label>NI (opcional)</label>
         <input type="text" class="ni-manual" placeholder="Informe se souber">
@@ -144,10 +185,7 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
 const app = initializeApp({
   apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
   authDomain: "testeer-1516c.firebaseapp.com",
-  projectId: "testeer-1516c",
-  storageBucket: "testeer-1516c.firebasestorage.app",
-  messagingSenderId: "1030430919430",
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
+  projectId: "testeer-1516c"
 });
 const db = getFirestore(app);
 
@@ -158,14 +196,9 @@ const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
 manutencaoSelect.addEventListener("change", () => {
-  if (manutencaoSelect.value === "Uso Geral") {
-    goInput.required = false;
-    goInput.disabled = true;
-    goInput.value = "";
-  } else {
-    goInput.required = true;
-    goInput.disabled = false;
-  }
+  goInput.required = manutencaoSelect.value !== "Uso Geral";
+  goInput.disabled = manutencaoSelect.value === "Uso Geral";
+  if (goInput.disabled) goInput.value = "";
 });
 
 window.adicionarPeca = () => {
@@ -173,11 +206,13 @@ window.adicionarPeca = () => {
   div.className = "peca";
   div.innerHTML = `
     <label>Descrição da Peça</label>
-    <textarea class="descricao" required></textarea>
+    <div class="autocomplete-box">
+      <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+      <div class="sugestoes" style="display:none"></div>
+    </div>
 
     <label>NI (opcional)</label>
-    <input type="text" class="ni-manual" placeholder="Apenas se souber o NI">
-    <div class="ni-info">Se não informar, o sistema tentará identificar automaticamente</div>
+    <input type="text" class="ni-manual">
 
     <label>Quantidade</label>
     <input type="number" class="quantidade" min="1" required>
@@ -193,67 +228,81 @@ window.removerPeca = (btn) => {
 };
 
 function normalizar(txt) {
-  return txt.toUpperCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .trim();
-}
-
-let APRENDIZADO_NI = [];
-async function carregarAprendizadoNI() {
-  const snap = await getDocs(collection(db,"aprendizado_ni"));
-  APRENDIZADO_NI = snap.docs.map(d => d.data());
+  return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
 
 function buscarNI(descricao) {
   if (!window.LISTA_NI) return null;
-  const descNorm = normalizar(descricao);
-  const item = window.LISTA_NI.find(i =>
-    normalizar(i.produto) === descNorm
-  );
+  const d = normalizar(descricao);
+  const item = window.LISTA_NI.find(i => normalizar(i.produto) === d);
   return item ? item.ni : null;
 }
 
- /* 📲 TELEGRAM */
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+/* 🔎 AUTOCOMPLETE */
+window.sugerirPecas = (textarea) => {
+  const termo = textarea.value.toUpperCase();
+  const box = textarea.parentElement.querySelector(".sugestoes");
+
+  if (!termo || !window.LISTA_NI) {
+    box.style.display = "none";
+    return;
+  }
+
+  const resultados = window.LISTA_NI
+    .filter(i => i.produto.toUpperCase().includes(termo))
+    .slice(0,6);
+
+  if (!resultados.length) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = resultados.map(i => `
+    <div onclick="selecionarPeca(this,'${i.produto}','${i.ni}')">${i.produto}</div>
+  `).join("");
+
+  box.style.display = "block";
+};
+
+window.selecionarPeca = (el, produto, ni) => {
+  const box = el.closest(".autocomplete-box");
+  box.querySelector(".descricao").value = produto;
+  box.querySelector(".sugestoes").style.display = "none";
+  box.closest(".peca").querySelector(".ni-manual").value = ni;
+};
+
+/* 📲 TELEGRAM */
+const TELEGRAM_TOKEN = "SEU_TOKEN";
+const TELEGRAM_CHAT_ID = "SEU_CHAT_ID";
 
 function notificarTelegram(pedido) {
   const texto = `
-📦 NOVO PEDIDO DE PEÇAS (AGUARDANDO VALIDAÇÃO DE NI)
+📦 NOVO PEDIDO DE PEÇAS
 
 Solicitante: ${pedido.nome}
 Manutenção: ${pedido.manutencao}
 GO: ${pedido.go || "-"}
 
-Peças:
-${pedido.pecas.map(p => 
-`- ${p.descricao}
-  NI: ${p.ni ?? "NÃO INFORMADO"}
-  Qtd: ${p.quantidade}`).join("\n\n")}
+${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qtd: ${p.quantidade}`).join("\n")}
 `;
-
   fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: texto
-    })
+    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
   });
 }
-  
+
 form.addEventListener("submit", async e => {
   e.preventDefault();
   try {
     const pecas = [];
     document.querySelectorAll(".peca").forEach(p => {
-      const descricao = p.querySelector(".descricao").value;
+      const desc = p.querySelector(".descricao").value;
       const niManual = p.querySelector(".ni-manual").value.trim();
       pecas.push({
-        descricao,
+        descricao: desc,
         quantidade: p.querySelector(".quantidade").value,
-        ni: niManual || buscarNI(descricao)
+        ni: niManual || buscarNI(desc)
       });
     });
 
@@ -265,24 +314,23 @@ form.addEventListener("submit", async e => {
       status:"Pendente",
       criadoEm:new Date()
     });
-    
+
     notificarTelegram({
-  nome: document.getElementById("nome").value,
-  manutencao: manutencaoSelect.value,
-  go: goInput.value,
-  pecas
-});
+      nome: document.getElementById("nome").value,
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      pecas
+    });
 
     mensagem.textContent = "✅ Pedido enviado com sucesso!";
     mensagem.className = "mensagem sucesso";
     form.reset();
-  } catch(err) {
+  } catch {
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
   }
 });
-
-await carregarAprendizadoNI();
 </script>
+
 </body>
 </html>
