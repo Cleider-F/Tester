@@ -68,7 +68,7 @@ window.LISTA_NI = [
 { produto: "PARAFUSO 8X30" , ni: 27036751 },
 { produto: "EMENDA 8 PRA 16" , ni: 27111328 },
 { produto: "PARAFUSO 16X150" , ni: 27019724 },
-{ produto: "TOAMDA FEMEA" , ni: 27017971 },
+{ produto: "TOMADA FEMEA" , ni: 27017971 },
 { produto: "ARAME MIG" , ni: 27037054 },
 { produto: "LAMPADA H7" , ni: 27056860 },
 { produto: "TINTA SPRAY AMARELA" , ni: 25573186 },
@@ -98,7 +98,7 @@ window.LISTA_NI = [
 { produto: "LAMEIRO" , ni: 27017998 },
 { produto: "PARAFUSO 8X25" , ni: 27019685 },
 { produto: "PORCA DE 8mm" , ni: 27033380 },
-{ produto: "ARRUELA 8mm" , ni: 27019750}
+{ produto: "ARRUELA 8mm" , ni: 27019750},
 { produto: "PARAFUSO 6X40" , ni: 27033804 },
 { produto: "PORCA DE 6mm" , ni: 27039730 },
 { produto: "ARUELA DE ARTICULAÇÃO TRIFUNCIONAL" , ni: 27174059 },
