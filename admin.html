@@ -13,6 +13,7 @@ body{
   background:#f3f4f6;
   padding:12px;
 }
+
 .logo{text-align:center;margin-bottom:10px}
 .logo img{max-width:150px;width:100%}
 
@@ -72,21 +73,28 @@ button{
 }
 
 .card{
-  background:#fffbeb;
-  border-left:6px solid #f59e0b;
+  background:#ffffff;
+  border-left:6px solid transparent;
   border-radius:16px;
   padding:14px;
   box-shadow:0 4px 10px rgba(0,0,0,.08);
-  position:relative;
+}
+
+.card-pendente{
+  background:#fffbeb;
+  border-left-color:#f59e0b;
+}
+
+.card-aprovado{
+  border-left-color:#16a34a;
+}
+
+.card-reprovado{
+  border-left-color:#dc2626;
 }
 
 .info{margin-bottom:8px;font-size:14px}
 .info b{display:block;color:#374151}
-
-.status{font-weight:bold;margin-bottom:8px}
-.status-pendente{color:#ca8a04}
-.status-aprovado{color:#16a34a}
-.status-reprovado{color:#dc2626}
 
 .peca{
   margin-top:10px;
@@ -114,12 +122,10 @@ button{
 .aprovar:disabled{background:#9ca3af;cursor:not-allowed}
 
 .btn-excluir{
-  position:absolute;
-  top:10px;
-  right:10px;
   background:none;
-  color:#dc2626;
+  border:none;
   font-size:18px;
+  cursor:pointer;
 }
 
 .selo{
@@ -128,6 +134,61 @@ button{
   border-radius:12px;
   text-align:center;
   font-weight:bold;
+}
+
+/* HEADER ADMIN */
+.header-admin{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.header-admin h2{
+  flex:1;
+  text-align:center;
+  margin:0;
+}
+
+.btn-home{
+  text-decoration:none;
+  font-size:20px;
+  background:#e5e7eb;
+  border-radius:10px;
+  padding:8px 10px;
+}
+
+.btn-home:hover{background:#d1d5db}
+
+/* === CARD MODERNO === */
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.card-status{
+  font-weight:bold;
+  font-size:14px;
+  padding:4px 10px;
+  border-radius:999px;
+}
+
+.card-status.pendente{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.card-status.aprovado{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.card-status.reprovado{
+  background:#fee2e2;
+  color:#991b1b;
 }
 </style>
 </head>
@@ -145,7 +206,10 @@ button{
 </div>
 
 <div class="painel" id="painel" style="display:none">
-  <h2>📦 Pedidos Recebidos</h2>
+  <div class="header-admin">
+    <a href="index.html" class="btn-home">🏠</a>
+    <h2>📦 Pedidos Recebidos</h2>
+  </div>
 
   <div class="top-actions">
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
@@ -164,9 +228,6 @@ button{
 
 <footer>Criado e Desenvolvido por Cleider Filho</footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
@@ -176,164 +237,113 @@ import {
 
 /* FIREBASE */
 const app=initializeApp({
-    apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
-  authDomain: "testeer-1516c.firebaseapp.com",
-  projectId: "testeer-1516c",
-  storageBucket: "testeer-1516c.firebasestorage.app",
-  messagingSenderId: "1030430919430",
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
+  apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
+  authDomain: "pedidos-almoxarifado.firebaseapp.com",
+  projectId: "pedidos-almoxarifado",
 });
 const db=getFirestore(app);
 
-/* TELEGRAM */
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+/* USUÁRIOS */
+const USUARIOS={
+  "cleider":"Cleider Filho",
+  "salles2026":"Douglas Salles",
+  "gleyson2026":"Gleyson Murça",
+  "robson2026":"Robson Jesus",
+  "otto2026":"Leonardo Otto",
+  "junior2026":"Geraldo Junior",
+  "cleiton2026":"Cleiton Castro",
+  "amanda2026":"Amanda",
+  "mariana2026":"Mariana",
+  "couto2026":"Grazy Couto",
+  "breno2026":"Breno",
+  "luiz2026":"Luiz"
+};
 
-async function enviarTelegram(msg){
-  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      chat_id:TELEGRAM_CHAT_ID,
-      text:msg
-    })
-  });
-}
-
-/* LOGIN */
 window.login=()=>{
+  const senha=document.getElementById("senha").value;
+  if(!USUARIOS[senha]) return alert("Senha inválida");
   localStorage.setItem("admin","true");
+  localStorage.setItem("usuario_nome",USUARIOS[senha]);
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
-}
+};
+
 window.logout=()=>{localStorage.clear();location.reload()}
 
-/* NORMALIZAR */
-const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-
-/* CARREGAR */
 async function carregarPedidos(){
   lista.innerHTML="";
-  const q=query(collection(db,"pedidos"),orderBy("criadoEm","desc"));
-  const snap=await getDocs(q);
+  const snap=await getDocs(query(collection(db,"pedidos"),orderBy("criadoEm","desc")));
+  const pedidos=[];
+  snap.forEach(d=>pedidos.push({id:d.id,...d.data()}));
 
-  snap.forEach(d=>{
-    const p=d.data();
+  pedidos.sort((a,b)=>{
+    if(a.status==="Pendente"&&b.status!=="Pendente")return -1;
+    if(a.status!=="Pendente"&&b.status==="Pendente")return 1;
+    return 0;
+  });
+
+  pedidos.forEach(p=>{
     const finalizado=p.status!=="Pendente";
     const faltaNI=p.pecas.some(x=>!x.ni);
 
     lista.innerHTML+=`
-<div class="card">
-${!finalizado?`<button class="btn-excluir" onclick="excluir('${d.id}')">❌</button>`:""}
-<div class="status status-${p.status.toLowerCase()}">${p.status}</div>
+    <div class="card card-${p.status.toLowerCase()}">
+      <div class="card-header">
+        <span class="card-status ${p.status.toLowerCase()}">${p.status}</span>
+        ${!finalizado?`<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>`:""}
+      </div>
 
-<div class="info"><b>Solicitante</b>${p.nome}</div>
-<div class="info"><b>Manutenção</b>${p.manutencao}</div>
-<div class="info"><b>GO</b>${p.go||"-"}</div>
+      <div class="info"><b>Solicitante</b>${p.nome}</div>
+      <div class="info"><b>Manutenção</b>${p.manutencao}</div>
+      <div class="info"><b>GO</b>${p.go||"-"}</div>
 
-<div class="info"><b>Peças</b></div>
+      <div class="info"><b>Peças</b></div>
 
-${p.pecas.map((x,i)=>`
-<div class="peca">
-<b>${x.descricao} (${x.quantidade})</b>
-<input value="${x.ni||""}" ${finalizado?"disabled":""}
-onchange="atualizarNI('${d.id}',${i},this.value)">
-</div>`).join("")}
+      ${p.pecas.map((x,i)=>`
+        <div class="peca">
+          <b>${x.descricao} (${x.quantidade})</b>
+          <input value="${x.ni||""}" ${finalizado?"disabled":""}
+          onchange="atualizarNI('${p.id}',${i},this.value)">
+        </div>`).join("")}
 
-<div class="acoes">
-${finalizado
-?`<div class="selo">✔ Pedido Finalizado</div>`
-:`
-<button class="aprovar" ${faltaNI?"disabled":""}
-onclick="mudarStatus('${d.id}','Aprovado')">✅ Aprovar</button>
-<button class="reprovar"
-onclick="mudarStatus('${d.id}','Reprovado')">❌ Reprovar</button>`}
-</div>
-</div>`;
+      <div class="acoes">
+        ${finalizado
+          ?`<div class="selo">✔ ${p.status}<br>👷‍♂️ ${p.aprovadoPor||"-"}</div>`
+          :`
+          <button class="aprovar" ${faltaNI?"disabled":""}
+          onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
+          <button class="reprovar"
+          onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>`}
+      </div>
+    </div>`;
   });
 }
 
-/* NI */
-window.atualizarNI = async (id, i, ni) => {
-  const ref = doc(db, "pedidos", id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-
-  const p = snap.data();
-  p.pecas[i].ni = ni.trim();
-
-  await updateDoc(ref, { pecas: p.pecas });
-
-  // 🔄 Recarrega para recalcular faltaNI e liberar Aprovar
+window.atualizarNI=async(id,i,ni)=>{
+  const ref=doc(db,"pedidos",id);
+  const p=(await getDoc(ref)).data();
+  p.pecas[i].ni=ni.trim();
+  await updateDoc(ref,{pecas:p.pecas});
   carregarPedidos();
 };
 
-/* APRENDER */
-async function aprender(p){
-  for(const x of p.pecas){
-    if(x.ni){
-      await addDoc(collection(db,"aprendizado_ni"),{
-        descricao:norm(x.descricao),
-        ni:x.ni,
-        validadoEm:new Date()
-      });
-    }
-  }
-}
-
-/* STATUS + TELEGRAM */
 window.mudarStatus=async(id,status)=>{
-  const ref=doc(db,"pedidos",id);
-  const p=(await getDoc(ref)).data();
-  if(p.status!=="Pendente")return;
-
-  await updateDoc(ref,{status,finalizadoEm:new Date()});
-  if(status==="Aprovado")await aprender(p);
-
-  await enviarTelegram(
-`📦 Pedido ${status}
-👤 ${p.nome}
-🛠 ${p.manutencao}
-📌 GO: ${p.go||"-"}
-🧾 Peças:
-${p.pecas.map(x=>`- ${x.descricao} (${x.quantidade}) NI:${x.ni||"-"}`).join("\n")}`
-  );
-
+  await updateDoc(doc(db,"pedidos",id),{
+    status,
+    aprovadoPor:localStorage.getItem("usuario_nome"),
+    finalizadoEm:new Date()
+  });
   carregarPedidos();
-}
+};
 
-/* EXCLUIR */
 window.excluir=async(id)=>{
   if(confirm("Excluir pedido pendente?")){
     await deleteDoc(doc(db,"pedidos",id));
     carregarPedidos();
   }
-}
+};
 
-/* RELATÓRIO */
-window.gerarRelatorioDia=()=>gerarRelatorioPeriodo();
-window.gerarRelatorioPeriodo=async()=>{
-  const { jsPDF }=window.jspdf;
-  const pdf=new jsPDF("landscape");
-  const snap=await getDocs(collection(db,"pedidos"));
-  const rows=[];
-  snap.forEach(d=>{
-    const p=d.data();
-    rows.push([
-      p.nome,p.manutencao,p.go||"-",
-      p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
-      p.status
-    ]);
-  });
-  pdf.autoTable({
-    head:[["Solicitante","Manutenção","GO","Peças","Status"]],
-    body:rows
-  });
-  pdf.save("relatorio-pedidos.pdf");
-}
-
-/* AUTOLOGIN */
 if(localStorage.getItem("admin")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
