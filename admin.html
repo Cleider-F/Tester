@@ -239,6 +239,8 @@ import {
   doc, updateDoc, getDoc, query, orderBy, deleteDoc,onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+let unsubscribePedidos = null;
+
 window.toggleRelatorio = () => {
   const box = document.getElementById("relatorioBox");
   box.style.display = box.style.display === "none" ? "flex" : "none";
@@ -468,26 +470,45 @@ window.excluir=async(id)=>{
 }
 
 /* NOTIFICACOES */
-let ultimoPedidoId = null;
-
 function iniciarEscutaPedidos() {
   if (localStorage.getItem("notificacao_ativa") !== "true") return;
+  if (unsubscribePedidos) return; // 🚫 evita duplicar escuta
 
   const q = query(
     collection(db, "pedidos"),
     orderBy("criadoEm", "desc")
   );
 
-  onSnapshot(q, snap => {
+  unsubscribePedidos = onSnapshot(q, snap => {
     if (snap.empty) return;
 
     const docAtual = snap.docs[0];
 
-    // evita notificar pedidos antigos ao abrir
     if (!ultimoPedidoId) {
       ultimoPedidoId = docAtual.id;
       return;
     }
+
+    if (docAtual.id !== ultimoPedidoId) {
+      ultimoPedidoId = docAtual.id;
+
+      const p = docAtual.data();
+
+      new Notification("📦 Novo pedido recebido", {
+        body:
+          `Solicitante: ${p.nome}\n` +
+          `Manutenção: ${p.manutencao}\n` +
+          `Peças: ${p.pecas.length}`,
+        icon: "suzano-logo.png"
+      });
+
+      const audio = new Audio(
+        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+      );
+      audio.play();
+    }
+  });
+}
 
     if (docAtual.id !== ultimoPedidoId) {
       ultimoPedidoId = docAtual.id;
