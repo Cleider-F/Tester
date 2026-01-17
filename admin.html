@@ -210,6 +210,7 @@ button{
   <div style="display:flex; gap:10px;">
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
+<button class="btn-refresh" onclick="ativarNotificacoes()">🔔 Ativar notificações</button>
   </div>
   <button class="btn-refresh" onclick="carregarPedidos()">🔄 Atualizar</button>
 </div>
@@ -235,7 +236,7 @@ button{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore, collection, getDocs, addDoc,
-  doc, updateDoc, getDoc, query, orderBy, deleteDoc
+  doc, updateDoc, getDoc, query, orderBy, deleteDoc,onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 window.toggleRelatorio = () => {
@@ -307,6 +308,23 @@ window.login = () => {
 
 
 window.logout=()=>{localStorage.clear();location.reload()}
+
+window.ativarNotificacoes = async () => {
+  if (!("Notification" in window)) {
+    alert("Este navegador não suporta notificações");
+    return;
+  }
+
+  const perm = await Notification.requestPermission();
+  if (perm !== "granted") {
+    alert("Permissão de notificação negada");
+    return;
+  }
+
+  localStorage.setItem("notificacao_ativa", "true");
+  alert("🔔 Notificações ativadas com sucesso!");
+  iniciarEscutaPedidos();
+};
 
 /* NORMALIZAR */
 const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
@@ -449,6 +467,48 @@ window.excluir=async(id)=>{
   }
 }
 
+/* NOTIFICACOES */
+let ultimoPedidoId = null;
+
+function iniciarEscutaPedidos() {
+  if (localStorage.getItem("notificacao_ativa") !== "true") return;
+
+  const q = query(
+    collection(db, "pedidos"),
+    orderBy("criadoEm", "desc")
+  );
+
+  onSnapshot(q, snap => {
+    if (snap.empty) return;
+
+    const docAtual = snap.docs[0];
+
+    // evita notificar pedidos antigos ao abrir
+    if (!ultimoPedidoId) {
+      ultimoPedidoId = docAtual.id;
+      return;
+    }
+
+    if (docAtual.id !== ultimoPedidoId) {
+      ultimoPedidoId = docAtual.id;
+
+      const p = docAtual.data();
+
+      new Notification("📦 Novo pedido recebido", {
+        body:
+          `Solicitante: ${p.nome}\n` +
+          `Manutenção: ${p.manutencao}\n` +
+          `Peças: ${p.pecas.length}`,
+        icon: "suzano-logo.png"
+      });
+
+      // opcional: som
+      const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+      audio.play();
+    }
+  });
+}
+
 /* RELATÓRIO */
 window.gerarRelatorioDia = () => {
   const hoje = new Date().toISOString().split("T")[0];
@@ -518,6 +578,9 @@ if(localStorage.getItem("admin")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
+if (localStorage.getItem("notificacao_ativa") === "true") {
+  iniciarEscutaPedidos();
+}
 }
 </script>
 
