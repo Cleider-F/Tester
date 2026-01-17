@@ -2,290 +2,472 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Admin – Almoxarifado CMC</title>
+<title>Área de Técnicos – Almoxarifado CMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest-admin.json">
+<meta name="theme-color" content="#111827">
 
-<!-- jsPDF + AutoTable -->
+<style>
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f3f4f6;
+  padding:12px;
+
+}
+.logo{text-align:center;margin-bottom:10px}
+.logo img{max-width:150px;width:100%}
+
+footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:11px;
+  color:#6b7280;
+}
+
+.login,.painel{
+  max-width:1200px;
+  margin:auto;
+  background:#fff;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+h2{text-align:center;margin-bottom:10px}
+
+.top-actions{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+button{
+  border:none;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.btn-sair{background:#111827;color:#fff}
+.btn-refresh{background:#2563eb;color:#fff}
+
+.relatorio-box{
+  background:#f9fafb;
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.relatorio-box button{background:#16a34a;color:#fff}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:14px;
+}
+
+.card{
+  background:#ffffff;
+  border-left:6px solid transparent;
+  border-radius:16px;
+  padding:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  position:relative;
+}
+
+.card-pendente{
+  background:#fffbeb;
+  border-left-color:#f59e0b;
+}
+
+.card-aprovado{
+  background:#ffffff;
+  border-left-color:#16a34a;
+}
+
+.card-reprovado{
+  background:#ffffff;
+  border-left-color:#dc2626;
+}
+
+.info{margin-bottom:8px;font-size:14px}
+.info b{display:block;color:#374151}
+
+.status{font-weight:bold;margin-bottom:8px}
+.status-pendente{color:#ca8a04}
+.status-aprovado{color:#16a34a}
+.status-reprovado{color:#dc2626}
+
+.peca{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed #d1d5db;
+}
+
+.peca input{
+  width:100%;
+  padding:8px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.acoes{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+}
+
+.aprovar{background:#16a34a;color:#fff}
+.reprovar{background:#dc2626;color:#fff}
+.aprovar:disabled{background:#9ca3af;cursor:not-allowed}
+
+.btn-excluir{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:none;
+  color:#dc2626;
+  font-size:18px;
+}
+
+.selo{
+  background:#e5e7eb;
+  padding:10px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:bold;
+}
+.header-admin{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.header-admin h2{
+  flex:1;
+  text-align:center;
+  margin:0;
+}
+
+.btn-home{
+  text-decoration:none;
+  font-size:20px;
+  background:#e5e7eb;
+  border-radius:10px;
+  padding:8px 10px;
+  box-shadow:0 2px 4px rgba(0,0,0,.1);
+}
+
+.btn-home:hover{
+  background:#d1d5db;
+}
+
+.card-devolucao{
+  border-left-color:#2563eb;
+}
+
+.selo-devolucao{
+  background:#dbeafe;
+  color:#1e40af;
+  font-weight:bold;
+  text-align:center;
+  padding:6px;
+  border-radius:8px;
+  margin-bottom:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="logo">
+  <img src="suzano-logo.png">
+</div>
+
+<div class="login" id="loginBox">
+  <h2>🔐 Área de Técnicos</h2>
+  <input type="password" id="senha" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div class="painel" id="painel" style="display:none">
+ <div class="header-admin">
+  <a href="index.html" class="btn-home" title="Voltar ao início">🏠</a>
+  <h2>📦 Pedidos Recebidos</h2>
+</div>
+
+  <div class="top-actions">
+    <button class="btn-sair" onclick="logout()">🚪 Sair</button>
+    <button class="btn-refresh" onclick="carregarPedidos()">🔄 Atualizar</button>
+  </div>
+
+  <div class="relatorio-box">
+    <button onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
+    <input type="date" id="inicio">
+    <input type="date" id="fim">
+    <button onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
+  </div>
+
+  <div class="cards" id="lista"></div>
+</div>
+
+<footer>Criado e Desenvolvido por Cleider Filho</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, addDoc, getDoc
+  getFirestore, collection, getDocs, addDoc,
+  doc, updateDoc, getDoc, query, orderBy, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ================= FIREBASE ================= */
-const firebaseConfig = {
- apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
+/* FIREBASE */
+const app=initializeApp({
+     apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
+  authDomain: "pedidos-almoxarifado.firebaseapp.com",
+  projectId: "pedidos-almoxarifado",
+  storageBucket: "pedidos-almoxarifado.appspot.com",
+  messagingSenderId: "443882865992",
+  appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
+});
+const db=getFirestore(app);
 
-  authDomain: "testeer-1516c.firebaseapp.com",
+/* TELEGRAM */
+const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
+const TELEGRAM_CHAT_ID = "-1003646317990";
 
-  projectId: "testeer-1516c",
-
-  storageBucket: "testeer-1516c.firebasestorage.app",
-
-  messagingSenderId: "1030430919430",
-
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
-
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-/* ================= UTIL ================= */
-function norm(txt){
-  return txt.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+async function enviarTelegram(msg){
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: msg,
+      parse_mode: "Markdown"
+    })
+  });
 }
 
-async function aprenderNI(pecas){
-  for(const p of pecas){
-    if(p.ni){
-      await addDoc(collection(db,'aprendizado_ni'),{
-        descricao: norm(p.descricao),
-        ni: p.ni,
-        validadoEm: new Date()
+/* USUÁRIOS */
+const USUARIOS = {
+  "cleider": "Cleider Filho",
+  "salles2026": "Douglas Salles",
+  "gleyson2026": "Gleyson Murça",
+  "robson2026": "Robson Jesus",
+  "otto2026": "Leonardo Otto",
+  "junior2026": "Geraldo Junior",
+  "cleiton2026": "Cleiton Castro",
+  "amanda2026": "Amanda",
+  "mariana2026": "Mariana",
+  "couto2026": "Grazy Couto",
+  "breno2026": "Breno",
+  "luiz2026": "Luiz",
+  "joaquim2026": "Joaquim Pereira"
+};
+
+
+/* LOGIN */
+window.login = () => {
+  const senha = document.getElementById("senha").value;
+
+  if (!USUARIOS[senha]) {
+    alert("Senha inválida");
+    return;
+  }
+
+  localStorage.setItem("admin", "true");
+  localStorage.setItem("usuario_nome", USUARIOS[senha]);
+
+  loginBox.style.display = "none";
+  painel.style.display = "block";
+  carregarPedidos();
+};
+
+
+window.logout=()=>{localStorage.clear();location.reload()}
+
+/* NORMALIZAR */
+const norm=t=>t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+
+/* CARREGAR */
+async function carregarPedidos(){
+  lista.innerHTML="";
+  const q=query(collection(db,"pedidos"),orderBy("criadoEm","desc"));
+  const snap = await getDocs(q);
+
+// transforma em array
+const pedidos = [];
+snap.forEach(d => {
+  pedidos.push({ id: d.id, ...d.data() });
+});
+
+// ordena: Pendentes primeiro
+pedidos.sort((a, b) => {
+  if (a.status === "Pendente" && b.status !== "Pendente") return -1;
+  if (a.status !== "Pendente" && b.status === "Pendente") return 1;
+  return 0; // mantém ordem original (data)
+});
+
+// renderiza
+pedidos.forEach(p => {
+  const finalizado = p.status !== "Pendente";
+  const faltaNI = p.pecas.some(x => !x.ni);
+
+  lista.innerHTML += `
+<div class="card card-${p.status.toLowerCase()} ${p.tipo === "DEVOLUCAO" ? "card-devolucao" : ""}">
+${!finalizado ? `<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>` : ""}
+
+<div class="status status-${p.status.toLowerCase()}">${p.status}</div>
+${p.tipo === "DEVOLUCAO"
+  ? `<div class="selo-devolucao">🔁 PEDIDO DE DEVOLUÇÃO</div>`
+  : ""}
+
+<div class="info"><b>Solicitante</b>${p.nome}</div>
+<div class="info"><b>Manutenção</b>${p.manutencao}</div>
+<div class="info"><b>GO</b>${p.go || "-"}</div>
+
+<div class="info"><b>Peças</b></div>
+
+${p.pecas.map((x,i)=>`
+<div class="peca">
+<b>${x.descricao} (${x.quantidade})</b>
+<input value="${x.ni||""}" ${finalizado?"disabled":""}
+onchange="atualizarNI('${p.id}',${i},this.value)">
+</div>`).join("")}
+
+<div class="acoes">
+${finalizado
+?`
+<div class="selo">
+✔ Pedido ${p.status}<br>
+👷‍♂️ ${p.aprovadoPor || "-"}
+</div>
+`
+:`
+<button class="aprovar" ${faltaNI?"disabled":""}
+onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
+<button class="reprovar"
+onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>`}
+</div>
+
+</div>`;
+});
+}
+
+/* NI */
+window.atualizarNI = async (id, i, ni) => {
+  const ref = doc(db, "pedidos", id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const p = snap.data();
+  p.pecas[i].ni = ni.trim();
+
+  await updateDoc(ref, { pecas: p.pecas });
+
+  // 🔄 Recarrega para recalcular faltaNI e liberar Aprovar
+  carregarPedidos();
+};
+
+/* APRENDER */
+async function aprender(p){
+  for(const x of p.pecas){
+    if(x.ni){
+      await addDoc(collection(db,"aprendizado_ni"),{
+        descricao:norm(x.descricao),
+        ni:x.ni,
+        validadoEm:new Date()
       });
     }
   }
 }
 
-const lista = document.getElementById('listaPedidos');
+/* STATUS + TELEGRAM */
+window.mudarStatus=async(id,status)=>{
+  const ref=doc(db,"pedidos",id);
+  const p=(await getDoc(ref)).data();
+  if(p.status!=="Pendente")return;
 
-/* ================= PEDIDOS ================= */
-async function carregarPedidos(){
-  lista.innerHTML='';
-  let pend=0, apr=0, rep=0;
+  await updateDoc(ref, {
+  status,
+  finalizadoEm: new Date(),
+  aprovadoPor: localStorage.getItem("usuario_nome") || "Não identificado"
+});
+  if(status==="Aprovado")await aprender(p);
 
-  const q = query(collection(db,'pedidos'), orderBy('criadoEm','desc'));
-  const snap = await getDocs(q);
+  const agora = new Date().toLocaleString("pt-BR");
 
-  const pedidos = [];
-  snap.forEach(d=>pedidos.push({id:d.id, ...d.data()}));
+const tituloTelegram =
+  p.tipo === "DEVOLUCAO"
+    ? "🔁 *PEDIDO DE DEVOLUÇÃO APROVADO*"
+    : "🧰 *PEDIDO DE PEÇAS APROVADO*";
 
-  pedidos.sort((a,b)=>{
-    if(a.status==='Pendente' && b.status!=='Pendente') return -1;
-    if(a.status!=='Pendente' && b.status==='Pendente') return 1;
-    return 0;
-  });
+await enviarTelegram(
+`${tituloTelegram}
 
-  for(const p of pedidos){
-    if(p.status==='Pendente') pend++;
-    if(p.status==='Aprovado') apr++;
-    if(p.status==='Reprovado') rep++;
+👤 *Solicitante:* ${p.nome}
+🛠 *Manutenção:* ${p.manutencao}
+🚚 *GO:* ${p.go || "-"}
 
-    const card = document.createElement('div');
-    card.className='card';
+📦 *Peças:*
+${p.pecas.map(x => `• ${x.descricao} (${x.quantidade}) | NI: ${x.ni || "-"}`).join("\n")}
 
-    const pecasHtml = p.pecas.map((x,i)=>`
-      <div class="peca">
-        ${x.descricao} (${x.quantidade})<br>
-        <input placeholder="NI" value="${x.ni||''}" ${p.status!=='Pendente'?'disabled':''}
-          onchange="window.atualizarNI('${p.id}',${i},this.value)">
-      </div>
-    `).join('');
+👷‍♂️ *Aprovado por:* ${localStorage.getItem("usuario_nome") || "Não identificado"}
+⏰ *Data:* ${agora}`
+);
 
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="card-status ${p.status}">${p.status}</span>
-      </div>
-      <div class="card-body">
-        <p><b>Solicitante:</b> ${p.nome}</p>
-        <p><b>Manutenção:</b> ${p.manutencao}</p>
-        <p><b>GO:</b> ${p.go||'-'}</p>
-        <p><b>Peças:</b></p>
-        ${pecasHtml}
-        ${p.aprovadoPor?`<p><b>Aprovado por:</b> ${p.aprovadoPor}</p>`:''}
-      </div>
-      ${p.status==='Pendente'?`
-      <div class="card-footer">
-        <button class="aprovar" onclick="aprovar('${p.id}')">✔ Aprovar</button>
-        <button class="reprovar" onclick="reprovar('${p.id}')">✖ Reprovar</button>
-      </div>`:''}
-    `;
-
-    lista.appendChild(card);
-  }
-
-  document.getElementById('qtdPendentes').innerText=pend;
-  document.getElementById('qtdAprovados').innerText=apr;
-  document.getElementById('qtdReprovados').innerText=rep;
-  document.getElementById('qtdTotal').innerText=pend+apr+rep;
+  carregarPedidos();
 }
 
-/* ================= AÇÕES ================= */
-window.atualizarNI = async(id, index, ni)=>{
-  const ref = doc(db,'pedidos',id);
-  const snap = await getDoc(ref);
-  if(!snap.exists()) return;
-  const pedido = snap.data();
-  pedido.pecas[index].ni = ni.trim();
-  await updateDoc(ref,{ pecas: pedido.pecas });
-};
+/* EXCLUIR */
+window.excluir=async(id)=>{
+  if(confirm("Excluir pedido pendente?")){
+    await deleteDoc(doc(db,"pedidos",id));
+    carregarPedidos();
+  }
+}
 
-window.aprovar = async(id)=>{
-  const nome = localStorage.getItem('usuario_nome')||'Administrador';
-  const ref = doc(db,'pedidos',id);
-  const snap = await getDoc(ref);
-  if(!snap.exists()) return;
-  const pedido = snap.data();
-
-  await updateDoc(ref,{ status:'Aprovado', aprovadoPor:nome, finalizadoEm:new Date() });
-  await aprenderNI(pedido.pecas);
-  window.mostrarAba = (aba)=>{
-  document.getElementById('aba-pedidos').style.display = aba==='pedidos'?'block':'none';
-  document.getElementById('aba-relatorios').style.display = aba==='relatorios'?'block':'none';
-  document.querySelectorAll('.aba').forEach(b=>b.classList.remove('ativa'));
-  event.target.classList.add('ativa');
-};
-
-carregarPedidos();
-};
-
-window.reprovar = async(id)=>{
-  const nome = localStorage.getItem('usuario_nome')||'Administrador';
-  const ref = doc(db,'pedidos',id);
-  await updateDoc(ref,{ status:'Reprovado', aprovadoPor:nome, finalizadoEm:new Date() });
-  carregarPedidos();
-};
-
-/* ================= RELATÓRIOS ================= */
-window.gerarRelatorioPDF = async()=>{
-  const inicio = document.getElementById('relInicio').value;
-  const fim = document.getElementById('relFim').value;
-
-  const jsPDFLib = window.jspdf?.jsPDF;
-  if(!jsPDFLib){ alert('jsPDF não carregado'); return; }
-
-  const pdf = new jsPDFLib({orientation:'landscape'});
-
-  const q = query(collection(db,'pedidos'), orderBy('criadoEm','desc'));
-  const snap = await getDocs(q);
-
+/* RELATÓRIO */
+window.gerarRelatorioDia=()=>gerarRelatorioPeriodo();
+window.gerarRelatorioPeriodo=async()=>{
+  const { jsPDF }=window.jspdf;
+  const pdf=new jsPDF("landscape");
+  const snap=await getDocs(collection(db,"pedidos"));
   const rows=[];
   snap.forEach(d=>{
     const p=d.data();
-    const data=p.criadoEm?.toDate?.()||new Date();
-    if(inicio && data < new Date(inicio)) return;
-    if(fim && data > new Date(fim+'T23:59:59')) return;
-
     rows.push([
-      p.nome,
-      p.manutencao,
-      p.go||'-',
-      p.pecas.map(x=>`${x.descricao} (${x.quantidade}) NI:${x.ni||'-'}`).join(' | '),
-      p.status,
-      p.aprovadoPor||'-'
+      p.nome,p.manutencao,p.go||"-",
+      p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
+      p.status
     ]);
   });
-
   pdf.autoTable({
-    head:[["Solicitante","Manutenção","GO","Peças","Status","Aprovado por"]],
+    head:[["Solicitante","Manutenção","GO","Peças","Status"]],
     body:rows
   });
+  pdf.save("relatorio-pedidos.pdf");
+}
 
-  pdf.save('relatorio-geral-pedidos.pdf');
-};
-
-window.gerarRelatorioExcel = async()=>{
-  const inicio = document.getElementById('relInicio').value;
-  const fim = document.getElementById('relFim').value;
-
-  const q = query(collection(db,'pedidos'), orderBy('criadoEm','desc'));
-  const snap = await getDocs(q);
-
-  let csv = 'Solicitante;Manutenção;GO;Peças;Status;Aprovado por\n';
-
-  snap.forEach(d=>{
-    const p=d.data();
-    const data=p.criadoEm?.toDate?.()||new Date();
-    if(inicio && data < new Date(inicio)) return;
-    if(fim && data > new Date(fim+'T23:59:59')) return;
-
-    const pecas = p.pecas.map(x=>`${x.descricao} (${x.quantidade}) NI:${x.ni||'-'}`).join(' | ');
-    csv += `${p.nome};${p.manutencao};${p.go||'-'};${pecas};${p.status};${p.aprovadoPor||'-'}\n`;
-  });
-
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'relatorio-geral-pedidos.csv';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
-carregarPedidos();
+/* AUTOLOGIN */
+if(localStorage.getItem("admin")==="true"){
+  loginBox.style.display="none";
+  painel.style.display="block";
+  carregarPedidos();
+}
 </script>
 
-<style>
-*{box-sizing:border-box;font-family:'Inter',sans-serif}
-body{margin:0;background:#f3f4f6;color:#111827}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-.container{max-width:1200px;margin:auto;padding:20px}
-.cards-resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
-.resumo{padding:20px;border-radius:16px;color:#fff}
-.pendente{background:#facc15;color:#78350f}
-.aprovado{background:#22c55e}
-.reprovado{background:#ef4444}
-.total{background:#3b82f6}
-.lista{display:grid;gap:14px}
-.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
-.card-status{padding:4px 12px;border-radius:999px;font-weight:600;font-size:13px}
-.card-status.Pendente{background:#fef3c7;color:#92400e}
-.card-status.Aprovado{background:#dcfce7;color:#166534}
-.card-status.Reprovado{background:#fee2e2;color:#991b1b}
-.card-footer{display:flex;gap:10px;margin-top:12px}
-button{border:none;color:#fff;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
-button.aprovar{background:#22c55e}
-button.reprovar{background:#ef4444}
-.peca input{width:100%;margin-top:6px;padding:8px;border-radius:8px;border:1px solid #d1d5db}
-@media(max-width:600px){.card-footer{flex-direction:column}}
-.abas{display:flex;gap:10px;margin-bottom:20px}
-.aba{background:#e5e7eb;color:#111827}
-.aba.ativa{background:#3b82f6;color:#fff}
-</style>
-</head>
-<body>
-<div class="topbar">
-  <button onclick="location.href='index.html'">🏠</button>
-  <h1>Área de Técnicos – Almoxarifado CMC</h1>
-</div>
-<div class="container">
-  <div class="abas">
-    <button class="aba ativa" onclick="mostrarAba('pedidos')">📦 Pedidos</button>
-    <button class="aba" onclick="mostrarAba('relatorios')">📊 Relatórios</button>
-  </div>
-
-  <div id="aba-pedidos">
-  <div class="cards-resumo">
-    <div class="resumo pendente">Pendentes<br><span id="qtdPendentes">0</span></div>
-    <div class="resumo aprovado">Aprovados<br><span id="qtdAprovados">0</span></div>
-    <div class="resumo reprovado">Reprovados<br><span id="qtdReprovados">0</span></div>
-    <div class="resumo total">Total<br><span id="qtdTotal">0</span></div>
-  </div>
-
-  </div>
-
-  <div id="aba-relatorios" style="display:none">
-  <div class="relatorios-box">
-    <h2>📊 Relatório Geral de Pedidos</h2>
-    <div class="filtros">
-      <input type="date" id="relInicio">
-      <input type="date" id="relFim">
-      <button onclick="gerarRelatorioPDF()">📄 PDF</button>
-      <button onclick="gerarRelatorioExcel()">📊 Excel</button>
-    </div>
-  </div>
-
-    </div>
-  </div>
-
-  <div class="lista" id="listaPedidos"></div>
-</div>
 </body>
 </html>
