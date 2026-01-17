@@ -450,26 +450,68 @@ window.excluir=async(id)=>{
 }
 
 /* RELATÓRIO */
-window.gerarRelatorioDia=()=>gerarRelatorioPeriodo();
-window.gerarRelatorioPeriodo=async()=>{
-  const { jsPDF }=window.jspdf;
-  const pdf=new jsPDF("landscape");
-  const snap=await getDocs(collection(db,"pedidos"));
-  const rows=[];
-  snap.forEach(d=>{
-    const p=d.data();
-    rows.push([
-      p.nome,p.manutencao,p.go||"-",
-      p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
-      p.status
-    ]);
+window.gerarRelatorioDia = () => {
+  const hoje = new Date().toISOString().split("T")[0];
+  document.getElementById("inicio").value = hoje;
+  document.getElementById("fim").value = hoje;
+  gerarRelatorioPeriodo();
+};
+
+window.gerarRelatorioPeriodo = async () => {
+  const inicio = document.getElementById("inicio").value;
+  const fim = document.getElementById("fim").value;
+
+  if (!inicio || !fim) {
+    alert("Selecione a data inicial e final");
+    return;
+  }
+
+  const dataInicio = new Date(inicio + "T00:00:00");
+  const dataFim = new Date(fim + "T23:59:59");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("landscape");
+
+  const snap = await getDocs(collection(db, "pedidos"));
+  const rows = [];
+
+  snap.forEach(d => {
+    const p = d.data();
+    if (!p.criadoEm) return;
+
+    const criadoEm = p.criadoEm.toDate(); // 🔑 converte Timestamp
+
+    if (criadoEm >= dataInicio && criadoEm <= dataFim) {
+      rows.push([
+        p.nome,
+        p.manutencao,
+        p.go || "-",
+        p.pecas.map(x => `${x.descricao} (${x.quantidade})`).join("\n"),
+        p.status,
+        criadoEm.toLocaleString("pt-BR")
+      ]);
+    }
   });
+
+  if (rows.length === 0) {
+    alert("Nenhum pedido encontrado no período selecionado");
+    return;
+  }
+
   pdf.autoTable({
-    head:[["Solicitante","Manutenção","GO","Peças","Status"]],
-    body:rows
+    head: [[
+      "Solicitante",
+      "Manutenção",
+      "GO",
+      "Peças",
+      "Status",
+      "Criado em"
+    ]],
+    body: rows
   });
+
   pdf.save("relatorio-pedidos.pdf");
-}
+};
 
 /* AUTOLOGIN */
 if(localStorage.getItem("admin")==="true"){
