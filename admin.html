@@ -251,6 +251,7 @@ import {
   updateDoc,
   deleteDoc,
   addDoc
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 window.toggleRelatorio = () => {
@@ -327,11 +328,6 @@ async function enviarTelegram(msg){
 
 /* -------------------- NOTIFICAÇÃO (FCM) -------------------- */
 
-import {
-  getMessaging,
-  getToken,
-  deleteToken
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
 const messaging = getMessaging(app);
 const btnNotificacao = document.getElementById("btnNotificacao");
@@ -341,7 +337,7 @@ let swRegistration = null;
 // registra o service worker corretamente (GitHub Pages)
 if ("serviceWorker" in navigator) {
   swRegistration = await navigator.serviceWorker.register(
-    "firebase-messaging-sw.js"
+    "/Tester/firebase-messaging-sw.js"
   );
 }
 
@@ -703,9 +699,12 @@ window.relatorioPecasSemana = () => {
 };
 
 /* AUTOLOGIN */
-if(localStorage.getItem("admin")==="true"){
-  loginBox.style.display="none";
-  painel.style.display="block";
+const loginBox = document.getElementById("loginBox");
+const painel = document.getElementById("painel");
+
+if (localStorage.getItem("admin") === "true") {
+  loginBox.style.display = "none";
+  painel.style.display = "block";
   carregarPedidos();
 }
 </script>
