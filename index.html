@@ -183,6 +183,7 @@ input:disabled {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
@@ -193,6 +194,32 @@ const app = initializeApp({
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
 const db = getFirestore(app);
+const messaging = getMessaging(app)
+
+// Função para registrar token do dispositivo no backend
+async function registrarToken() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    const token = await getToken(messaging, { vapidKey: "SUA_VAPID_KEY_AQUI" });
+    console.log("Token FCM do dispositivo:", token);
+
+    // Envia token para seu backend para armazenar e enviar notificações
+    await fetch("https://seuservidor.com/salvar-token.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token })
+    });
+
+  } catch (err) {
+    console.error("Erro ao registrar token FCM:", err);
+  }
+}
+
+// Chamar função assim que o index for carregado
+registrarToken();
+</script>
 
 const form = document.getElementById("formPedido");
 const mensagem = document.getElementById("mensagem");
