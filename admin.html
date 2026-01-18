@@ -278,7 +278,7 @@ async function enviarTelegram(msg){
 // Registrar service worker uma vez
 let swRegistration;
 if ('serviceWorker' in navigator) {
-  swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  swRegistration = await navigator.serviceWorker.register('tester/firebase-messaging-sw.js');
 }
 
 const messaging = getMessaging();
