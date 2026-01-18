@@ -150,7 +150,6 @@ input:disabled {
   </label>
 </div>
 
-
     <label>Tipo de Manutenção</label>
     <select id="manutencao" required>
       <option value="">Selecione</option>
@@ -193,8 +192,9 @@ const app = initializeApp({
   messagingSenderId: "443882865992",
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
+
 const db = getFirestore(app);
-const messaging = getMessaging(app)
+const messaging = getMessaging(app);
 
 // Função para registrar token do dispositivo no backend
 async function registrarToken() {
@@ -202,10 +202,9 @@ async function registrarToken() {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") return;
 
-    const token = await getToken(messaging, { vapidKey: "SUA_VAPID_KEY_AQUI" });
+    const token = await getToken(messaging, { vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0" });
     console.log("Token FCM do dispositivo:", token);
 
-    // Envia token para seu backend para armazenar e enviar notificações
     await fetch("https://seuservidor.com/salvar-token.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -217,22 +216,23 @@ async function registrarToken() {
   }
 }
 
-// Chamar função assim que o index for carregado
 registrarToken();
-</script>
 
+// Referências de DOM
 const form = document.getElementById("formPedido");
 const mensagem = document.getElementById("mensagem");
 const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
+// Desabilitar GO quando tipo = Uso Geral
 manutencaoSelect.addEventListener("change", () => {
   goInput.required = manutencaoSelect.value !== "Uso Geral";
   goInput.disabled = manutencaoSelect.value === "Uso Geral";
   if (goInput.disabled) goInput.value = "";
 });
 
+// Funções adicionar/remover peça
 window.adicionarPeca = () => {
   const div = document.createElement("div");
   div.className = "peca";
@@ -242,13 +242,10 @@ window.adicionarPeca = () => {
       <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
       <div class="sugestoes" style="display:none"></div>
     </div>
-
     <label>NI (opcional)</label>
     <input type="text" class="ni-manual">
-
     <label>Quantidade</label>
     <input type="number" class="quantidade" min="1" required>
-
     <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
   `;
   lista.appendChild(div);
@@ -259,12 +256,13 @@ window.removerPeca = (btn) => {
   btn.parentElement.remove();
 };
 
+// Normalização de texto
 function normalizar(txt) {
   return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
 
+// Aprendizado NI
 let aprendizadoNI = [];
-
 async function carregarAprendizadoNI() {
   const snap = await getDocs(collection(db,"aprendizado_ni"));
   aprendizadoNI = snap.docs.map(d => ({
@@ -274,42 +272,25 @@ async function carregarAprendizadoNI() {
 }
 await carregarAprendizadoNI();
 
+// Funções autocomplete
 window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
   const box = textarea.parentElement.querySelector(".sugestoes");
-
-  if (!termo || termo.length < 2) {
-    box.style.display = "none";
-    return;
-  }
+  if (!termo || termo.length < 2) { box.style.display="none"; return; }
 
   let resultados = [];
-
-  aprendizadoNI.forEach(i => {
-    if (i.descricao.includes(termo)) {
-      resultados.push({ produto: i.descricao, ni: i.ni });
-    }
-  });
-
+  aprendizadoNI.forEach(i => { if (i.descricao.includes(termo)) resultados.push({ produto: i.descricao, ni: i.ni }); });
   if (window.LISTA_NI) {
     window.LISTA_NI.forEach(i => {
       const prodNorm = normalizar(i.produto);
-      if (prodNorm.includes(termo) &&
-          !resultados.some(r => normalizar(r.produto) === prodNorm)) {
+      if (prodNorm.includes(termo) && !resultados.some(r => normalizar(r.produto) === prodNorm))
         resultados.push({ produto: i.produto, ni: i.ni });
-      }
     });
   }
-
   resultados = resultados.slice(0,6);
   if (!resultados.length) { box.style.display="none"; return; }
 
-  box.innerHTML = resultados.map(r => `
-    <div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
-      ${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
-    </div>
-  `).join("");
-
+  box.innerHTML = resultados.map(r => `<div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span></div>`).join("");
   box.style.display="block";
 };
 
@@ -320,15 +301,12 @@ window.selecionarPeca = (el, produto, ni) => {
   el.parentElement.style.display="none";
 };
 
+// Telegram
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003671947511";
 
 function notificarTelegram(pedido) {
-  const titulo =
-    pedido.tipo === "DEVOLUCAO"
-      ? "📦 PEDIDO DE DEVOLUÇÃO"
-      : "🧰 NOVO PEDIDO DE PEÇAS";
-
+  const titulo = pedido.tipo === "DEVOLUCAO" ? "📦 PEDIDO DE DEVOLUÇÃO" : "🧰 NOVO PEDIDO DE PEÇAS";
   const texto = `
 ${titulo}
 
@@ -347,6 +325,9 @@ ${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qt
   });
 }
 
+// --------------------
+// Evento submit
+// --------------------
 form.addEventListener("submit", async e => {
   e.preventDefault();
   try {
@@ -354,21 +335,14 @@ form.addEventListener("submit", async e => {
     document.querySelectorAll(".peca").forEach(p => {
       const desc = p.querySelector(".descricao").value;
       const niManual = p.querySelector(".ni-manual").value.trim();
-      const niAuto =
-        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
-        || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
-
-      pecas.push({
-        descricao: desc,
-        quantidade: p.querySelector(".quantidade").value,
-        ni: niManual || niAuto || null
-      });
+      const niAuto = aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+                     || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
+      pecas.push({ descricao: desc, quantidade: p.querySelector(".quantidade").value, ni: niManual || niAuto || null });
     });
 
-    const tipoPedido = document.getElementById("isDevolucao").checked
-      ? "DEVOLUCAO"
-      : "PEDIDO";
+    const tipoPedido = document.getElementById("isDevolucao").checked ? "DEVOLUCAO" : "PEDIDO";
 
+    // Salvar no Firestore
     await addDoc(collection(db,"pedidos"),{
       manutencao: manutencaoSelect.value,
       go: goInput.value,
@@ -379,18 +353,26 @@ form.addEventListener("submit", async e => {
       criadoEm:new Date()
     });
 
-    notificarTelegram({
-      nome: document.getElementById("nome").value,
-      manutencao: manutencaoSelect.value,
-      go: goInput.value,
-      pecas,
-      tipo: tipoPedido
+    // Notificar Telegram
+    notificarTelegram({ nome: document.getElementById("nome").value, manutencao: manutencaoSelect.value, go: goInput.value, pecas, tipo: tipoPedido });
+
+    // --------------------
+    // Notificação push FCM
+    // --------------------
+    const titulo = tipoPedido === "DEVOLUCAO" ? "📦 Pedido de Devolução" : "🧰 Novo Pedido de Peças";
+    const corpo = `Solicitante: ${document.getElementById("nome").value}\nManutenção: ${manutencaoSelect.value}\nGO: ${goInput.value || '-'}`;
+
+    fetch("https://seuservidor.com/notificacoes.php", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ title: titulo, body: corpo, data: { tipo: tipoPedido } })
     });
 
     mensagem.textContent = "✅ Pedido enviado com sucesso!";
     mensagem.className = "mensagem sucesso";
     form.reset();
-  } catch {
+  } catch (err) {
+    console.error(err);
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
   }

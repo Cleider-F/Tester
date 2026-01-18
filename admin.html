@@ -53,6 +53,7 @@ button{
 
 .btn-sair{background:#111827;color:#fff}
 .btn-refresh{background:#2563eb;color:#fff}
+.btn-push{background:#1aa302;color:#fff}
 
 .relatorio-box{
   background:#f9fafb;
@@ -211,6 +212,8 @@ button{
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
   </div>
+  <button id="btnNotificacao" class="btn-push" onclick="toggleNotificacao()">🔔 Ativar Notificações</button>
+ </div>
   <button class="btn-refresh" onclick="location.reload()">🔄 Atualizar</button>
 
 <div class="relatorio-box" id="relatorioBox" style="display:none;">
@@ -235,10 +238,8 @@ button{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore, collection, getDocs, addDoc,
-  doc, updateDoc, getDoc, query, orderBy, deleteDoc, limit
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getMessaging, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 window.toggleRelatorio = () => {
   const box = document.getElementById("relatorioBox");
@@ -247,14 +248,15 @@ window.toggleRelatorio = () => {
 
 /* FIREBASE */
 const app=initializeApp({
-    apiKey: "AIzaSyBsF6D5l1dXR4rSR3axpFrD-idXh2ZaRUE",
-  authDomain: "testeer-1516c.firebaseapp.com",
-  projectId: "testeer-1516c",
-  storageBucket: "testeer-1516c.firebasestorage.app",
-  messagingSenderId: "1030430919430",
-  appId: "1:1030430919430:web:22224089ad1c80f8a56c87"
+   apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
+  authDomain: "pedidos-almoxarifado.firebaseapp.com",
+  projectId: "pedidos-almoxarifado",
+  storageBucket: "pedidos-almoxarifado.firebasestorage.app",
+  messagingSenderId: "443882865992",
+  appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
 const db=getFirestore(app);
+
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
@@ -271,6 +273,57 @@ async function enviarTelegram(msg){
     })
   });
 }
+
+/* -------------------- NOTIFICAÇÃO -------------------- */
+
+const messaging = getMessaging();
+const btnNotificacao = document.getElementById("btnNotificacao");
+
+// Verifica se já está ativado
+let notificacaoAtiva = false;
+
+btnNotificacao.addEventListener("click", async () => {
+  try {
+    if (!notificacaoAtiva) {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        alert("Permissão negada para notificações!");
+        return;
+      }
+
+      const token = await getToken(messaging, {
+        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"
+      });
+
+      await fetch("https://seuservidor.com/salvar-token.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, acao: "ativar" })
+      });
+
+      btnNotificacao.textContent = "🔕 Desativar Notificações";
+      notificacaoAtiva = true;
+      alert("Notificações ativadas!");
+    } else {
+      const token = await getToken(messaging, {
+        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"
+      });
+
+      await fetch("https://seuservidor.com/salvar-token.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, acao: "desativar" })
+      });
+
+      btnNotificacao.textContent = "🔔 Ativar Notificações";
+      notificacaoAtiva = false;
+      alert("Notificações desativadas!");
+    }
+  } catch (err) {
+    console.error("Erro ao ativar/desativar notificações:", err);
+  }
+});
+
 
 /* USUÁRIOS */
 const USUARIOS = {
