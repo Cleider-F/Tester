@@ -269,6 +269,46 @@ const app=initializeApp({
 });
 const db=getFirestore(app);
 
+/* USUÁRIOS */
+const USUARIOS = {
+  "cleider": "Cleider Filho",
+  "salles2026": "Douglas Salles",
+  "gleyson2026": "Gleyson Murça",
+  "robson2026": "Robson Jesus",
+  "otto2026": "Leonardo Otto",
+  "junior2026": "Geraldo Junior",
+  "cleiton2026": "Cleiton Castro",
+  "amanda2026": "Amanda",
+  "mariana2026": "Mariana",
+  "couto2026": "Grazy Couto",
+  "breno2026": "Breno",
+  "luiz2026": "Luiz",
+  "joaquim2026": "Joaquim Pereira"
+};
+
+
+/* LOGIN */
+window.login = () => {
+  const senha = document.getElementById("senha").value;
+  const loginBox = document.getElementById("loginBox");
+  const painel = document.getElementById("painel");
+
+  if (!USUARIOS[senha]) {
+    alert("Senha inválida");
+    return;
+  }
+
+  localStorage.setItem("admin", "true");
+  localStorage.setItem("usuario_nome", USUARIOS[senha]);
+
+  loginBox.style.display = "none";
+  painel.style.display = "block";
+
+  carregarPedidos();
+};
+
+window.logout=()=>{localStorage.clear();location.reload()}
+
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003646317990";
@@ -360,43 +400,7 @@ btnNotificacao.onclick = async () => {
 };
 
 
-/* USUÁRIOS */
-const USUARIOS = {
-  "cleider": "Cleider Filho",
-  "salles2026": "Douglas Salles",
-  "gleyson2026": "Gleyson Murça",
-  "robson2026": "Robson Jesus",
-  "otto2026": "Leonardo Otto",
-  "junior2026": "Geraldo Junior",
-  "cleiton2026": "Cleiton Castro",
-  "amanda2026": "Amanda",
-  "mariana2026": "Mariana",
-  "couto2026": "Grazy Couto",
-  "breno2026": "Breno",
-  "luiz2026": "Luiz",
-  "joaquim2026": "Joaquim Pereira"
-};
 
-
-/* LOGIN */
-window.login = () => {
-  const senha = document.getElementById("senha").value;
-  const loginBox = document.getElementById("loginBox");
-  const painel = document.getElementById("painel");
-
-  if (!USUARIOS[senha]) {
-    alert("Senha inválida");
-    return;
-  }
-
-  localStorage.setItem("admin", "true");
-  localStorage.setItem("usuario_nome", USUARIOS[senha]);
-
-  loginBox.style.display = "none";
-  painel.style.display = "block";
-
-  carregarPedidos();
-};
 
 /* ATUALIZAR PEDIDOS 
   window.carregarPedidos = async function(){
