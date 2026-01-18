@@ -212,7 +212,7 @@ button{
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
   </div>
-  <button id="btnNotificacao" class="btn-push" onclick="toggleNotificacao()">🔔 Ativar Notificações</button>
+  <button id="btnNotificacao" class="btn-push">🔔 Ativar Notificações</button>
  </div>
   <button class="btn-refresh" onclick="location.reload()">🔄 Atualizar</button>
 
@@ -257,7 +257,6 @@ const app=initializeApp({
 });
 const db=getFirestore(app);
 
-
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003646317990";
@@ -276,10 +275,14 @@ async function enviarTelegram(msg){
 
 /* -------------------- NOTIFICAÇÃO -------------------- */
 
+// Registrar service worker uma vez
+let swRegistration;
+if ('serviceWorker' in navigator) {
+  swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+}
+
 const messaging = getMessaging();
 const btnNotificacao = document.getElementById("btnNotificacao");
-
-// Verifica se já está ativado
 let notificacaoAtiva = false;
 
 btnNotificacao.addEventListener("click", async () => {
@@ -292,10 +295,11 @@ btnNotificacao.addEventListener("click", async () => {
       }
 
       const token = await getToken(messaging, {
-        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"
+        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+        serviceWorkerRegistration: swRegistration
       });
 
-      await fetch("https://seuservidor.com/salvar-token.php", {
+      await fetch("https://cleider-f.github.io/Tester/salvar-token.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, acao: "ativar" })
@@ -306,10 +310,11 @@ btnNotificacao.addEventListener("click", async () => {
       alert("Notificações ativadas!");
     } else {
       const token = await getToken(messaging, {
-        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"
+        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+        serviceWorkerRegistration: swRegistration
       });
 
-      await fetch("https://seuservidor.com/salvar-token.php", {
+      await fetch("https://cleider-f.github.io/Tester/salvar-token.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, acao: "desativar" })
@@ -323,6 +328,7 @@ btnNotificacao.addEventListener("click", async () => {
     console.error("Erro ao ativar/desativar notificações:", err);
   }
 });
+
 
 
 /* USUÁRIOS */
