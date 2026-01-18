@@ -285,24 +285,34 @@ async function enviarTelegram(msg){
   });
 }
 
-/* -------------------- NOTIFICAÇÃO -------------------- */
+/* -------------------- NOTIFICAÇÃO (FCM) -------------------- */
 
-// Registrar service worker uma vez
-let swRegistration;
-if ('serviceWorker' in navigator) {
-  swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+import {
+  getMessaging,
+  getToken,
+  deleteToken
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+
+const messaging = getMessaging(app);
+const btnNotificacao = document.getElementById("btnNotificacao");
+
+let swRegistration = null;
+
+// registra o service worker corretamente (GitHub Pages)
+if ("serviceWorker" in navigator) {
+  swRegistration = await navigator.serviceWorker.register(
+    "firebase-messaging-sw.js"
+  );
 }
 
-const messaging = getMessaging();
-const btnNotificacao = document.getElementById("btnNotificacao");
-let notificacaoAtiva = false;
-
-btnNotificacao.addEventListener("click", async () => {
+btnNotificacao.onclick = async () => {
   try {
-    if (!notificacaoAtiva) {
+    const ativo = btnNotificacao.dataset.ativo === "true";
+
+    if (!ativo) {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        alert("Permissão negada para notificações!");
+        alert("Permissão para notificações negada");
         return;
       }
 
@@ -311,36 +321,43 @@ btnNotificacao.addEventListener("click", async () => {
         serviceWorkerRegistration: swRegistration
       });
 
-      await fetch("https://cleider-f.github.io/Tester/salvar-token.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, acao: "ativar" })
+      if (!token) {
+        alert("Não foi possível obter o token");
+        return;
+      }
+
+      await setDoc(doc(db, "tokens_tecnicos", token), {
+        token,
+        usuario: localStorage.getItem("usuario_nome"),
+        criadoEm: new Date()
       });
 
       btnNotificacao.textContent = "🔕 Desativar Notificações";
-      notificacaoAtiva = true;
-      alert("Notificações ativadas!");
+      btnNotificacao.dataset.ativo = "true";
+
+      alert("Notificações ativadas com sucesso!");
+
     } else {
       const token = await getToken(messaging, {
         vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
         serviceWorkerRegistration: swRegistration
       });
 
-      await fetch("https://cleider-f.github.io/Tester/salvar-token.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, acao: "desativar" })
-      });
+      if (token) {
+        await deleteDoc(doc(db, "tokens_tecnicos", token));
+        await deleteToken(messaging);
+      }
 
       btnNotificacao.textContent = "🔔 Ativar Notificações";
-      notificacaoAtiva = false;
+      btnNotificacao.dataset.ativo = "false";
+
       alert("Notificações desativadas!");
     }
-  } catch (err) {
-    console.error("Erro ao ativar/desativar notificações:", err);
+  } catch (e) {
+    console.error("Erro FCM:", e);
+    alert("Erro ao configurar notificações");
   }
-});
-
+};
 
 
 /* USUÁRIOS */
@@ -364,6 +381,8 @@ const USUARIOS = {
 /* LOGIN */
 window.login = () => {
   const senha = document.getElementById("senha").value;
+  const loginBox = document.getElementById("loginBox");
+  const painel = document.getElementById("painel");
 
   if (!USUARIOS[senha]) {
     alert("Senha inválida");
@@ -375,11 +394,9 @@ window.login = () => {
 
   loginBox.style.display = "none";
   painel.style.display = "block";
+
   carregarPedidos();
 };
-
-
-window.logout=()=>{localStorage.clear();location.reload()}
 
 /* ATUALIZAR PEDIDOS 
   window.carregarPedidos = async function(){
