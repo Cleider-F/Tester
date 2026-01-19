@@ -203,7 +203,10 @@ async function registrarToken() {
     if (!swReg) return;
 
     const perm = await Notification.requestPermission();
-    if (perm !== "granted") return;
+    if (perm !== "granted") {
+      console.warn("Notificação não permitida");
+      return;
+    }
 
     const token = await getToken(messaging, {
       vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
@@ -211,10 +214,13 @@ async function registrarToken() {
     });
 
     if (token) {
-      console.log("🔑 Token FCM:", token);
+      console.log("TOKEN ATUAL:", token); // 👈 AQUI
+    } else {
+      console.warn("Token não gerado");
     }
+
   } catch (e) {
-    console.error("Erro ao registrar token:", e);
+    console.error("Erro FCM:", e);
   }
 }
 
