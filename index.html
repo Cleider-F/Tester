@@ -351,6 +351,8 @@ form.addEventListener("submit", async e => {
       tipo: tipoPedido,
       status:"Pendente",
       criadoEm:new Date()
+
+   await enviarPushTeste(); // 🔔 dispara push
     });
 
     // Notificar Telegram
@@ -377,6 +379,39 @@ form.addEventListener("submit", async e => {
     mensagem.className = "mensagem erro";
   }
 });
+
+async function enviarPushTeste() {
+  const SERVER_KEY = "COLE_AQUI_SUA_SERVER_KEY"; // ⚠️ TESTE
+  const snap = await getDocs(collection(db, "tokens_tecnicos"));
+
+  if (snap.empty) {
+    console.log("Nenhum técnico com notificações ativas");
+    return;
+  }
+
+  snap.forEach(async d => {
+    const token = d.data().token;
+
+    await fetch("https://fcm.googleapis.com/fcm/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `key=${SERVER_KEY}`
+      },
+      body: JSON.stringify({
+        to: token,
+        notification: {
+          title: "📦 Novo pedido",
+          body: "Um novo pedido foi enviado e aguarda aprovação"
+        },
+        data: {
+          url: "/Tester/admin.html"
+        }
+      })
+    });
+  });
+}
+
 </script>
 
 </body>
