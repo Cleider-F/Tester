@@ -168,7 +168,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
   getMessaging,
-  getToken
+  get
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
 /* ================= FIREBASE CONFIG ================= */
@@ -197,16 +197,13 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.error("❌ Erro SW:", err));
 }
 
-/* ================= REGISTRAR TOKEN FCM ================= */
+/* ================= REGISTRAR  FCM ================= */
 async function registrarToken() {
   try {
     if (!swReg) return;
 
     const perm = await Notification.requestPermission();
-    if (perm !== "granted") {
-      console.warn("Notificação não permitida");
-      return;
-    }
+    if (perm !== "granted") return;
 
     const token = await getToken(messaging, {
       vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
@@ -214,9 +211,7 @@ async function registrarToken() {
     });
 
     if (token) {
-      console.log("TOKEN ATUAL:", token); // 👈 AQUI
-    } else {
-      console.warn("Token não gerado");
+      console.log("TOKEN ATUAL:", token); // ✅ AQUI
     }
 
   } catch (e) {
@@ -225,6 +220,7 @@ async function registrarToken() {
 }
 
 registrarToken();
+
 
 console.log("TOKEN ATUAL:", token);
 
