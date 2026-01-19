@@ -206,7 +206,6 @@ async function registrarToken() {
 
 registrarToken();
 
-<script>
 async function buscarTokensTecnicos() {
   const snapshot = await db.collection("tokens_tecnicos").get();
   const tokens = [];
@@ -220,7 +219,6 @@ async function buscarTokensTecnicos() {
 
   return tokens;
 }
-</script>
 
 
 // Referências de DOM
@@ -358,34 +356,14 @@ form.addEventListener("submit", async e => {
       criadoEm:new Date(),
 
     });
-await enviarPushTeste(); // 🔔 dispara push
-
+const tokens = await buscarTokensTecnicos();
+await enviarPush(tokens);
+    
     // Notificar Telegram
-    notificarTelegram({ nome: document.getElementById("nome").value, manutencao: manutencaoSelect.value, go: goInput.value, pecas, tipo: tipoPedido });
+    notificarTelegram({ nome: document.getElementById("nome").value, manutencao: manutencaoSelect.value, go: goInput.value, pecas, tipo: tipoPedido })
+    
 
-    // --------------------
-    // Notificação push FCM
-    // --------------------
-    const titulo = tipoPedido === "DEVOLUCAO" ? "📦 Pedido de Devolução" : "🧰 Novo Pedido de Peças";
-    const corpo = `Solicitante: ${document.getElementById("nome").value}\nManutenção: ${manutencaoSelect.value}\nGO: ${goInput.value || '-'}`;
 
-    fetch("https://seuservidor.com/notificacoes.php", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ title: titulo, body: corpo, data: { tipo: tipoPedido } })
-    });
-
-    mensagem.textContent = "✅ Pedido enviado com sucesso!";
-    mensagem.className = "mensagem sucesso";
-    form.reset();
-  } catch (err) {
-    console.error(err);
-    mensagem.textContent = "❌ Erro ao enviar pedido";
-    mensagem.className = "mensagem erro";
-  }
-});
-
-<script>
 async function enviarPush(tokens) {
   if (!tokens || tokens.length === 0) {
     console.warn("Nenhum token encontrado para envio de push");
@@ -402,7 +380,7 @@ async function enviarPush(tokens) {
       url: "/Tester/admin.html"
     })
   });
-}</script>
+}
 
 
 </script>
