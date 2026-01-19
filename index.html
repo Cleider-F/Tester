@@ -197,28 +197,34 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.error("❌ Erro SW:", err));
 }
 
+let tokenAtual = null;
+  
 /* ================= REGISTRAR  FCM ================= */
 async function registrarToken() {
   try {
     if (!swReg) return;
 
     const perm = await Notification.requestPermission();
-    if (perm !== "granted") return;
+    if (perm !== "granted") {
+      console.warn("🔕 Permissão de notificação negada");
+      return;
+    }
 
-    const token = await getToken(messaging, {
+    tokenAtual = await getToken(messaging, {
       vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
       serviceWorkerRegistration: swReg
     });
 
+    console.log("✅ TOKEN FCM GERADO:", tokenAtual);
+
   } catch (e) {
-    console.error("Erro FCM:", e);
+    console.error("❌ Erro FCM:", e);
   }
 }
 
 registrarToken();
 
 
-console.log("TOKEN ATUAL:", token);
 
 /* ================= BUSCAR TOKENS DOS TÉCNICOS ================= */
 async function buscarTokensTecnicos() {
