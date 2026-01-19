@@ -306,6 +306,9 @@ window.login = () => {
   painel.style.display = "block";
 
   carregarPedidos();
+  sincronizarEstadoNotificacao();
+
+  carregarPedidos();
 };
 
 window.logout=()=>{localStorage.clear();location.reload()}
@@ -395,8 +398,29 @@ btnNotificacao.onclick = async () => {
   }
 };
 
+async function sincronizarEstadoNotificacao() {
+  try {
+    const token = await getToken(messaging, {
+      vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+      serviceWorkerRegistration: swRegistration
+    });
 
+    if (!token) return;
 
+    const ref = doc(db, "tokens_tecnicos", token);
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      btnNotificacao.textContent = "🔕 Desativar Notificações";
+      btnNotificacao.dataset.ativo = "true";
+    } else {
+      btnNotificacao.textContent = "🔔 Ativar Notificações";
+      btnNotificacao.dataset.ativo = "false";
+    }
+  } catch (e) {
+    console.warn("Não foi possível sincronizar notificações:", e);
+  }
+}
 
 /* ATUALIZAR PEDIDOS 
   window.carregarPedidos = async function(){
@@ -702,10 +726,20 @@ window.relatorioPecasSemana = () => {
 const loginBox = document.getElementById("loginBox");
 const painel = document.getElementById("painel");
 
+/* SALVAR NOTIFICAÇÕES */
 if (localStorage.getItem("admin") === "true") {
   loginBox.style.display = "none";
   painel.style.display = "block";
   carregarPedidos();
+}
+
+if (localStorage.getItem("admin") === "true") {
+  loginBox.style.display = "none";
+  painel.style.display = "block";
+  carregarPedidos();
+
+  // 🔔 sincroniza estado do botão
+  sincronizarEstadoNotificacao();
 }
 </script>
 
