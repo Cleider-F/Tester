@@ -202,8 +202,10 @@ async function registrarToken() {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") return;
 
-    const token = await getToken(messaging, { vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0" });
-    console.log("Token FCM do dispositivo:", token);
+    const token = await getToken(messaging, {
+  vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+  serviceWorkerRegistration: swReg
+});
 
     await fetch("https://seuservidor.com/salvar-token.php", {
       method: "POST",
