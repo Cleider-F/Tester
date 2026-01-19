@@ -158,10 +158,20 @@ input:disabled {
 
 <!-- ================= FIREBASE + FCM ================= -->
 <script type="module">
+/* ================= FIREBASE IMPORTS ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getMessaging,
+  getToken
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
+/* ================= FIREBASE CONFIG ================= */
 const app = initializeApp({
   apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
@@ -178,18 +188,20 @@ const messaging = getMessaging(app);
 let swReg = null;
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/Tester/firebase-messaging-sw.js")
+  navigator.serviceWorker
+    .register("/Tester/firebase-messaging-sw.js")
     .then(reg => {
       swReg = reg;
       console.log("✅ Service Worker registrado");
     })
-    .catch(err => console.error("❌ SW erro:", err));
+    .catch(err => console.error("❌ Erro SW:", err));
 }
 
-/* ================= TOKEN FCM ================= */
+/* ================= REGISTRAR TOKEN FCM ================= */
 async function registrarToken() {
   try {
     if (!swReg) return;
+
     const perm = await Notification.requestPermission();
     if (perm !== "granted") return;
 
@@ -198,175 +210,33 @@ async function registrarToken() {
       serviceWorkerRegistration: swReg
     });
 
-    if (token) console.log("🔑 Token FCM:", token);
+    if (token) {
+      console.log("🔑 Token FCM:", token);
+    }
   } catch (e) {
-    console.error("Erro FCM:", e);
+    console.error("Erro ao registrar token:", e);
   }
 }
 
 registrarToken();
 
+/* ================= BUSCAR TOKENS DOS TÉCNICOS ================= */
 async function buscarTokensTecnicos() {
-  const snapshot = await db.collection("tokens_tecnicos").get();
+  const snapshot = await getDocs(collection(db, "tokens_tecnicos"));
   const tokens = [];
 
   snapshot.forEach(doc => {
     const data = doc.data();
-    if (data.token) {
-      tokens.push(data.token);
-    }
+    if (data.token) tokens.push(data.token);
   });
 
   return tokens;
 }
 
-
-// Referências de DOM
-const form = document.getElementById("formPedido");
-const mensagem = document.getElementById("mensagem");
-const lista = document.getElementById("listaPecas");
-const manutencaoSelect = document.getElementById("manutencao");
-const goInput = document.getElementById("go");
-
-// Desabilitar GO quando tipo = Uso Geral
-manutencaoSelect.addEventListener("change", () => {
-  goInput.required = manutencaoSelect.value !== "Uso Geral";
-  goInput.disabled = manutencaoSelect.value === "Uso Geral";
-  if (goInput.disabled) goInput.value = "";
-});
-
-// Funções adicionar/remover peça
-window.adicionarPeca = () => {
-  const div = document.createElement("div");
-  div.className = "peca";
-  div.innerHTML = `
-    <label>Descrição da Peça</label>
-    <div class="autocomplete-box">
-      <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
-      <div class="sugestoes" style="display:none"></div>
-    </div>
-    <label>NI (opcional)</label>
-    <input type="text" class="ni-manual">
-    <label>Quantidade</label>
-    <input type="number" class="quantidade" min="1" required>
-    <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
-  `;
-  lista.appendChild(div);
-};
-
-window.removerPeca = (btn) => {
-  if (document.querySelectorAll(".peca").length === 1) return;
-  btn.parentElement.remove();
-};
-
-// Normalização de texto
-function normalizar(txt) {
-  return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-}
-
-// Aprendizado NI
-let aprendizadoNI = [];
-async function carregarAprendizadoNI() {
-  const snap = await getDocs(collection(db,"aprendizado_ni"));
-  aprendizadoNI = snap.docs.map(d => ({
-    descricao: normalizar(d.data().descricao),
-    ni: d.data().ni
-  }));
-}
-await carregarAprendizadoNI();
-
-// Funções autocomplete
-window.sugerirPecas = (textarea) => {
-  const termo = normalizar(textarea.value);
-  const box = textarea.parentElement.querySelector(".sugestoes");
-  if (!termo || termo.length < 2) { box.style.display="none"; return; }
-
-  let resultados = [];
-  aprendizadoNI.forEach(i => { if (i.descricao.includes(termo)) resultados.push({ produto: i.descricao, ni: i.ni }); });
-  if (window.LISTA_NI) {
-    window.LISTA_NI.forEach(i => {
-      const prodNorm = normalizar(i.produto);
-      if (prodNorm.includes(termo) && !resultados.some(r => normalizar(r.produto) === prodNorm))
-        resultados.push({ produto: i.produto, ni: i.ni });
-    });
-  }
-  resultados = resultados.slice(0,6);
-  if (!resultados.length) { box.style.display="none"; return; }
-
-  box.innerHTML = resultados.map(r => `<div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span></div>`).join("");
-  box.style.display="block";
-};
-
-window.selecionarPeca = (el, produto, ni) => {
-  const peca = el.closest(".peca");
-  peca.querySelector(".descricao").value = produto;
-  peca.querySelector(".ni-manual").value = ni;
-  el.parentElement.style.display="none";
-};
-
-// Telegram
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003671947511";
-
-function notificarTelegram(pedido) {
-  const titulo = pedido.tipo === "DEVOLUCAO" ? "📦 PEDIDO DE DEVOLUÇÃO" : "🧰 NOVO PEDIDO DE PEÇAS";
-  const texto = `
-${titulo}
-
-👤 Solicitante: ${pedido.nome}
-🛠 Manutenção: ${pedido.manutencao}
-🚚 GO: ${pedido.go || "-"}
-
-📦 Peças:
-${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qtd: ${p.quantidade}`).join("\n")}
-`;
-
-  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
-  });
-}
-
-// --------------------
-// Evento submit
-// --------------------
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-  try {
-    const pecas = [];
-    document.querySelectorAll(".peca").forEach(p => {
-      const desc = p.querySelector(".descricao").value;
-      const niManual = p.querySelector(".ni-manual").value.trim();
-      const niAuto = aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
-                     || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
-      pecas.push({ descricao: desc, quantidade: p.querySelector(".quantidade").value, ni: niManual || niAuto || null });
-    });
-
-    const tipoPedido = document.getElementById("isDevolucao").checked ? "DEVOLUCAO" : "PEDIDO";
-
-    // Salvar no Firestore
-    await addDoc(collection(db,"pedidos"),{
-      manutencao: manutencaoSelect.value,
-      go: goInput.value,
-      nome: document.getElementById("nome").value,
-      pecas,
-      tipo: tipoPedido,
-      status:"Pendente",
-      criadoEm:new Date(),
-
-    });
-const tokens = await buscarTokensTecnicos();
-await enviarPush(tokens);
-    
-    // Notificar Telegram
-    notificarTelegram({ nome: document.getElementById("nome").value, manutencao: manutencaoSelect.value, go: goInput.value, pecas, tipo: tipoPedido })
-    
-
-
+/* ================= ENVIAR PUSH (CLOUDFLARE) ================= */
 async function enviarPush(tokens) {
   if (!tokens || tokens.length === 0) {
-    console.warn("Nenhum token encontrado para envio de push");
+    console.warn("⚠️ Nenhum token encontrado");
     return;
   }
 
@@ -376,13 +246,154 @@ async function enviarPush(tokens) {
     body: JSON.stringify({
       title: "📦 Novo pedido",
       body: "Um novo pedido foi criado no sistema",
-      tokens: tokens,
+      tokens,
       url: "/Tester/admin.html"
     })
   });
 }
 
+/* ================= DOM ================= */
+const form = document.getElementById("formPedido");
+const mensagem = document.getElementById("mensagem");
+const lista = document.getElementById("listaPecas");
+const manutencaoSelect = document.getElementById("manutencao");
+const goInput = document.getElementById("go");
 
+/* ================= GO OPCIONAL ================= */
+manutencaoSelect.addEventListener("change", () => {
+  goInput.required = manutencaoSelect.value !== "Uso Geral";
+  goInput.disabled = manutencaoSelect.value === "Uso Geral";
+  if (goInput.disabled) goInput.value = "";
+});
+
+/* ================= NORMALIZAR TEXTO ================= */
+function normalizar(txt) {
+  return txt
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+/* ================= APRENDIZADO NI ================= */
+let aprendizadoNI = [];
+
+async function carregarAprendizadoNI() {
+  const snap = await getDocs(collection(db, "aprendizado_ni"));
+  aprendizadoNI = snap.docs.map(d => ({
+    descricao: normalizar(d.data().descricao),
+    ni: d.data().ni
+  }));
+}
+
+await carregarAprendizadoNI();
+
+/* ================= AUTOCOMPLETE ================= */
+window.sugerirPecas = textarea => {
+  const termo = normalizar(textarea.value);
+  const box = textarea.parentElement.querySelector(".sugestoes");
+
+  if (!termo || termo.length < 2) {
+    box.style.display = "none";
+    return;
+  }
+
+  let resultados = [];
+
+  aprendizadoNI.forEach(i => {
+    if (i.descricao.includes(termo))
+      resultados.push({ produto: i.descricao, ni: i.ni });
+  });
+
+  if (window.LISTA_NI) {
+    window.LISTA_NI.forEach(i => {
+      const prodNorm = normalizar(i.produto);
+      if (
+        prodNorm.includes(termo) &&
+        !resultados.some(r => normalizar(r.produto) === prodNorm)
+      ) {
+        resultados.push({ produto: i.produto, ni: i.ni });
+      }
+    });
+  }
+
+  resultados = resultados.slice(0, 6);
+
+  if (!resultados.length) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = resultados
+    .map(
+      r =>
+        `<div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
+          ${r.produto}
+          <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
+        </div>`
+    )
+    .join("");
+
+  box.style.display = "block";
+};
+
+window.selecionarPeca = (el, produto, ni) => {
+  const peca = el.closest(".peca");
+  peca.querySelector(".descricao").value = produto;
+  peca.querySelector(".ni-manual").value = ni;
+  el.parentElement.style.display = "none";
+};
+
+/* ================= SUBMIT ================= */
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  try {
+    const pecas = [];
+
+    document.querySelectorAll(".peca").forEach(p => {
+      const desc = p.querySelector(".descricao").value;
+      const niManual = p.querySelector(".ni-manual").value.trim();
+
+      const niAuto =
+        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni ||
+        window.LISTA_NI?.find(
+          i => normalizar(i.produto) === normalizar(desc)
+        )?.ni;
+
+      pecas.push({
+        descricao: desc,
+        quantidade: p.querySelector(".quantidade").value,
+        ni: niManual || niAuto || null
+      });
+    });
+
+    const tipoPedido = document.getElementById("isDevolucao").checked
+      ? "DEVOLUCAO"
+      : "PEDIDO";
+
+    await addDoc(collection(db, "pedidos"), {
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      nome: document.getElementById("nome").value,
+      pecas,
+      tipo: tipoPedido,
+      status: "Pendente",
+      criadoEm: new Date()
+    });
+
+    const tokens = await buscarTokensTecnicos();
+    await enviarPush(tokens);
+
+    mensagem.textContent = "✅ Pedido enviado com sucesso!";
+    mensagem.className = "mensagem sucesso";
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    mensagem.textContent = "❌ Erro ao enviar pedido";
+    mensagem.className = "mensagem erro";
+  }
+});
 </script>
 
 </body>
