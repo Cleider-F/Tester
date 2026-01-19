@@ -240,7 +240,7 @@ async function enviarPush(tokens) {
     return;
   }
 
-  await fetch("https://filho-cleider.cloudflare.workers.dev", {
+  await fetch("https://fcm-push-worker.filho-cleider.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
