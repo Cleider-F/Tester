@@ -206,6 +206,22 @@ async function registrarToken() {
 
 registrarToken();
 
+<script>
+async function buscarTokensTecnicos() {
+  const snapshot = await db.collection("tokens_tecnicos").get();
+  const tokens = [];
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.token) {
+      tokens.push(data.token);
+    }
+  });
+
+  return tokens;
+}
+</script>
+
 
 // Referências de DOM
 const form = document.getElementById("formPedido");
@@ -369,18 +385,24 @@ await enviarPushTeste(); // 🔔 dispara push
   }
 });
 
+<script>
 async function enviarPush(tokens) {
+  if (!tokens || tokens.length === 0) {
+    console.warn("Nenhum token encontrado para envio de push");
+    return;
+  }
+
   await fetch("https://filho-cleider.cloudflare.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       title: "📦 Novo pedido",
-      body: "Um novo pedido foi criado",
-      tokens,
+      body: "Um novo pedido foi criado no sistema",
+      tokens: tokens,
       url: "/Tester/admin.html"
     })
   });
-}
+}</script>
 
 
 </script>
