@@ -220,6 +220,8 @@ async function registrarToken() {
 
 registrarToken();
 
+console.log("TOKEN ATUAL:", token);
+
 /* ================= BUSCAR TOKENS DOS TÉCNICOS ================= */
 async function buscarTokensTecnicos() {
   const snapshot = await getDocs(collection(db, "tokens_tecnicos"));
