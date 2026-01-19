@@ -380,37 +380,19 @@ await enviarPushTeste(); // 🔔 dispara push
   }
 });
 
-async function enviarPushTeste() {
-  const SERVER_KEY = "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"; // ⚠️ TESTE
-  const snap = await getDocs(collection(db, "tokens_tecnicos"));
-
-  if (snap.empty) {
-    console.log("Nenhum técnico com notificações ativas");
-    return;
-  }
-
-  snap.forEach(async d => {
-    const token = d.data().token;
-
-    await fetch("https://fcm.googleapis.com/fcm/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `key=${SERVER_KEY}`
-      },
-      body: JSON.stringify({
-        to: token,
-        notification: {
-          title: "📦 Novo pedido",
-          body: "Um novo pedido foi enviado e aguarda aprovação"
-        },
-        data: {
-          url: "/Tester/admin.html"
-        }
-      })
-    });
+async function enviarPush(tokens) {
+  await fetch("https://filho-cleider.cloudflare.workers.dev", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: "📦 Novo pedido",
+      body: "Um novo pedido foi criado",
+      tokens,
+      url: "/Tester/admin.html"
+    })
   });
 }
+
 
 </script>
 
