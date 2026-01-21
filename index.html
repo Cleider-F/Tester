@@ -8,9 +8,9 @@
 <meta name="theme-color" content="#1f2937">
 
 <style>
-/* === ESTILO ORIGINAL (SEM ALTERAÇÕES) === */
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:180px; width:100%; }
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background:#f2f2f2;
@@ -20,6 +20,7 @@ body {
   min-height:100vh;
   flex-direction:column;
 }
+
 .container {
   background:#fff;
   max-width:480px;
@@ -28,8 +29,10 @@ body {
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
+
 h1 { text-align:center; font-size:20px; }
 label { font-weight:bold; margin-top:10px; display:block; }
+
 input, textarea, select {
   width:97%;
   padding:8px;
@@ -37,14 +40,18 @@ input, textarea, select {
   border-radius:6px;
   border:1px solid #ccc;
 }
+
 textarea { min-height:50px; }
+
 .peca {
   border:1px solid #e5e7eb;
   padding:10px;
   border-radius:8px;
   margin-top:10px;
 }
+
 .ni-info { font-size:12px; color:#6b7280; }
+
 button {
   width:100%;
   padding:12px;
@@ -55,24 +62,30 @@ button {
   color:#fff;
   font-size:15px;
 }
+
 button:hover { background:#15803d; }
 .secundario { background:#2563eb; }
 .remover { background:#dc2626; }
 .admin-btn { background:#111827; }
+
 .mensagem { text-align:center; font-weight:bold; margin-top:10px; }
 .sucesso { color:green; }
 .erro { color:red; }
+
 footer {
   text-align:center;
   font-size:11px;
   color:#6b7280;
   margin-top:15px;
 }
+
 input:disabled {
   background:#e5e7eb;
   cursor:not-allowed;
 }
+
 .autocomplete-box { position: relative; }
+
 .sugestoes {
   position:absolute;
   background:#fff;
@@ -83,11 +96,13 @@ input:disabled {
   overflow-y:auto;
   z-index:1000;
 }
+
 .sugestoes div {
   padding:8px;
   cursor:pointer;
   font-size:14px;
 }
+
 .sugestoes div:hover {
   background:#e5e7eb;
 }
@@ -106,6 +121,7 @@ input:disabled {
   <h1>Pedido de Peças – Almoxarifado CMC</h1>
 
   <form id="formPedido">
+
     <div id="listaPecas">
       <div class="peca">
         <label>Descrição da Peça</label>
@@ -127,9 +143,13 @@ input:disabled {
 
     <button type="button" class="secundario" onclick="adicionarPeca()">➕ Adicionar peça</button>
 
-    <label>
-      <input type="checkbox" id="isDevolucao"> Pedido de devolução de peças
-    </label>
+    <div class="form-group">
+  <label style="display:flex; align-items:center; gap:8px; font-weight:normal;">
+    <input type="checkbox" id="isDevolucao" style="width:auto; margin:0;">
+    <strong>Pedido de devolução de peças</strong>
+  </label>
+</div>
+
 
     <label>Tipo de Manutenção</label>
     <select id="manutencao" required>
@@ -151,27 +171,19 @@ input:disabled {
     <div id="mensagem" class="mensagem"></div>
   </form>
 
-  <a href="admin.html"><button class="admin-btn">🔐 Área de Técnicos 🛠️</button></a>
+  <a href="admin.html">
+    <button class="admin-btn">🔐 Área de Técnicos 🛠️</button>
+  </a>
 </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
+<footer>
+  Criado e Desenvolvido por Cleider Filho
+</footer>
 
-<!-- ================= FIREBASE + FCM ================= -->
 <script type="module">
-/* ================= FIREBASE IMPORTS ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import {
-  getMessaging,
-  getToken
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ================= FIREBASE CONFIG ================= */
 const app = initializeApp({
   apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
@@ -180,122 +192,62 @@ const app = initializeApp({
   messagingSenderId: "443882865992",
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
-
 const db = getFirestore(app);
-const messaging = getMessaging(app);
 
-/* ================= SERVICE WORKER ================= */
-let swReg = null;
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/Tester/firebase-messaging-sw.js")
-    .then(reg => {
-      swReg = reg;
-      console.log("✅ Service Worker registrado");
-    })
-    .catch(err => console.error("❌ Erro SW:", err));
-}
-
-let tokenAtual = null;
-  
-/* ================= REGISTRAR  FCM ================= */
-async function registrarToken() {
-  try {
-    if (!swReg) return;
-
-    const perm = await Notification.requestPermission();
-    if (perm !== "granted") {
-      console.warn("🔕 Permissão de notificação negada");
-      return;
-    }
-
-    tokenAtual = await getToken(messaging, {
-      vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-      serviceWorkerRegistration: swReg
-    });
-
-    console.log("✅ TOKEN FCM GERADO:", tokenAtual);
-
-  } catch (e) {
-    console.error("❌ Erro FCM:", e);
-  }
-}
-
-registrarToken();
-
-
-
-/* ================= BUSCAR TOKENS DOS TÉCNICOS ================= */
-async function buscarTokensTecnicos() {
-  const snapshot = await getDocs(collection(db, "tokens_tecnicos"));
-  const tokens = [];
-
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (data.token) tokens.push(data.token);
-  });
-
-  return tokens;
-}
-
-/* ================= ENVIAR PUSH (CLOUDFLARE) ================= */
-async function enviarPush(tokens) {
-  if (!tokens || tokens.length === 0) {
-    console.warn("⚠️ Nenhum token encontrado");
-    return;
-  }
-
-  await fetch("https://fcm-push-worker.filho-cleider.workers.dev", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title: "📦 Novo pedido",
-      body: "Um novo pedido foi criado no sistema",
-      tokens,
-      url: "/Tester/admin.html"
-    })
-  });
-}
-
-/* ================= DOM ================= */
 const form = document.getElementById("formPedido");
 const mensagem = document.getElementById("mensagem");
 const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
-/* ================= GO OPCIONAL ================= */
 manutencaoSelect.addEventListener("change", () => {
   goInput.required = manutencaoSelect.value !== "Uso Geral";
   goInput.disabled = manutencaoSelect.value === "Uso Geral";
   if (goInput.disabled) goInput.value = "";
 });
 
-/* ================= NORMALIZAR TEXTO ================= */
+window.adicionarPeca = () => {
+  const div = document.createElement("div");
+  div.className = "peca";
+  div.innerHTML = `
+    <label>Descrição da Peça</label>
+    <div class="autocomplete-box">
+      <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+      <div class="sugestoes" style="display:none"></div>
+    </div>
+
+    <label>NI (opcional)</label>
+    <input type="text" class="ni-manual">
+
+    <label>Quantidade</label>
+    <input type="number" class="quantidade" min="1" required>
+
+    <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
+  `;
+  lista.appendChild(div);
+};
+
+window.removerPeca = (btn) => {
+  if (document.querySelectorAll(".peca").length === 1) return;
+  btn.parentElement.remove();
+};
+
 function normalizar(txt) {
-  return txt
-    .toUpperCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+  return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
 
-/* ================= APRENDIZADO NI ================= */
 let aprendizadoNI = [];
 
 async function carregarAprendizadoNI() {
-  const snap = await getDocs(collection(db, "aprendizado_ni"));
+  const snap = await getDocs(collection(db,"aprendizado_ni"));
   aprendizadoNI = snap.docs.map(d => ({
     descricao: normalizar(d.data().descricao),
     ni: d.data().ni
   }));
 }
-
 await carregarAprendizadoNI();
 
-/* ================= AUTOCOMPLETE ================= */
-window.sugerirPecas = textarea => {
+window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
   const box = textarea.parentElement.querySelector(".sugestoes");
 
@@ -307,65 +259,77 @@ window.sugerirPecas = textarea => {
   let resultados = [];
 
   aprendizadoNI.forEach(i => {
-    if (i.descricao.includes(termo))
+    if (i.descricao.includes(termo)) {
       resultados.push({ produto: i.descricao, ni: i.ni });
+    }
   });
 
   if (window.LISTA_NI) {
     window.LISTA_NI.forEach(i => {
       const prodNorm = normalizar(i.produto);
-      if (
-        prodNorm.includes(termo) &&
-        !resultados.some(r => normalizar(r.produto) === prodNorm)
-      ) {
+      if (prodNorm.includes(termo) &&
+          !resultados.some(r => normalizar(r.produto) === prodNorm)) {
         resultados.push({ produto: i.produto, ni: i.ni });
       }
     });
   }
 
-  resultados = resultados.slice(0, 6);
+  resultados = resultados.slice(0,6);
+  if (!resultados.length) { box.style.display="none"; return; }
 
-  if (!resultados.length) {
-    box.style.display = "none";
-    return;
-  }
+  box.innerHTML = resultados.map(r => `
+    <div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
+      ${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
+    </div>
+  `).join("");
 
-  box.innerHTML = resultados
-    .map(
-      r =>
-        `<div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
-          ${r.produto}
-          <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
-        </div>`
-    )
-    .join("");
-
-  box.style.display = "block";
+  box.style.display="block";
 };
 
 window.selecionarPeca = (el, produto, ni) => {
   const peca = el.closest(".peca");
   peca.querySelector(".descricao").value = produto;
   peca.querySelector(".ni-manual").value = ni;
-  el.parentElement.style.display = "none";
+  el.parentElement.style.display="none";
 };
 
-/* ================= SUBMIT ================= */
+const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
+const TELEGRAM_CHAT_ID = "-1003671947511";
+
+function notificarTelegram(pedido) {
+  const titulo =
+    pedido.tipo === "DEVOLUCAO"
+      ? "📦 PEDIDO DE DEVOLUÇÃO"
+      : "🧰 NOVO PEDIDO DE PEÇAS";
+
+  const texto = `
+${titulo}
+
+👤 Solicitante: ${pedido.nome}
+🛠 Manutenção: ${pedido.manutencao}
+🚚 GO: ${pedido.go || "-"}
+
+📦 Peças:
+${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qtd: ${p.quantidade}`).join("\n")}
+`;
+
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
+  });
+}
+
 form.addEventListener("submit", async e => {
   e.preventDefault();
-
   try {
     const pecas = [];
-
     document.querySelectorAll(".peca").forEach(p => {
       const desc = p.querySelector(".descricao").value;
       const niManual = p.querySelector(".ni-manual").value.trim();
-
       const niAuto =
-        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni ||
-        window.LISTA_NI?.find(
-          i => normalizar(i.produto) === normalizar(desc)
-        )?.ni;
+        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+        || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
 
       pecas.push({
         descricao: desc,
@@ -378,24 +342,28 @@ form.addEventListener("submit", async e => {
       ? "DEVOLUCAO"
       : "PEDIDO";
 
-    await addDoc(collection(db, "pedidos"), {
+    await addDoc(collection(db,"pedidos"),{
       manutencao: manutencaoSelect.value,
       go: goInput.value,
       nome: document.getElementById("nome").value,
       pecas,
       tipo: tipoPedido,
-      status: "Pendente",
-      criadoEm: new Date()
+      status:"Pendente",
+      criadoEm:new Date()
     });
 
-    const tokens = await buscarTokensTecnicos();
-    await enviarPush(tokens);
+    notificarTelegram({
+      nome: document.getElementById("nome").value,
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      pecas,
+      tipo: tipoPedido
+    });
 
     mensagem.textContent = "✅ Pedido enviado com sucesso!";
     mensagem.className = "mensagem sucesso";
     form.reset();
-  } catch (err) {
-    console.error(err);
+  } catch {
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
   }
