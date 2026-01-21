@@ -53,7 +53,6 @@ button{
 
 .btn-sair{background:#111827;color:#fff}
 .btn-refresh{background:#2563eb;color:#fff}
-.btn-push{background:#1aa302;color:#fff}
 
 .relatorio-box{
   background:#f9fafb;
@@ -212,8 +211,6 @@ button{
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
   </div>
-  <button id="btnNotificacao" class="btn-push">🔔 Ativar Notificações</button>
- </div>
   <button class="btn-refresh" onclick="location.reload()">🔄 Atualizar</button>
 
 <div class="relatorio-box" id="relatorioBox" style="display:none;">
@@ -238,21 +235,14 @@ button{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getMessaging, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-  doc,
-  getDoc,
-  updateDoc,
-  deleteDoc,
-  addDoc,
-  setDoc
+  getFirestore, collection, getDocs, addDoc,
+  doc, updateDoc, getDoc, query, orderBy, deleteDoc, limit
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const loginBox = document.getElementById("loginBox");
+const painel = document.getElementById("painel");
+const lista = document.getElementById("lista");
 
 window.toggleRelatorio = () => {
   const box = document.getElementById("relatorioBox");
@@ -261,57 +251,14 @@ window.toggleRelatorio = () => {
 
 /* FIREBASE */
 const app=initializeApp({
-   apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
+     apiKey: "AIzaSyCAJPyQ7-a4Efxh5yTXQ_326hn22OYAUc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
   projectId: "pedidos-almoxarifado",
-  storageBucket: "pedidos-almoxarifado.firebasestorage.app",
+  storageBucket: "pedidos-almoxarifado.appspot.com",
   messagingSenderId: "443882865992",
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
 const db=getFirestore(app);
-
-/* USUÁRIOS */
-const USUARIOS = {
-  "cleider": "Cleider Filho",
-  "salles2026": "Douglas Salles",
-  "gleyson2026": "Gleyson Murça",
-  "robson2026": "Robson Jesus",
-  "otto2026": "Leonardo Otto",
-  "junior2026": "Geraldo Junior",
-  "cleiton2026": "Cleiton Castro",
-  "amanda2026": "Amanda",
-  "mariana2026": "Mariana",
-  "couto2026": "Grazy Couto",
-  "breno2026": "Breno",
-  "luiz2026": "Luiz",
-  "joaquim2026": "Joaquim Pereira"
-};
-
-
-/* LOGIN */
-window.login = () => {
-  const senha = document.getElementById("senha").value;
-  const loginBox = document.getElementById("loginBox");
-  const painel = document.getElementById("painel");
-
-  if (!USUARIOS[senha]) {
-    alert("Senha inválida");
-    return;
-  }
-
-  localStorage.setItem("admin", "true");
-  localStorage.setItem("usuario_nome", USUARIOS[senha]);
-
-  loginBox.style.display = "none";
-  painel.style.display = "block";
-
-  carregarPedidos();
-  sincronizarEstadoNotificacao();
-
-  carregarPedidos();
-};
-
-window.logout=()=>{localStorage.clear();location.reload()}
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
@@ -329,98 +276,44 @@ async function enviarTelegram(msg){
   });
 }
 
-/* -------------------- NOTIFICAÇÃO (FCM) -------------------- */
-
-
-const messaging = getMessaging(app);
-const btnNotificacao = document.getElementById("btnNotificacao");
-
-let swRegistration = null;
-
-// registra o service worker corretamente (GitHub Pages)
-if ("serviceWorker" in navigator) {
-  swRegistration = await navigator.serviceWorker.register(
-    "/Tester/firebase-messaging-sw.js"
-  );
-}
-
-btnNotificacao.onclick = async () => {
-  try {
-    const ativo = btnNotificacao.dataset.ativo === "true";
-
-    if (!ativo) {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        alert("Permissão para notificações negada");
-        return;
-      }
-
-      const token = await getToken(messaging, {
-        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-        serviceWorkerRegistration: swRegistration
-      });
-
-      if (!token) {
-        alert("Não foi possível obter o token");
-        return;
-      }
-
-      await setDoc(doc(db, "tokens_tecnicos", token), {
-        token,
-        usuario: localStorage.getItem("usuario_nome"),
-        criadoEm: new Date()
-      });
-
-      btnNotificacao.textContent = "🔕 Desativar Notificações";
-      btnNotificacao.dataset.ativo = "true";
-
-      alert("Notificações ativadas com sucesso!");
-
-    } else {
-      const token = await getToken(messaging, {
-        vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-        serviceWorkerRegistration: swRegistration
-      });
-
-      if (token) {
-        await deleteDoc(doc(db, "tokens_tecnicos", token));
-        await deleteToken(messaging);
-      }
-
-      btnNotificacao.textContent = "🔔 Ativar Notificações";
-      btnNotificacao.dataset.ativo = "false";
-
-      alert("Notificações desativadas!");
-    }
-  } catch (e) {
-    console.error("Erro FCM:", e);
-    alert("Erro ao configurar notificações");
-  }
+/* USUÁRIOS */
+const USUARIOS = {
+  "cleider": "Cleider Filho",
+  "salles2026": "Douglas Salles",
+  "gleyson2026": "Gleyson Murça",
+  "robson2026": "Robson Jesus",
+  "otto2026": "Leonardo Otto",
+  "junior2026": "Geraldo Junior",
+  "cleiton2026": "Cleiton Castro",
+  "amanda2026": "Amanda",
+  "mariana2026": "Mariana",
+  "couto2026": "Grazy Couto",
+  "breno2026": "Breno",
+  "luiz2026": "Luiz",
+  "joaquim2026": "Joaquim Pereira",
+  "reginaldo2026": "Reginaldo Bocafoli"
 };
 
-async function sincronizarEstadoNotificacao() {
-  try {
-    const token = await getToken(messaging, {
-      vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-      serviceWorkerRegistration: swRegistration
-    });
 
-    if (!token) return;
+/* LOGIN */
+window.login = () => {
+  const senha = document.getElementById("senha").value;
 
-    const ref = doc(db, "tokens_tecnicos", token);
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      btnNotificacao.textContent = "🔕 Desativar Notificações";
-      btnNotificacao.dataset.ativo = "true";
-    } else {
-      btnNotificacao.textContent = "🔔 Ativar Notificações";
-      btnNotificacao.dataset.ativo = "false";
-    }
-  } catch (e) {
-    console.warn("Não foi possível sincronizar notificações:", e);
+  if (!USUARIOS[senha]) {
+    alert("Senha inválida");
+    return;
   }
-}
+
+  localStorage.setItem("admin", "true");
+  localStorage.setItem("usuario_nome", USUARIOS[senha]);
+
+  loginBox.style.display = "none";
+  painel.style.display = "block";
+  carregarPedidos();
+};
+
+
+window.logout=()=>{localStorage.clear();location.reload()}
 
 /* ATUALIZAR PEDIDOS 
   window.carregarPedidos = async function(){
@@ -573,9 +466,42 @@ ${p.pecas.map(x => `• ${x.descricao} (${x.quantidade}) | NI: ${x.ni || "-"}`).
 👷‍♂️ *Aprovado por:* ${localStorage.getItem("usuario_nome") || "Não identificado"}
 ⏰ *Data:* ${agora}`
 );
-
+await enviarNotificacaoTeams(p)
+  .then(() => console.log("Teams enviado"))
+  .catch(err => console.error("Erro Teams", err));
   carregarPedidos();
 }
+
+ async function enviarNotificacaoTeams(p) {
+  const agora = new Date().toLocaleString("pt-BR");
+
+  const mensagem =
+`🧾 NOVO PEDIDO APROVADO
+
+Solicitante: ${p.nome}
+Manutenção: ${p.manutencao}
+GO: ${p.go || "-"}
+
+Peças:
+${p.pecas.map(x =>
+  `- ${x.descricao} (${x.quantidade}) | NI: ${x.ni || "-"}`
+).join("\n")}
+
+Aprovado por: ${localStorage.getItem("usuario_nome")}
+Data: ${agora}`;
+
+  const formData = new URLSearchParams();
+  formData.append("text", mensagem);
+  formData.append("token", "CMC_2026");
+
+  // 🔥 CHAVE DA SOLUÇÃO
+  fetch("https://script.google.com/macros/s/AKfycbxK4xs5IvEGKtDSMKpRLoMRRPoNUUjMG_MSx8d3tOuluen3QG7j5EshopRBwBwyh1L16Q/exec", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData
+  });
+}
+
 
 /* EXCLUIR */
 window.excluir=async(id)=>{
@@ -723,23 +649,10 @@ window.relatorioPecasSemana = () => {
 };
 
 /* AUTOLOGIN */
-const loginBox = document.getElementById("loginBox");
-const painel = document.getElementById("painel");
-
-/* SALVAR NOTIFICAÇÕES */
-if (localStorage.getItem("admin") === "true") {
-  loginBox.style.display = "none";
-  painel.style.display = "block";
+if(localStorage.getItem("admin")==="true"){
+  loginBox.style.display="none";
+  painel.style.display="block";
   carregarPedidos();
-}
-
-if (localStorage.getItem("admin") === "true") {
-  loginBox.style.display = "none";
-  painel.style.display = "block";
-  carregarPedidos();
-
-  // 🔔 sincroniza estado do botão
-  sincronizarEstadoNotificacao();
 }
 </script>
 
