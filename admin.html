@@ -215,6 +215,7 @@ button{
   <div style="display:flex; gap:10px;">
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
+    <button id="btnPush" class="secundario">🔔 Ativar notificações</button>
     <button class="btn-atualizar" onclick="location.reload()">🔄 Atualizar</button>
 </div>
 
@@ -241,7 +242,7 @@ button{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, addDoc,
+  getFirestore, collection, getDocs, addDoc, onSnapshot,
   doc, updateDoc, getDoc, query, orderBy, deleteDoc, limit, where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -316,7 +317,74 @@ window.login = () => {
 
 window.logout=()=>{localStorage.clear();location.reload()}
 
- /* ATUALIZAR PEDIDOS */
+ let pushAtivo = localStorage.getItem("pushAtivo") === "1";
+
+ let ultimoPedidoNotificado = localStorage.getItem("ultimoPedido") || null;
+
+const q = query(
+  collection(db, "pedidos"),
+  orderBy("criadoEm", "desc"),
+  limit(1)
+);
+
+onSnapshot(q, snap => {
+  if (!snap.docs.length) return;
+
+  const doc = snap.docs[0];
+  const criadoEm = doc.data().criadoEm.toMillis();
+  const id = doc.id;
+
+  if (!ultimoPedidoNotificado) {
+    localStorage.setItem("ultimoPedido", id);
+    return;
+  }
+
+  if (id !== ultimoPedidoNotificado && pushAtivo) {
+    dispararNotificacao(doc.data());
+    localStorage.setItem("ultimoPedido", id);
+  }
+});
+
+function dispararNotificacao(pedido) {
+  if (!navigator.serviceWorker.controller) return;
+
+  navigator.serviceWorker.controller.postMessage({
+    type: "SHOW_NOTIFICATION",
+    title:
+      pedido.tipo === "DEVOLUCAO"
+        ? "📦 Novo pedido de devolução"
+        : "🧰 Novo pedido de peças",
+    body: `Solicitante: ${pedido.nome} | ${pedido.manutencao}`
+  });
+}
+
+atualizarBotao();
+
+function atualizarBotao() {
+  btnPush.textContent = pushAtivo
+    ? "🔕 Desativar notificações"
+    : "🔔 Ativar notificações";
+}
+
+btnPush.onclick = async () => {
+  if (!pushAtivo) {
+    const perm = await Notification.requestPermission();
+    if (perm === "granted") {
+      pushAtivo = true;
+      localStorage.setItem("pushAtivo", "1");
+      atualizarBotao();
+      alert("Notificações ativadas");
+    }
+  } else {
+    pushAtivo = false;
+    localStorage.setItem("pushAtivo", "0");
+    atualizarBotao();
+    alert("Notificações desativadas");
+  }
+};
+
+
+/* ATUALIZAR PEDIDOS */
   window.carregarPedidos = async function(){
   lista.innerHTML = "";
 
@@ -419,6 +487,10 @@ window.atualizarNI = async (id, i, ni) => {
   // 🔄 Recarrega para recalcular faltaNI e liberar Aprovar
   carregarPedidos();
 };
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw-push.js");
+}
 
 /* APRENDER */
 async function aprender(p){
