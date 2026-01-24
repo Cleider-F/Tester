@@ -5,7 +5,7 @@ firebase.initializeApp({
   apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
   projectId: "pedidos-almoxarifado",
-  storageBucket: "pedidos-almoxarifado.appspot.com",
+  storageBucket: "pedidos-almoxarifado.appspot.app",
   messagingSenderId: "443882865992",
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
@@ -21,3 +21,4 @@ messaging.onBackgroundMessage(payload => {
     }
   );
 });
+
