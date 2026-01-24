@@ -274,9 +274,14 @@ const app=initializeApp({
 const db=getFirestore(app);
 const messaging = getMessaging(app);
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/firebase-messaging-sw.js");
-}
+(async () => {
+  if ("serviceWorker" in navigator) {
+    swRegistration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
+    );
+  }
+})();
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
@@ -332,24 +337,41 @@ window.login = () => {
 
 window.logout=()=>{localStorage.clear();location.reload()}
 
-/* Notificações push */
+/* PUSH NOTIFICATIONS */
+let swRegistration = null;
+
+(async () => {
+  if ("serviceWorker" in navigator) {
+    swRegistration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
+    );
+  }
+})();
+
 async function salvarTokenPush(tipo){
+  if (!swRegistration) {
+    alert("Service Worker ainda não pronto. Recarregue a página.");
+    return;
+  }
+
   const permission = await Notification.requestPermission();
-  if(permission !== "granted"){
+  if (permission !== "granted") {
     alert("Permissão de notificação negada");
     return;
   }
 
-  const token = await getToken(messaging,{
-    vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0"
+  const token = await getToken(messaging, {
+    vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+    serviceWorkerRegistration: swRegistration
   });
 
-  if(!token){
-    alert("Token não gerado");
+  if (!token) {
+    alert("Não foi possível gerar o token");
     return;
   }
 
-  await addDoc(collection(db,"admin_push_tokens"),{
+  await addDoc(collection(db, "admin_push_tokens"), {
     tecnico: localStorage.getItem("usuario_nome"),
     token,
     [`ativo_${tipo}`]: true,
@@ -359,8 +381,6 @@ async function salvarTokenPush(tipo){
 
   alert("Notificação ativada para este dispositivo");
 }
-
-
 
 window.ativarPushNovo = () => salvarTokenPush("novo_pedido");
 window.ativarPushStatus = () => salvarTokenPush("status_pedido");
