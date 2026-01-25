@@ -340,14 +340,14 @@ window.logout=()=>{localStorage.clear();location.reload()}
 /* PUSH NOTIFICATIONS */
 let swRegistration = null;
 
-/*(async () => {
+(async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
       "/Tester/firebase-messaging-sw.js",
       { scope: "/Tester/" }
     );
   }
-})();*/
+})();
 
 async function salvarTokenPush(tipo) {
   if (!swRegistration) {
