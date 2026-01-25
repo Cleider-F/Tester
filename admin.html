@@ -274,14 +274,14 @@ const app=initializeApp({
 const db=getFirestore(app);
 const messaging = getMessaging(app);
 
-(async () => {
+/*(async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
       "/Tester/firebase-messaging-sw.js",
       { scope: "/Tester/" }
     );
   }
-})();
+})();*/
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
