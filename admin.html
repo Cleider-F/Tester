@@ -278,7 +278,7 @@ const messaging = getMessaging(app);
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
       "/Tester/firebase-messaging-sw.js",
-      { scope: "/" }
+      { scope: "/Tester" }
     );
   }
 })();
@@ -343,8 +343,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/" }
+      "Tester/firebase-messaging-sw.js",
+      { scope: "/Tester" }
     );
   }
 })();
