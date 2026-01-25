@@ -212,8 +212,8 @@ button{
 </div>
 
 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px">
-<button onclick="salvarTokenPush('novo')">🔔 Push Novo Pedido</button>
-<button onclick="salvarTokenPush('status')">🔔 Push Status Pedido</button>
+  <button onclick="salvarTokenPush('novo')">🔔 Push Novo Pedido</button>
+  <button onclick="salvarTokenPush('status')">🔔 Push Status Pedido</button>
 </div>
 
   <div class="top-actions">
@@ -274,14 +274,6 @@ const app=initializeApp({
 const db=getFirestore(app);
 const messaging = getMessaging(app);
 
-(async () => {
-  if ("serviceWorker" in navigator) {
-    swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
-    );
-  }
-})();
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
@@ -343,8 +335,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
     );
   }
 })();
@@ -373,21 +365,25 @@ async function salvarTokenPush(tipo) {
 
   const nome = localStorage.getItem("usuario_nome");
   const ref = doc(db, "admin_push_tokens", nome);
+  const snap = await getDoc(ref);
 
-  const payload = {
-    nome,
-    perfil: "admin",
-    fcmTokens: arrayUnion(token),
-    atualizadoEm: new Date()
-  };
+  let tokens = snap.exists() ? snap.data().tokens || [] : [];
 
-  if (tipo === "novo") payload.ativo_novo_pedido = true;
-  if (tipo === "status") payload.ativo_status_pedido = true;
+  // procura token existente
+  let t = tokens.find(t => t.token === token);
+  if (!t) {
+    t = { token, novo_pedido: false, status_pedido: false, ativo: true };
+    tokens.push(t);
+  }
 
-  await setDoc(ref, payload, { merge: true });
+  if (tipo === "novo") t.novo_pedido = !t.novo_pedido; // alterna
+  if (tipo === "status") t.status_pedido = !t.status_pedido;
 
-  alert("Push ativado com sucesso");
+  await setDoc(ref, { tokens, atualizadoEm: new Date() }, { merge: true });
+
+  alert(`Push atualizado com sucesso:\nNovo Pedido: ${t.novo_pedido}\nStatus Pedido: ${t.status_pedido}`);
 }
+
 
 
 //window.ativarPushNovo = salvarTokenPush;//
