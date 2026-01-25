@@ -356,48 +356,33 @@ async function salvarTokenPush(tipo) {
   }
 
   const permission = await Notification.requestPermission();
-  if (permission !== "granted") {
-    alert("Permissão negada");
-    return;
-  }
+  if (permission !== "granted") return;
 
   const token = await getToken(messaging, {
     vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
     serviceWorkerRegistration: swRegistration
   });
 
-  if (!token) {
-    alert("Token não gerado");
-    return;
-  }
+  if (!token) return;
 
-  const nome = localStorage.getItem("usuario_nome");
-  const ref = doc(db, "admin_push_tokens", nome);
-
-  // 🔍 BUSCA O DOCUMENTO DO USUÁRIO
+  const ref = doc(db, "admin_push_tokens", token);
   const snap = await getDoc(ref);
-  const dados = snap.exists() ? snap.data() : {};
-  const tokensAtuais = dados.fcmTokens || [];
 
-  // 🛑 EVITA TOKEN DUPLICADO
-  if (tokensAtuais.includes(token)) {
-    alert("Este celular já está registrado para receber notificações");
+  if (snap.exists()) {
+    alert("Este dispositivo já está cadastrado");
     return;
   }
 
-  const payload = {
-    nome,
+  await setDoc(ref, {
+    usuario: localStorage.getItem("usuario_nome"),
+    token,
+    tipo,              // 🔑 novo OU status
+    ativo: true,
     perfil: "admin",
-    fcmTokens: arrayUnion(token),
-    atualizadoEm: new Date()
-  };
+    criadoEm: new Date()
+  });
 
-  if (tipo === "novo") payload.ativo_novo_pedido = true;
-  if (tipo === "status") payload.ativo_status_pedido = true;
-
-  await setDoc(ref, payload, { merge: true });
-
-  alert("Push ativado com sucesso neste dispositivo 📲");
+  alert(`Notificação de ${tipo} ativada neste celular 📲`);
 }
 window.salvarTokenPush = salvarTokenPush;
 
