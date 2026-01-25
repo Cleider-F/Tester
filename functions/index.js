@@ -54,7 +54,7 @@ ${Array.isArray(p.pecas)
 /* ======================================================
    PUSH – NOVO PEDIDO
 ====================================================== */
-exports.pushNovoPedido = onDocumentCreated(
+/*exports.pushNovoPedido = onDocumentCreated(
   {
     document: "pedidos/{pedidoId}",
     region: "southamerica-east1"
@@ -83,11 +83,11 @@ exports.pushNovoPedido = onDocumentCreated(
     });
   }
 );
-
+*/
 /* ======================================================
    PUSH – STATUS DO PEDIDO
 ====================================================== */
-exports.pushStatusPedido = onDocumentUpdated(
+/*exports.pushStatusPedido = onDocumentUpdated(
   {
     document: "pedidos/{pedidoId}",
     region: "southamerica-east1"
@@ -119,6 +119,7 @@ exports.pushStatusPedido = onDocumentUpdated(
         title: `📋 Pedido ${depois.status}`,
         body: `Pedido de ${depois.nome || "-"}`
       }
-    });
+    });*/
   }
 );
+
