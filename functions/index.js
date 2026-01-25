@@ -60,34 +60,26 @@ exports.pushNovoPedido = onDocumentCreated(
     region: "southamerica-east1"
   },
   async () => {
-    const snap = await db
-      .collection("admin_push_tokens")
-      .where("ativo_novo_pedido", "==", true)
-      .get();
-
+    const snap = await db.collection("admin_push_tokens").get();
     if (snap.empty) return;
 
-    const tokens = snap.docs
-      .map(d => d.data().token)
-      .filter(Boolean);
+    const tokens = [];
+
+    snap.forEach(doc => {
+      const data = doc.data();
+      if (Array.isArray(data.fcmTokens)) {
+        tokens.push(...data.fcmTokens);
+      }
+    });
 
     if (!tokens.length) return;
 
     await messaging.sendEachForMulticast({
-  tokens,
-  notification: {
-    title: "📦 Novo pedido",
-    body: "Um novo pedido foi criado"
-  },
-  webpush: {
-    headers: {
-      Urgency: "high"
-    }
-  },
-  data: {
-    tipo: "novo_pedido"
-  }
-});
+      tokens,
+      notification: {
+        title: "📦 Novo pedido",
+        body: "Um novo pedido foi criado no sistema"
+      }
     });
   }
 );
@@ -107,16 +99,17 @@ exports.pushStatusPedido = onDocumentUpdated(
     if (!antes || !depois) return;
     if (antes.status === depois.status) return;
 
-    const snap = await db
-      .collection("admin_push_tokens")
-      .where("ativo_status_pedido", "==", true)
-      .get();
-
+    const snap = await db.collection("admin_push_tokens").get();
     if (snap.empty) return;
 
-    const tokens = snap.docs
-      .map(d => d.data().token)
-      .filter(Boolean);
+    const tokens = [];
+
+    snap.forEach(doc => {
+      const data = doc.data();
+      if (Array.isArray(data.fcmTokens)) {
+        tokens.push(...data.fcmTokens);
+      }
+    });
 
     if (!tokens.length) return;
 
@@ -129,4 +122,3 @@ exports.pushStatusPedido = onDocumentUpdated(
     });
   }
 );
-
