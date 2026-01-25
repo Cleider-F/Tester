@@ -1,107 +1,122 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
+const { initializeApp } = require("firebase-admin/app");
+const { getMessaging } = require("firebase-admin/messaging");
+const { getFirestore } = require("firebase-admin/firestore");
 const fetch = require("node-fetch");
 
-admin.initializeApp();
-const messaging = admin.messaging();
+initializeApp();
+
+const db = getFirestore();
+const messaging = getMessaging();
 
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const CHAT_ID = "-1003671947511";
 
-/* ===============================
+/* ======================================================
    TELEGRAM – NOVO PEDIDO
-================================ */
-exports.notificarNovoPedido = functions.firestore
-.document("pedidos/{pedidoId}")
-.onCreate(async (snap) => {
+====================================================== */
+exports.notificarNovoPedido = onDocumentCreated(
+  {
+    document: "pedidos/{pedidoId}",
+    region: "southamerica-east1"
+  },
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return;
 
-  const p = snap.data();
+    const p = snap.data();
 
-  const texto = `
+    const texto = `
 📦 *NOVO PEDIDO DE PEÇAS*
 
-👤 *Solicitante:* ${p.nome}
-🔧 *Manutenção:* ${p.manutencao}
+👤 *Solicitante:* ${p.nome || "-"}
+🔧 *Manutenção:* ${p.manutencao || "-"}
 🏷 *GO:* ${p.go || "-"}
 
 🧾 *Peças:*
-${p.pecas.map(x => `• ${x.descricao} (${x.quantidade})`).join("\n")}
-
-🕒 *Data:* ${new Date().toLocaleString("pt-BR")}
+${Array.isArray(p.pecas)
+  ? p.pecas.map(x => `• ${x.descricao} (${x.quantidade})`).join("\n")
+  : "-"}
 `;
 
-  const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: texto,
+        parse_mode: "Markdown"
+      })
+    });
+  }
+);
 
-  await fetch(url,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      chat_id: CHAT_ID,
-      text: texto,
-      parse_mode:"Markdown"
-    })
-  });
-
-  return null;
-});
-
-
-/* ===============================
+/* ======================================================
    PUSH – NOVO PEDIDO
-================================ */
-exports.pushNovoPedido = functions.firestore
-.document("pedidos/{id}")
-.onCreate(async () => {
+====================================================== */
+exports.pushNovoPedido = onDocumentCreated(
+  {
+    document: "pedidos/{pedidoId}",
+    region: "southamerica-east1"
+  },
+  async () => {
+    const snap = await db
+      .collection("admin_push_tokens")
+      .where("ativo_novo_pedido", "==", true)
+      .get();
 
-  const cfg = await admin.firestore()
-    .doc("admin_push_config/config")
-    .get();
+    if (snap.empty) return;
 
-  if(!cfg.exists) return null;
+    const tokens = snap.docs
+      .map(d => d.data().token)
+      .filter(Boolean);
 
-  const data = cfg.data();
-  if(!data.ativo_novo_pedido || !data.token) return null;
+    if (!tokens.length) return;
 
-  await messaging.send({
-    token: data.token,
-    notification:{
-      title: "📦 Novo pedido",
-      body: "Um novo pedido foi criado no sistema"
-    }
-  });
+    await messaging.sendEachForMulticast({
+      tokens,
+      notification: {
+        title: "📦 Novo pedido",
+        body: "Um novo pedido foi criado no sistema"
+      }
+    });
+  }
+);
 
-  return null;
-});
-
-
-/* ===============================
+/* ======================================================
    PUSH – STATUS DO PEDIDO
-================================ */
-exports.pushStatusPedido = functions.firestore
-.document("pedidos/{id}")
-.onUpdate(async (change) => {
+====================================================== */
+exports.pushStatusPedido = onDocumentUpdated(
+  {
+    document: "pedidos/{pedidoId}",
+    region: "southamerica-east1"
+  },
+  async (event) => {
+    const antes = event.data.before.data();
+    const depois = event.data.after.data();
 
-  const antes = change.before.data();
-  const depois = change.after.data();
+    if (!antes || !depois) return;
+    if (antes.status === depois.status) return;
 
-  if(antes.status === depois.status) return null;
+    const snap = await db
+      .collection("admin_push_tokens")
+      .where("ativo_status_pedido", "==", true)
+      .get();
 
-  const cfg = await admin.firestore()
-    .doc("admin_push_config/config")
-    .get();
+    if (snap.empty) return;
 
-  if(!cfg.exists) return null;
+    const tokens = snap.docs
+      .map(d => d.data().token)
+      .filter(Boolean);
 
-  const data = cfg.data();
-  if(!data.ativo_status_pedido || !data.token) return null;
+    if (!tokens.length) return;
 
-  await messaging.send({
-    token: data.token,
-    notification:{
-      title: `📋 Pedido ${depois.status}`,
-      body: `Pedido de ${depois.nome} foi ${depois.status}`
-    }
-  });
-
-  return null;
-});
+    await messaging.sendEachForMulticast({
+      tokens,
+      notification: {
+        title: `📋 Pedido ${depois.status}`,
+        body: `Pedido de ${depois.nome || "-"}`
+      }
+    });
+  }
+);

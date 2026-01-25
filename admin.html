@@ -212,8 +212,8 @@ button{
 </div>
 
 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px">
-  <button onclick="ativarPushNovo()">🔔 Push Novo Pedido</button>
-  <button onclick="ativarPushStatus()">🔔 Push Status Pedido</button>
+<button onclick="salvarTokenPush('novo')">🔔 Push Novo Pedido</button>
+<button onclick="salvarTokenPush('status')">🔔 Push Status Pedido</button>
 </div>
 
   <div class="top-actions">
@@ -247,7 +247,7 @@ button{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore, collection, getDocs, addDoc,
-  doc, updateDoc, getDoc, query, orderBy,
+  doc, updateDoc, getDoc, query, orderBy, arrayUnion,
   deleteDoc, limit, where, setDoc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
@@ -277,8 +277,8 @@ const messaging = getMessaging(app);
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
     );
   }
 })();
@@ -343,21 +343,21 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
     );
   }
 })();
 
-async function salvarTokenPush(tipo){
+async function salvarTokenPush(tipo) {
   if (!swRegistration) {
-    alert("Service Worker ainda não pronto. Recarregue a página.");
+    alert("Service Worker não pronto");
     return;
   }
 
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
-    alert("Permissão de notificação negada");
+    alert("Permissão negada");
     return;
   }
 
@@ -367,30 +367,38 @@ async function salvarTokenPush(tipo){
   });
 
   if (!token) {
-    alert("Não foi possível gerar o token");
+    alert("Token não gerado");
     return;
   }
 
-  await addDoc(collection(db, "admin_push_tokens"), {
-    tecnico: localStorage.getItem("usuario_nome"),
-    token,
-    [`ativo_${tipo}`]: true,
-    navegador: navigator.userAgent,
-    criadoEm: new Date()
-  });
+  const nome = localStorage.getItem("usuario_nome");
+  const ref = doc(db, "admin_push_tokens", nome);
 
-  alert("Notificação ativada para este dispositivo");
+  const payload = {
+    nome,
+    perfil: "admin",
+    fcmTokens: arrayUnion(token),
+    atualizadoEm: new Date()
+  };
+
+  if (tipo === "novo") payload.ativo_novo_pedido = true;
+  if (tipo === "status") payload.ativo_status_pedido = true;
+
+  await setDoc(ref, payload, { merge: true });
+
+  alert("Push ativado com sucesso");
 }
 
-window.ativarPushNovo = () => salvarTokenPush("novo_pedido");
-window.ativarPushStatus = () => salvarTokenPush("status_pedido");
+
+//window.ativarPushNovo = salvarTokenPush;//
+//window.ativarPushStatus = salvarTokenPush;//
 
  /* ATUALIZAR PEDIDOS */
   window.carregarPedidos = async function(){
   lista.innerHTML = "";
 
   const q = query(
-    collection(db,"pedidos"),
+    collection(db,"admin_push_tokens"),
     orderBy("criadoEm","desc"),
     limit(25)
   );
@@ -707,6 +715,9 @@ if(localStorage.getItem("admin")==="true"){
   painel.style.display="block";
   carregarPedidos();
 }
+
+window.salvarTokenPush = salvarTokenPush;
+
 </script>
 
 </body>
