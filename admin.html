@@ -330,13 +330,13 @@ window.login = () => {
 window.logout=()=>{localStorage.clear();location.reload()}
 
 /* PUSH NOTIFICATIONS */
-/* let swRegistration = null; */
+let swRegistration = null;
 
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/firebase-messaging-sw.js",
-      { scope: "/" }
+      "/Tester/firebase-messaging-sw.js",
+      { scope: "/Tester/" }
     );
   }
 })();
