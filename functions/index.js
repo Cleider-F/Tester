@@ -74,11 +74,20 @@ exports.pushNovoPedido = onDocumentCreated(
     if (!tokens.length) return;
 
     await messaging.sendEachForMulticast({
-      tokens,
-      notification: {
-        title: "📦 Novo pedido",
-        body: "Um novo pedido foi criado no sistema"
-      }
+  tokens,
+  notification: {
+    title: "📦 Novo pedido",
+    body: "Um novo pedido foi criado"
+  },
+  webpush: {
+    headers: {
+      Urgency: "high"
+    }
+  },
+  data: {
+    tipo: "novo_pedido"
+  }
+});
     });
   }
 );
@@ -120,3 +129,4 @@ exports.pushStatusPedido = onDocumentUpdated(
     });
   }
 );
+
