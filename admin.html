@@ -212,8 +212,8 @@ button{
 </div>
 
 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px">
-<button onclick="salvarTokenPush('novo')">🔔 Push Novo Pedido</button>
-<button onclick="salvarTokenPush('status')">🔔 Push Status Pedido</button>
+<button onclick="salvarTokenPush('novo')">🔔 Notificações Novo Pedido</button>
+<button onclick="salvarTokenPush('status')">🔔 Notificações Pedidos Aprovados</button>
 </div>
 
   <div class="top-actions">
@@ -274,14 +274,14 @@ const app=initializeApp({
 const db=getFirestore(app);
 const messaging = getMessaging(app);
 
-/*(async () => {
+(async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
       "/Tester/firebase-messaging-sw.js",
       { scope: "/Tester/" }
     );
   }
-})();*/
+})();
 
 /* TELEGRAM */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
@@ -374,6 +374,17 @@ async function salvarTokenPush(tipo) {
   const nome = localStorage.getItem("usuario_nome");
   const ref = doc(db, "admin_push_tokens", nome);
 
+  // 🔍 BUSCA O DOCUMENTO DO USUÁRIO
+  const snap = await getDoc(ref);
+  const dados = snap.exists() ? snap.data() : {};
+  const tokensAtuais = dados.fcmTokens || [];
+
+  // 🛑 EVITA TOKEN DUPLICADO
+  if (tokensAtuais.includes(token)) {
+    alert("Este celular já está registrado para receber notificações");
+    return;
+  }
+
   const payload = {
     nome,
     perfil: "admin",
@@ -386,9 +397,9 @@ async function salvarTokenPush(tipo) {
 
   await setDoc(ref, payload, { merge: true });
 
-  alert("Push ativado com sucesso");
+  alert("Push ativado com sucesso neste dispositivo 📲");
 }
-
+window.salvarTokenPush = salvarTokenPush;
 
 //window.ativarPushNovo = salvarTokenPush;//
 //window.ativarPushStatus = salvarTokenPush;//
@@ -715,9 +726,6 @@ if(localStorage.getItem("admin")==="true"){
   painel.style.display="block";
   carregarPedidos();
 }
-
-window.salvarTokenPush = salvarTokenPush;
-
 </script>
 
 </body>
