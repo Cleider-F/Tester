@@ -303,7 +303,7 @@ let swRegistration = null;
       "/Tester/firebase-messaging-sw.js",
       { scope: "/Tester/" }
     );
-
+console.log("TOKEN FCM:", token);
     // sincroniza botões
     ajustarBotaoNotificacao("novo", document.getElementById("btnNovo"));
     ajustarBotaoNotificacao("status", document.getElementById("btnStatus"));
