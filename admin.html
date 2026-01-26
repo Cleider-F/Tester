@@ -303,7 +303,7 @@ let swRegistration = null;
       "/Tester/firebase-messaging-sw.js",
       { scope: "/Tester/" }
     );
-console.log("TOKEN FCM:", token);
+
     // sincroniza botões
     ajustarBotaoNotificacao("novo", document.getElementById("btnNovo"));
     ajustarBotaoNotificacao("status", document.getElementById("btnStatus"));
@@ -331,7 +331,7 @@ async function ajustarBotaoNotificacao(tipo, botao) {
     vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
     serviceWorkerRegistration: swRegistration
   });
-
+console.log("TOKEN FCM:", token);
   if (!token) return;
 
   const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
