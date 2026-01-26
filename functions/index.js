@@ -10,7 +10,7 @@ const db = getFirestore();
 const messaging = getMessaging();
 
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const CHAT_ID = "-1003671947511";
+const CHAT_ID = "-1003208006500";
 
 /* ======================================================
    TELEGRAM – NOVO PEDIDO
@@ -121,5 +121,6 @@ exports.pushStatusPedido = onDocumentUpdated(
     });
   }
 );
+
 
 
