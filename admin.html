@@ -57,6 +57,7 @@ button{
 
 .btn-sair{background:#111827;color:#fff}
 .btn-refresh{background:#2abf3b;color:#fff}
+.btn-notificacao{background:#f2cf35;color:#fff}
 .btn-atualizar{background:#2563eb;color:#fff}
 
 .relatorio-box{
@@ -70,6 +71,18 @@ button{
 }
 
 .relatorio-box button{background:#16a34a;color:#fff}
+
+.notificacao-box{
+  background:#f9fafb;
+  padding:12px;
+  border-radius:12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.notificacao-box button{background:#7a7a77;color:#fff}
 
 .cards{
   display:grid;
@@ -100,6 +113,26 @@ button{
   background:#ffffff;
   border-left-color:#dc2626;
 }
+
+.card-separado{
+  background:#eff6ff;
+  border-left-color:#2563eb;
+}
+
+.btn-separado{
+  background:#2563eb;
+  color:#fff;
+}
+
+.selo-separado{
+  background:#dbeafe;
+  color:#1e40af;
+  font-weight:bold;
+  text-align:center;
+  padding:8px;
+  border-radius:10px;
+}
+
 
 .info{margin-bottom:8px;font-size:14px}
 .info b{display:block;color:#374151}
@@ -199,6 +232,8 @@ button{
   <img src="suzano-logo.png">
 </div>
 
+<footer>Criado e Desenvolvido por Cleider Filho</footer>
+  
 <div class="login" id="loginBox">
   <h2>🔐 Área de Técnicos</h2>
   <input type="password" id="senha" placeholder="Senha">
@@ -211,15 +246,13 @@ button{
   <h2>📦 Pedidos Recebidos</h2>
 </div>
 
-<div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px">
-<button onclick="salvarTokenPush('novo')">🔔 Push Novo Pedido</button>
-<button onclick="salvarTokenPush('status')">🔔 Push Status Pedido</button>
-</div>
+
 
   <div class="top-actions">
   <div style="display:flex; gap:10px;">
     <button class="btn-sair" onclick="logout()">🚪 Sair</button>
     <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
+    <button class="btn-notificacao" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
     <button class="btn-atualizar" onclick="location.reload()">🔄 Atualizar</button>
 </div>
 
@@ -235,11 +268,16 @@ button{
   <button onclick="relatorioPecasSemana()">📦 Peças mais usadas na semana</button>
 </div>
 
-  <div class="cards" id="lista"></div>
+<div class="notificacao-box" id="notificacaoBox" style="display:none;">
+<button onclick="salvarTokenPush('novo')">🔔 Notificações - Novo Pedido</button>
+<button onclick="salvarTokenPush('status')">🔔 Notificações - Pedidos Aprovados</button>
 </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
-
+<div class="cards" id="lista"></div>
+</div>
+  
+<br></br>
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
@@ -277,8 +315,8 @@ const messaging = getMessaging(app);
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
     );
   }
 })();
@@ -343,8 +381,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/firebase-messaging-sw.js",
+      { scope: "/" }
     );
   }
 })();
@@ -453,8 +491,19 @@ pedidos.forEach(p => {
   const faltaNI = p.pecas.some(x => !x.ni);
 
   lista.innerHTML += `
-<div class="card card-${p.status.toLowerCase()} ${p.tipo === "DEVOLUCAO" ? "card-devolucao" : ""}">
-${!finalizado ? `<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>` : ""}
+<div class="card 
+card-${p.status.toLowerCase()} 
+${p.tipo === "DEVOLUCAO" ? "card-devolucao" : ""} 
+${p.separado ? "card-separado" : ""}">
+${p.status === "Pendente"
+  ? `<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>`
+  : p.status === "Aprovado" && !p.separado
+    ? `<button class="btn-excluir" 
+        style="color:#2563eb" 
+        title="Confirmar que o pedido foi separado"
+        onclick="confirmarSeparacao('${p.id}')">✔️</button>`
+    : ""
+}
 
 <div class="status status-${p.status.toLowerCase()}">${p.status}</div>
 ${p.tipo === "DEVOLUCAO"
@@ -481,6 +530,11 @@ ${finalizado
 ✔ Pedido ${p.status}<br>
 👷‍♂️ ${p.aprovadoPor || "-"}
 </div>
+
+${p.separado ? `
+<div class="selo-separado">
+✔️ Reservado por ${p.separadoPor || "-"}
+</div>` : ""}
 `
 :`
 <button class="aprovar" ${faltaNI?"disabled":""}
@@ -582,6 +636,20 @@ window.excluir=async(id)=>{
     carregarPedidos();
   }
 }
+
+/* SEPARAÇÃO */
+window.confirmarSeparacao = async (id) => {
+  if (!confirm("Confirmar que o pedido já foi separado?")) return;
+
+  await updateDoc(doc(db,"pedidos",id),{
+    separado: true,
+    separadoPor: localStorage.getItem("usuario_nome") || "Não identificado",
+    separadoEm: new Date()
+  });
+
+  carregarPedidos();
+};
+
 
 /* RELATÓRIO */
 window.gerarRelatorioDia = () => {
@@ -718,6 +786,11 @@ window.relatorioPecasSemana = () => {
     fim,
     "Relatório semanal – Peças mais usadas"
   );
+};
+
+window.toggleNotificacaoBox = () => {
+  const box = document.getElementById("notificacaoBox");
+  box.style.display = box.style.display === "none" ? "flex" : "none";
 };
 
 /* AUTOLOGIN */

@@ -20,38 +20,9 @@ messaging.onBackgroundMessage((payload) => {
   const title = payload.notification?.title || "Novo aviso";
   const body  = payload.notification?.body || "";
 
-  const destino =
-    payload.data?.destino || "/PedidosCMCApp/admin.html";
-
   self.registration.showNotification(title, {
     body,
-    icon: "/PedidosCMCApp/icon-192.png",
-    badge: "/PedidosCMCApp/icon-192.png",
-    data: {
-      destino
-    }
+    icon: "/icon-192.png",
+    badge: "/icon-192.png"
   });
-});
-
-/**
- * 🖱️ CLIQUE NA NOTIFICAÇÃO
- */
-self.addEventListener("notificationclick", function (event) {
-  event.notification.close();
-
-  const destino = event.notification.data?.destino || "/PedidosCMCApp/admin.html";
-
-  event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true })
-      .then(clientList => {
-        for (const client of clientList) {
-          if (client.url.includes(destino) && "focus" in client) {
-            return client.focus();
-          }
-        }
-        if (clients.openWindow) {
-          return clients.openWindow(destino);
-        }
-      })
-  );
 });
