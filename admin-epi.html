@@ -471,7 +471,7 @@ async function carregarPedidos(){
 
   const q = query(
   collection(db,"pedidos"),
-  where("manutencao", "==", "EPI"),
+  where("categoria", "==", "EPI"),
   orderBy("criadoEm","desc"),
   limit(25)
 );
@@ -492,7 +492,7 @@ async function carregarPedidos(){
     const faltaNI=p.pecas.some(x=>!x.ni);
 
     lista.innerHTML+=`
-<div class="card card-${p.status.toLowerCase()} ${p.tipo==="DEVOLUCAO"?"card-devolucao":""}">
+<div class="card card-${p.status.toLowerCase()} card-epi ${p.tipo==="DEVOLUCAO"?"card-devolucao":""}">
 ${!finalizado?`<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>`:""}
 
 <div class="status status-${p.status.toLowerCase()}">${p.status}</div>
