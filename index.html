@@ -159,6 +159,7 @@ input:disabled {
       <option>CNP</option>
       <option>SOS</option>
       <option>Uso Geral</option>
+      <option>EPI</option>
     </select>
 
     <label>GO do Equipamento</label>
@@ -206,9 +207,12 @@ const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
 manutencaoSelect.addEventListener("change", () => {
-  goInput.required = manutencaoSelect.value !== "Uso Geral";
-  goInput.disabled = manutencaoSelect.value === "Uso Geral";
-  if (goInput.disabled) goInput.value = "";
+  const semGO = ["Uso Geral", "EPI"].includes(manutencaoSelect.value);
+
+  goInput.required = !semGO;
+  goInput.disabled = semGO;
+
+  if (semGO) goInput.value = "";
 });
 
 window.adicionarPeca = () => {
@@ -303,7 +307,9 @@ const TELEGRAM_CHAT_ID = "-1003208006500";
 
 function notificarTelegram(pedido) {
   const titulo =
-    pedido.tipo === "DEVOLUCAO"
+  pedido.categoria === "EPI"
+    ? "🦺 NOVO PEDIDO DE EPI"
+    : pedido.tipo === "DEVOLUCAO"
       ? "📦 PEDIDO DE DEVOLUÇÃO"
       : "🧰 NOVO PEDIDO DE PEÇAS";
 
@@ -346,16 +352,19 @@ form.addEventListener("submit", async e => {
     const tipoPedido = document.getElementById("isDevolucao").checked
       ? "DEVOLUCAO"
       : "PEDIDO";
+const categoriaPedido =
+  manutencaoSelect.value === "EPI" ? "EPI" : "CONVENCIONAL";
 
     await addDoc(collection(db,"pedidos"),{
-      manutencao: manutencaoSelect.value,
-      go: goInput.value,
-      nome: document.getElementById("nome").value,
-      pecas,
-      tipo: tipoPedido,
-      status:"Pendente",
-      criadoEm:new Date()
-    });
+  manutencao: manutencaoSelect.value,
+  go: goInput.value,
+  nome: document.getElementById("nome").value,
+  pecas,
+  tipo: tipoPedido,
+  categoria: categoriaPedido,
+  status: "Pendente",
+  criadoEm: new Date()
+});
 
     notificarTelegram({
       nome: document.getElementById("nome").value,
