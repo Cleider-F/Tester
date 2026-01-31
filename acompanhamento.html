@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Área de Técnicos CMC - EPI</title>
+<title>Área de Técnicos CMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest-admin.json">
 <meta name="theme-color" content="#111827">
@@ -45,6 +45,11 @@ h2{text-align:center;margin-bottom:10px}
 
 .btn-atualizar{
   margin-left:auto;
+}
+
+.btn-reservar{
+  background:#2563eb;
+  color:#fff;
 }
 
 button{
@@ -112,6 +117,15 @@ button{
 .card-reprovado{
   background:#ffffff;
   border-left-color:#dc2626;
+}
+
+.card-reservado{
+  background:#eff6ff;           /* azul claro */
+  border-left-color:#2563eb;     /* azul forte */
+}
+
+.status-reservado{
+  color:#2563eb;
 }
 
 .info{margin-bottom:8px;font-size:14px}
@@ -203,81 +217,28 @@ button{
   margin-bottom:8px;
 }
 
-.card-epi{
-  border-left:6px solid #afffb3;
-  background:#f0fdf4;
-}
-
-.selo-epi{
-  background:#dcfce7;
-  color:#166524;
-  font-weight:bold;
-  padding:4px 8px;
-  border-radius:6px;
-  display:inline-block;
-  margin-bottom:6px;
-}
-
 </style>
 </head>
 
 <body>
 
-
-
-
 <div class="logo">
   <img src="suzano-logo.png">
 </div>
 <footer>Criado e Desenvolvido por Cleider Filho</footer>
-<div class="login" id="loginBox">
-  
-<h2>🔐 Área de Técnicos - EPI & Uniformes</h2>
-  <input type="password" id="senha" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-</div>
 
-<div class="painel" id="painel" style="display:none">
+<div class="painel" id="painel">
  <div class="header-admin">
-  <a href="admin.html" class="btn-home" title="Voltar">↩️</a>
-  <h2>🦺 EPI's e Uniformes</h2>
+  <a href="index.html" class="btn-home" title="Voltar ao início">🏠</a>
+  <h2>📦 Acompanhamento de pedidos</h2>
 </div>
 
-
-  <div class="top-actions">
-  <div style="display:flex; gap:10px;">
-    <button class="btn-sair" onclick="logout()">🚪 Sair</button>
-    <button class="btn-refresh" onclick="toggleRelatorio()">📊 Relatórios</button>
-    <button class="btn-notificacao" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
-    <button class="btn-atualizar" onclick="location.reload()">🔄 Atualizar</button>
-</div>
-
-<div class="relatorio-box" id="relatorioBox" style="display:none;">
-  <button onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
-
-  <button onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
-
-  <br><input type="date" id="inicio">
-  <input type="date" id="fim"></br>
-
-  <button onclick="relatorioPecasDia()">📦 Peças mais usadas hoje</button>
-  <button onclick="relatorioPecasSemana()">📦 Peças mais usadas na semana</button>
-
-  <br><input type="date" id="inicio">
-  <input type="date" id="fim"></br>
-
-  <button onclick="relatorioPecasDia()">📦 Peças mais usadas hoje</button>
-  <button onclick="relatorioPecasSemana()">📦 Peças mais usadas na semana</button>
-</div>
-
- <div class="notificacao-box" id="notificacaoBox" style="display:none;">
-  <button id="btnNovo" onclick="toggleNotificacao('novo', this)"></button>
-  <button id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
-</div>
-
+    <br>
 
   <div class="cards" id="lista"></div>
 </div>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -290,7 +251,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import {
   getFirestore, collection, getDocs, addDoc,
   doc, updateDoc, getDoc, query, orderBy,
-  deleteDoc, limit, where, setDoc
+  deleteDoc, limit, where, setDoc, writeBatch, onSnapshot, increment
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
@@ -305,9 +266,10 @@ const app = initializeApp({
   messagingSenderId: "443882865992",
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
-
+localStorage.setItem("Cleider Filho", "Painel de Acompanhamento");
 const db = getFirestore(app);
 const messaging = getMessaging(app);
+
 
 /* =========================================================
    SERVICE WORKER
@@ -424,39 +386,6 @@ async function enviarTelegram(msg){
 /* =========================================================
    USUÁRIOS / LOGIN
 ========================================================= */
-const USUARIOS = {
-  "cleider": "Cleider Filho",
-  "salles2026": "Douglas Salles",
-  "gleyson2026": "Gleyson Murça",
-  "robson2026": "Robson Jesus",
-  "otto2026": "Leonardo Otto",
-  "junior2026": "Geraldo Junior",
-  "cleiton2026": "Cleiton Castro",
-  "amanda2026": "Amanda",
-  "mariana2026": "Mariana",
-  "couto2026": "Grazy Couto",
-  "breno2026": "Breno",
-  "luiz2026": "Luiz",
-  "joaquim2026": "Joaquim Pereira",
-  "reginaldo2026": "Reginaldo Bocafoli"
-};
-
-window.login = () => {
-  const senha = document.getElementById("senha").value;
-  if (!USUARIOS[senha]) return alert("Senha inválida");
-
-  localStorage.setItem("admin","true");
-  localStorage.setItem("usuario_nome",USUARIOS[senha]);
-
-  loginBox.style.display="none";
-  painel.style.display="block";
-  carregarPedidos();
-};
-
-window.logout = ()=>{
-  localStorage.clear();
-  location.reload();
-};
 
 /* =========================================================
    NORMALIZAÇÃO
@@ -464,122 +393,61 @@ window.logout = ()=>{
 const norm = t =>
   t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 
-
 /* =========================================================
    PEDIDOS
 ========================================================= */
 async function carregarPedidos(){
-  lista.innerHTML = "";
+  lista.innerHTML="";
 
-  const q = query(
+  const q=query(
     collection(db,"pedidos"),
-    where("categoria", "==", "EPI/Uniforme"),
+    orderBy("criadoEm","desc"),
     limit(25)
   );
 
-  const snap = await getDocs(q);
-  const pedidos = [];
+  const snap=await getDocs(q);
+  const pedidos=[];
 
-  snap.forEach(d => pedidos.push({ id: d.id, ...d.data() }));
+  snap.forEach(d=>pedidos.push({id:d.id,...d.data()}));
 
-  // Pendentes primeiro
   pedidos.sort((a,b)=>{
     if(a.status==="Pendente" && b.status!=="Pendente") return -1;
     if(a.status!=="Pendente" && b.status==="Pendente") return 1;
     return 0;
   });
 
-  for (const p of pedidos) {
+  pedidos.forEach(p=>{
+const finalizado = p.status === "Reprovado" || p.status === "Reservado";
+    const faltaNI=p.pecas.some(x=>!x.ni);
 
-    const finalizado = p.status !== "Pendente";
-    const faltaNI = p.pecas.some(x => !x.ni);
+    lista.innerHTML+=`
+<div class="card card-${p.status.toLowerCase()} ${p.tipo==="DEVOLUCAO"?"card-devolucao":""}">
+${!finalizado?`<button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>`:""}
 
-    /* ============================
-       MONTA PEÇAS + HISTÓRICO
-    ============================ */
-    let pecasHTML = "";
+<div class="status status-${p.status.toLowerCase()}">${p.status}</div>
 
-    for (let i = 0; i < p.pecas.length; i++) {
-      const x = p.pecas[i];
+${p.tipo==="DEVOLUCAO"?`<div class="selo-devolucao">🔁 PEDIDO DE DEVOLUÇÃO</div>`:""}
 
-      let ultimaTxt = "Primeira solicitação";
+<div class="info"><b>Solicitante</b>${p.nome}</div>
+<div class="info"><b>Manutenção</b>${p.manutencao}</div>
+<div class="info"><b>GO</b>${p.go||"-"}</div>
 
-      if (x.ni) {
-        const ultima = await buscarUltimaSolicitacaoEPI({
-          nome: p.nome,
-          ni: x.ni,
-          pedidoAtualId: p.id
-        });
+<div class="info"><b>Peças</b></div>
 
-        if (ultima) {
-          ultimaTxt = ultima.toLocaleDateString("pt-BR");
-        }
-      }
+${p.pecas.map((x,i)=>`
+<div class="peca">
+<b>${x.descricao} (${x.quantidade})</b>
+<input value="${x.ni||""}" ${finalizado?"disabled":""}
+onchange="atualizarNI('${p.id}',${i},this.value)">
+</div>`).join("")}
 
-      pecasHTML += `
-        <div class="peca">
-          <b>${x.descricao} (${x.quantidade})</b>
 
-          <input
-            value="${x.ni || ""}"
-            ${finalizado ? "disabled" : ""}
-            onchange="atualizarNI('${p.id}', ${i}, this.value)"
-          >
 
-          <div style="font-size:12px;color:#065f46;margin-top:4px">
-            📅 Última solicitação: <b>${ultimaTxt}</b>
-          </div>
-        </div>
-      `;
-    }
 
-    /* ============================
-       CARD
-    ============================ */
-    lista.innerHTML += `
-      <div class="card card-${p.status.toLowerCase()} card-epi ${p.tipo==="DEVOLUCAO"?"card-devolucao":""}">
-        ${!finalizado ? `
-          <button class="btn-excluir" onclick="excluir('${p.id}')">❌</button>
-        ` : ""}
-
-        <div class="status status-${p.status.toLowerCase()}">${p.status}</div>
-
-        ${p.tipo==="DEVOLUCAO" ? `
-          <div class="selo-devolucao">🔁 PEDIDO DE DEVOLUÇÃO</div>
-        ` : ""}
-
-        <div class="info"><b>Solicitante</b>${p.nome}</div>
-        <div class="info"><b>Manutenção</b>${p.manutencao}</div>
-        <div class="info"><b>GO</b>${p.go || "-"}</div>
-
-        <div class="info"><b>Peças</b></div>
-
-        ${pecasHTML}
-
-        <div class="acoes">
-          ${finalizado ? `
-            <div class="selo">
-              ✔ Pedido ${p.status}<br>
-              👷‍♂️ ${p.aprovadoPor || "-"}
-            </div>
-          ` : `
-            <button class="aprovar" ${faltaNI ? "disabled" : ""}
-              onclick="mudarStatus('${p.id}','Aprovado')">
-              ✅ Aprovar
-            </button>
-
-            <button class="reprovar"
-              onclick="mudarStatus('${p.id}','Reprovado')">
-              ❌ Reprovar
-            </button>
-          `}
-        </div>
-      </div>
-    `;
-  }
+</div>`;
+  });
 }
-
-window.carregarPedidos = carregarPedidos;
+window.carregarPedidos=carregarPedidos;
 
 /* =========================================================
    NI
@@ -623,73 +491,31 @@ async function aprender(p){
 /* =========================================================
    STATUS + TELEGRAM
 ========================================================= */
-window.mudarStatus=async(id,status)=>{
-  const ref=doc(db,"pedidos",id);
-  const p=(await getDoc(ref)).data();
-  if(p.status!=="Pendente")return;
 
-  await updateDoc(ref,{
-    status,
-    finalizadoEm:new Date(),
-    aprovadoPor:localStorage.getItem("usuario_nome")||"Não identificado"
-  });
+/* =========================================================
+   window.excluir = async (id) => {
+  if (!confirm("Excluir pedido pendente?")) return;
 
-  if(status==="Aprovado") await aprender(p);
+  const pedidoRef = doc(db, "pedidos", id);
+  const statsRef  = doc(db, "stats", "pedidos");
 
-  const agora=new Date().toLocaleString("pt-BR");
+  const snap = await getDoc(pedidoRef);
+  if (!snap.exists()) return;
 
-  const tituloTelegram=
-    p.tipo==="DEVOLUCAO"
-    ?"🔁 *PEDIDO DE DEVOLUÇÃO APROVADO*"
-    :"🧰 *PEDIDO DE PEÇAS APROVADO*";
+  const pedido = snap.data();
 
-  await enviarTelegram(
-`${tituloTelegram}
+  // 🔽 Se for pendente, subtrai 1
+  if (pedido.status === "Pendente") {
+    await updateDoc(statsRef, {
+      Pendente: increment(-1)
+    });
+  }
 
-👤 *Solicitante:* ${p.nome}
-🛠 *Manutenção:* ${p.manutencao}
-🚚 *GO:* ${p.go||"-"}
-
-📦 *Peças:*
-${p.pecas.map(x=>`• ${x.descricao} (${x.quantidade}) | NI: ${x.ni||"-"}`).join("\n")}
-
-👷‍♂️ *Aprovado por:* ${localStorage.getItem("usuario_nome")}
-⏰ *Data:* ${agora}`
-  );
+  // ❌ Exclui o pedido
+  await deleteDoc(pedidoRef);
 
   carregarPedidos();
 };
-
-/* =========================================================
-   EXCLUIR
-========================================================= */
-window.excluir=async(id)=>{
-  if(confirm("Excluir pedido pendente?")){
-    await deleteDoc(doc(db,"pedidos",id));
-    carregarPedidos();
-  }
-};
-
-async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
-  const q = query(
-    collection(db,"pedidos"),
-    where("categoria","==","EPI"),
-    where("nome","==", nome),
-    where("nis","array-contains", ni),
-    orderBy("criadoEm","desc"),
-    limit(5)
-  );
-
-  const snap = await getDocs(q);
-
-  for (const doc of snap.docs) {
-    if (doc.id !== pedidoAtualId) {
-      return doc.data().criadoEm.toDate();
-    }
-  }
-
-  return null;
-}
 
 /* =========================================================
    RELATÓRIOS
@@ -705,37 +531,58 @@ window.gerarRelatorioDia=()=>{
   gerarRelatorioPeriodo();
 };
 
-window.gerarRelatorioPeriodo=async()=>{
-  const dataInicio=new Date(inicio.value+"T00:00:00");
-  const dataFim=new Date(fim.value+"T23:59:59");
+window.gerarRelatorioPeriodo = async () => {
+  const dataInicio = new Date(inicio.value + "T00:00:00");
+  const dataFim    = new Date(fim.value + "T23:59:59");
 
   const { jsPDF } = window.jspdf;
-  const pdf=new jsPDF("landscape");
+  const pdf = new jsPDF("landscape");
 
-  const snap = await getDocs(
-  query(collection(db,"pedidos"), where("categoria","==","EPI/Uniforme"))
-);
+  const snap = await getDocs(collection(db, "pedidos"));
 
-  snap.forEach(d=>{
-    const p=d.data();
-    if(!p.criadoEm)return;
-    const criado=p.criadoEm.toDate();
-    if(criado>=dataInicio && criado<=dataFim){
-      rows.push([
-        p.nome,p.manutencao,p.go||"-",
-        p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
-        p.status,criado.toLocaleString("pt-BR")
-      ]);
+  const rows = [];
+
+  snap.forEach(d => {
+    const p = d.data();
+    if (!p.criadoEm) return;
+
+    const criado = p.criadoEm.toDate();
+
+    if (criado >= dataInicio && criado <= dataFim) {
+      rows.push({
+        criado,
+        dados: [
+          p.nome,
+          p.manutencao,
+          p.go || "-",
+          p.pecas.map(x => `${x.descricao} (${x.quantidade})`).join("\n"),
+          p.status,
+          criado.toLocaleString("pt-BR")
+        ]
+      });
     }
   });
 
+  /* 🔽 ORDENA DO MAIS RECENTE PARA O MAIS ANTIGO */
+  rows.sort((a, b) => b.criado - a.criado);
+
+  /* 🔽 EXTRAI APENAS OS DADOS */
+  const body = rows.map(r => r.dados);
+
+  if (body.length === 0) {
+    alert("Nenhum pedido encontrado no período selecionado.");
+    return;
+  }
+
   pdf.autoTable({
-    head:[["Solicitante","Manutenção","GO","Peças","Status","Criado em"]],
-    body:rows
+    head: [["Solicitante", "Manutenção", "GO", "Peças", "Status", "Criado em"]],
+    body
   });
 
   pdf.save("relatorio-pedidos.pdf");
 };
+
+
 window.toggleNotificacaoBox = () => {
   const box = document.getElementById("notificacaoBox");
   box.style.display = box.style.display === "none" ? "flex" : "none";
@@ -743,11 +590,69 @@ window.toggleNotificacaoBox = () => {
 /* =========================================================
    AUTOLOGIN
 ========================================================= */
-if(localStorage.getItem("admin")==="true"){
-  loginBox.style.display="none";
-  painel.style.display="block";
-  carregarPedidos();
+
+async function aprovarTodosPendentes() {
+  if (!confirm("Tem certeza que deseja aprovar TODOS os pedidos pendentes?")) return;
+
+  try {
+    const batch = writeBatch(db);
+    const colRef = collection(db, "pedidos"); // Confirme se o nome da coleção é 'pedidos'
+    
+    // Busca apenas os que estão com status pendente
+    const q = query(colRef, where("status", "==", "pendente"));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      alert("Não há pedidos pendentes para aprovar.");
+      return;
+    }
+
+    querySnapshot.forEach((documento) => {
+      const docRef = doc(db, "pedidos", documento.id);
+      batch.update(docRef, { "status": "Aprovado" });
+    });
+
+    await batch.commit();
+    alert("Sucesso! Todos os pedidos foram aprovados.");
+    location.reload(); // Recarrega a página para atualizar a lista
+    
+  } catch (error) {
+    console.error("Erro ao atualizar em lote:", error);
+    alert("Erro ao aprovar pedidos. Verifique o console.");
+  }
 }
+
+// IMPORTANTE: Como é type="module", precisamos exportar para o HTML
+window.aprovarTodosPendentes = aprovarTodosPendentes;
+
+/* =========================================================
+   BADGE NO TÍTULO DA GUIA (CHROME / DESKTOP)
+========================================================= */
+const baseTitle = "Área de Técnicos CMC";
+const statsRef  = doc(db, "stats/pedidos");
+
+onSnapshot(statsRef, (snap) => {
+  if (!snap.exists()) {
+    document.title = baseTitle;
+    return;
+  }
+
+  const {
+    Pendente = 0,
+    aprovados = 0
+  } = snap.data();
+
+  let prefix = [];
+
+  if (aprovados > 3) prefix.push(`Aguardando reserva`);
+
+  document.title = prefix.length
+    ? `(${prefix.join(" | ")}) ${baseTitle}`
+    : baseTitle;
+});
+
+carregarPedidos();
+
 </script>
 
 </body>

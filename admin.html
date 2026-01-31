@@ -47,6 +47,11 @@ h2{text-align:center;margin-bottom:10px}
   margin-left:auto;
 }
 
+.btn-reservar{
+  background:#2563eb;
+  color:#fff;
+}
+
 button{
   border:none;
   padding:10px;
@@ -112,6 +117,15 @@ button{
 .card-reprovado{
   background:#ffffff;
   border-left-color:#dc2626;
+}
+
+.card-reservado{
+  background:#eff6ff;           /* azul claro */
+  border-left-color:#2563eb;     /* azul forte */
+}
+
+.status-reservado{
+  color:#2563eb;
 }
 
 .info{margin-bottom:8px;font-size:14px}
@@ -208,11 +222,12 @@ button{
 
 <body>
 
-<div class="logo">
-  <img src="suzano-logo.png">
-</div>
 
 <div class="login" id="loginBox">
+  <div class="logo">
+  <img src="suzano-logo.png">
+</div>
+<footer>Criado e Desenvolvido por Cleider Filho</footer>
   <h2>🔐 Área de Técnicos</h2>
   <input type="password" id="senha" placeholder="Senha">
   <button onclick="login()">Entrar</button>
@@ -222,7 +237,7 @@ button{
  <div class="header-admin">
   <a href="index.html" class="btn-home" title="Voltar ao início">🏠</a>
   <h2>📦 Pedidos Recebidos</h2>
-  <a href="admin-epi.html" class="btn-home" title="Área de EPI">🦺</a>
+  <a href="admin-epi.html" class="btn-home" title="EPI's e Uniformes">🦺</a>
 </div>
 
 
@@ -244,12 +259,6 @@ button{
 
   <button onclick="relatorioPecasDia()">📦 Peças mais usadas hoje</button>
   <button onclick="relatorioPecasSemana()">📦 Peças mais usadas na semana</button>
-
-  <br><input type="date" id="inicio">
-  <input type="date" id="fim"></br>
-
-  <button onclick="relatorioPecasDia()">📦 Peças mais usadas hoje</button>
-  <button onclick="relatorioPecasSemana()">📦 Peças mais usadas na semana</button>
 </div>
 
  <div class="notificacao-box" id="notificacaoBox" style="display:none;">
@@ -257,11 +266,12 @@ button{
   <button id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
 </div>
 
+    <br>
 
   <div class="cards" id="lista"></div>
 </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -274,7 +284,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import {
   getFirestore, collection, getDocs, addDoc,
   doc, updateDoc, getDoc, query, orderBy,
-  deleteDoc, limit, where, setDoc
+  deleteDoc, limit, where, setDoc, writeBatch, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
@@ -301,8 +311,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/PedidosCMCApp/firebase-messaging-sw.js",
+      { scope: "/PedidosCMCApp/" }
     );
 
     // sincroniza botões
@@ -391,7 +401,7 @@ window.toggleNotificacao = toggleNotificacao;
    TELEGRAM
 ========================================================= */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+const TELEGRAM_CHAT_ID = "-1003646317990";
 
 async function enviarTelegram(msg){
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
@@ -472,7 +482,7 @@ async function carregarPedidos(){
   });
 
   pedidos.forEach(p=>{
-    const finalizado=p.status!=="Pendente";
+const finalizado = p.status === "Reprovado" || p.status === "Reservado";
     const faltaNI=p.pecas.some(x=>!x.ni);
 
     lista.innerHTML+=`
@@ -496,15 +506,33 @@ ${p.pecas.map((x,i)=>`
 onchange="atualizarNI('${p.id}',${i},this.value)">
 </div>`).join("")}
 
+
 <div class="acoes">
-${finalizado?`
-<div class="selo">
+${p.status === "Pendente" ? `
+  <button class="aprovar" ${faltaNI?"disabled":""}
+    onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
+
+  <button class="reprovar"
+    onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>
+` : p.status === "Aprovado" ? `
+  <button class="btn-reservar"
+    onclick="reservarPedido('${p.id}')">
+    📦 Reservar
+  </button>
+
+  <div class="selo">
+    ✔ Pedido Aprovado<br>
+    👷‍♂️ ${p.aprovadoPor||"-"}
+  </div>
+` : `
+  <div class="selo">
 ✔ Pedido ${p.status}<br>
-👷‍♂️ ${p.aprovadoPor||"-"}
+👷‍♂️ Aprovado: ${p.aprovadoPor||"-"}<br>
+📦 Reservado: ${p.reservadoPor||"-"}
 </div>
-`:`<button class="aprovar" ${faltaNI?"disabled":""} onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
-<button class="reprovar" onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>`}
+`}
 </div>
+
 </div>`;
   });
 }
@@ -569,7 +597,7 @@ window.mudarStatus=async(id,status)=>{
 
   const tituloTelegram=
     p.tipo==="DEVOLUCAO"
-    ?"🔁 *PEDIDO DE DEVOLUÇÃO APROVADO*"
+    ?"🚨🚨🚨 *DEVOLUÇÃO* 🚨🚨🚨"
     :"🧰 *PEDIDO DE PEÇAS APROVADO*";
 
   await enviarTelegram(
@@ -588,6 +616,22 @@ ${p.pecas.map(x=>`• ${x.descricao} (${x.quantidade}) | NI: ${x.ni||"-"}`).join
 
   carregarPedidos();
 };
+
+window.reservarPedido = async (id) => {
+  if (!confirm("Confirmar que este pedido foi reservado?")) return;
+
+  const ref = doc(db, "pedidos", id);
+
+  await updateDoc(ref, {
+    status: "Reservado",
+    reservadoPor: localStorage.getItem("usuario_nome") || "Não identificado",
+    reservadoEm: new Date()
+  });
+
+  carregarPedidos();
+};
+
+
 
 /* =========================================================
    EXCLUIR
@@ -613,36 +657,58 @@ window.gerarRelatorioDia=()=>{
   gerarRelatorioPeriodo();
 };
 
-window.gerarRelatorioPeriodo=async()=>{
-  const dataInicio=new Date(inicio.value+"T00:00:00");
-  const dataFim=new Date(fim.value+"T23:59:59");
+window.gerarRelatorioPeriodo = async () => {
+  const dataInicio = new Date(inicio.value + "T00:00:00");
+  const dataFim    = new Date(fim.value + "T23:59:59");
 
   const { jsPDF } = window.jspdf;
-  const pdf=new jsPDF("landscape");
+  const pdf = new jsPDF("landscape");
 
-  const snap=await getDocs(collection(db,"pedidos"));
-  const rows=[];
+  const snap = await getDocs(collection(db, "pedidos"));
 
-  snap.forEach(d=>{
-    const p=d.data();
-    if(!p.criadoEm)return;
-    const criado=p.criadoEm.toDate();
-    if(criado>=dataInicio && criado<=dataFim){
-      rows.push([
-        p.nome,p.manutencao,p.go||"-",
-        p.pecas.map(x=>`${x.descricao} (${x.quantidade})`).join("\n"),
-        p.status,criado.toLocaleString("pt-BR")
-      ]);
+  const rows = [];
+
+  snap.forEach(d => {
+    const p = d.data();
+    if (!p.criadoEm) return;
+
+    const criado = p.criadoEm.toDate();
+
+    if (criado >= dataInicio && criado <= dataFim) {
+      rows.push({
+        criado,
+        dados: [
+          p.nome,
+          p.manutencao,
+          p.go || "-",
+          p.pecas.map(x => `${x.descricao} (${x.quantidade})`).join("\n"),
+          p.status,
+          criado.toLocaleString("pt-BR")
+        ]
+      });
     }
   });
 
+  /* 🔽 ORDENA DO MAIS RECENTE PARA O MAIS ANTIGO */
+  rows.sort((a, b) => b.criado - a.criado);
+
+  /* 🔽 EXTRAI APENAS OS DADOS */
+  const body = rows.map(r => r.dados);
+
+  if (body.length === 0) {
+    alert("Nenhum pedido encontrado no período selecionado.");
+    return;
+  }
+
   pdf.autoTable({
-    head:[["Solicitante","Manutenção","GO","Peças","Status","Criado em"]],
-    body:rows
+    head: [["Solicitante", "Manutenção", "GO", "Peças", "Status", "Criado em"]],
+    body
   });
 
   pdf.save("relatorio-pedidos.pdf");
 };
+
+
 window.toggleNotificacaoBox = () => {
   const box = document.getElementById("notificacaoBox");
   box.style.display = box.style.display === "none" ? "flex" : "none";
@@ -654,7 +720,69 @@ if(localStorage.getItem("admin")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
   carregarPedidos();
+} 
+
+async function aprovarTodosPendentes() {
+  if (!confirm("Tem certeza que deseja aprovar TODOS os pedidos pendentes?")) return;
+
+  try {
+    const batch = writeBatch(db);
+    const colRef = collection(db, "pedidos"); // Confirme se o nome da coleção é 'pedidos'
+    
+    // Busca apenas os que estão com status pendente
+    const q = query(colRef, where("status", "==", "pendente"));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      alert("Não há pedidos pendentes para aprovar.");
+      return;
+    }
+
+    querySnapshot.forEach((documento) => {
+      const docRef = doc(db, "pedidos", documento.id);
+      batch.update(docRef, { "status": "Aprovado" });
+    });
+
+    await batch.commit();
+    alert("Sucesso! Todos os pedidos foram aprovados.");
+    location.reload(); // Recarrega a página para atualizar a lista
+    
+  } catch (error) {
+    console.error("Erro ao atualizar em lote:", error);
+    alert("Erro ao aprovar pedidos. Verifique o console.");
+  }
 }
+
+// IMPORTANTE: Como é type="module", precisamos exportar para o HTML
+window.aprovarTodosPendentes = aprovarTodosPendentes;
+
+/* =========================================================
+   BADGE NO TÍTULO DA GUIA (CHROME / DESKTOP)
+========================================================= */
+const baseTitle = "Área de Técnicos CMC";
+const statsRef  = doc(db, "stats/pedidos");
+
+onSnapshot(statsRef, (snap) => {
+  if (!snap.exists()) {
+    document.title = baseTitle;
+    return;
+  }
+
+  const {
+    Pendente = 0,
+    aprovados = 0
+  } = snap.data();
+
+  let prefix = [];
+
+  if (aprovados > 3) prefix.push(`Aguardando reserva`);
+
+  document.title = prefix.length
+    ? `(${prefix.join(" | ")}) ${baseTitle}`
+    : baseTitle;
+});
+
+
 </script>
 
 </body>

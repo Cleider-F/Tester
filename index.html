@@ -112,6 +112,7 @@ input:disabled {
 <body>
 
 <script src="lista_NI.js"></script>
+<script src="lista_solicitantes.js"></script>
 
 <div class="container">
   <div class="logo">
@@ -130,9 +131,9 @@ input:disabled {
           <div class="sugestoes" style="display:none"></div>
         </div>
 
-        <label>NI (opcional)</label>
+        <label>NI</label>
         <input type="text" class="ni-manual">
-        <div class="ni-info">Se não informar, o sistema tentará identificar automaticamente</div>
+        <div class="ni-info">Materiais sem NI automático devem ser consultados no almoxarifado!</div>
 
         <label>Quantidade</label>
         <input type="number" class="quantidade" min="1" required>
@@ -159,14 +160,17 @@ input:disabled {
       <option>CNP</option>
       <option>SOS</option>
       <option>Uso Geral</option>
-      <option>EPI</option>
+      <option>EPI/Uniforme</option>
     </select>
 
     <label>GO do Equipamento</label>
     <input id="go" required>
 
     <label>Nome do solicitante</label>
-    <input id="nome" required>
+<div class="autocomplete-box">
+  <input id="nome" required oninput="sugerirSolicitante(this)">
+  <div class="sugestoes" style="display:none"></div>
+</div>
 
     <button type="submit">📦 Enviar Pedido</button>
     <div id="mensagem" class="mensagem"></div>
@@ -175,6 +179,11 @@ input:disabled {
   <a href="admin.html">
     <button class="admin-btn">🔐 Área de Técnicos 🛠️</button>
   </a>
+<a href="acompanhamento.html">
+    <button class="admin-btn">📦 Acompanhamento de Pedidos 🔩 </button>
+  </a>
+</div>
+
 </div>
 
 <footer>
@@ -207,7 +216,7 @@ const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
 manutencaoSelect.addEventListener("change", () => {
-  const semGO = ["Uso Geral", "EPI"].includes(manutencaoSelect.value);
+  const semGO = ["Uso Geral", "EPI/Uniforme"].includes(manutencaoSelect.value);
 
   goInput.required = !semGO;
   goInput.disabled = semGO;
@@ -225,7 +234,7 @@ window.adicionarPeca = () => {
       <div class="sugestoes" style="display:none"></div>
     </div>
 
-    <label>NI (opcional)</label>
+    <label>NI</label>
     <input type="text" class="ni-manual">
 
     <label>Quantidade</label>
@@ -267,6 +276,7 @@ window.sugerirPecas = (textarea) => {
 
   let resultados = [];
 
+  
   aprendizadoNI.forEach(i => {
     if (i.descricao.includes(termo)) {
       resultados.push({ produto: i.descricao, ni: i.ni });
@@ -295,6 +305,38 @@ window.sugerirPecas = (textarea) => {
   box.style.display="block";
 };
 
+window.sugerirSolicitante = (input) => {
+  const termo = normalizar(input.value);
+  const box = input.parentElement.querySelector(".sugestoes");
+
+  if (!termo || termo.length < 2) {
+    box.style.display = "none";
+    return;
+  }
+
+  const resultados = (window.LISTA_SOLICITANTES || [])
+    .filter(n => normalizar(n).includes(termo))
+    .slice(0,6);
+
+  if (!resultados.length) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = resultados
+    .map(n => `<div onclick="selecionarSolicitante(this,'${n}')">${n}</div>`)
+    .join("");
+
+  box.style.display = "block";
+};
+
+window.selecionarSolicitante = (el, nome) => {
+  const box = el.parentElement;
+  const input = box.previousElementSibling;
+  input.value = nome;
+  box.style.display = "none";
+};
+
 window.selecionarPeca = (el, produto, ni) => {
   const peca = el.closest(".peca");
   peca.querySelector(".descricao").value = produto;
@@ -303,13 +345,11 @@ window.selecionarPeca = (el, produto, ni) => {
 };
 
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003208006500";
+const TELEGRAM_CHAT_ID = "-1003671947511";
 
 function notificarTelegram(pedido) {
   const titulo =
-  pedido.categoria === "EPI"
-    ? "🦺 NOVO PEDIDO DE EPI"
-    : pedido.tipo === "DEVOLUCAO"
+    pedido.tipo === "DEVOLUCAO"
       ? "📦 PEDIDO DE DEVOLUÇÃO"
       : "🧰 NOVO PEDIDO DE PEÇAS";
 
@@ -352,19 +392,19 @@ form.addEventListener("submit", async e => {
     const tipoPedido = document.getElementById("isDevolucao").checked
       ? "DEVOLUCAO"
       : "PEDIDO";
-const categoriaPedido =
-  manutencaoSelect.value === "EPI" ? "EPI" : "CONVENCIONAL";
 
     await addDoc(collection(db,"pedidos"),{
   manutencao: manutencaoSelect.value,
   go: goInput.value,
   nome: document.getElementById("nome").value,
   pecas,
+  nis: pecas.map(p => p.ni).filter(Boolean),
   tipo: tipoPedido,
-  categoria: categoriaPedido,
-  status: "Pendente",
-  criadoEm: new Date()
+  categoria: manutencaoSelect.value === "EPI/Uniforme" ? "EPI" : "CONVENCIONAL",
+  status:"Pendente",
+  criadoEm:new Date()
 });
+
 
     notificarTelegram({
       nome: document.getElementById("nome").value,
