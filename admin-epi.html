@@ -23,6 +23,7 @@ footer{
   font-size:11px;
   color:#6b7280;
 }
+
 .login,.painel{
   max-width:1200px;
   margin:auto;
@@ -44,6 +45,11 @@ h2{text-align:center;margin-bottom:10px}
 
 .btn-atualizar{
   margin-left:auto;
+}
+
+.btn-reservar{
+  background:#2563eb;
+  color:#fff;
 }
 
 button{
@@ -111,6 +117,15 @@ button{
 .card-reprovado{
   background:#ffffff;
   border-left-color:#dc2626;
+}
+
+.card-reservado{
+  background:#eff6ff;           /* azul claro */
+  border-left-color:#2563eb;     /* azul forte */
+}
+
+.status-reservado{
+  color:#2563eb;
 }
 
 .info{margin-bottom:8px;font-size:14px}
@@ -549,27 +564,34 @@ async function carregarPedidos(){
 
         ${pecasHTML}
 
-        <div class="acoes">
-          ${finalizado ? `
-            <div class="selo">
-              ✔ Pedido ${p.status}<br>
-              👷‍♂️ ${p.aprovadoPor || "-"}
-            </div>
-          ` : `
-            <button class="aprovar" ${faltaNI ? "disabled" : ""}
-              onclick="mudarStatus('${p.id}','Aprovado')">
-              ✅ Aprovar
-            </button>
+       <div class="acoes">
+${p.status === "Pendente" ? `
+  <button class="aprovar" ${faltaNI?"disabled":""}
+    onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
 
-            <button class="reprovar"
-              onclick="mudarStatus('${p.id}','Reprovado')">
-              ❌ Reprovar
-            </button>
-          `}
-        </div>
-      </div>
-    `;
-  }
+  <button class="reprovar"
+    onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>
+` : p.status === "Aprovado" ? `
+  <button class="btn-reservar"
+    onclick="reservarPedido('${p.id}')">
+    📦 Reservar
+  </button>
+
+  <div class="selo">
+    ✔ Pedido Aprovado<br>
+    👷‍♂️ ${p.aprovadoPor||"-"}
+  </div>
+` : `
+  <div class="selo">
+✔ Pedido ${p.status}<br>
+👷‍♂️ Aprovado: ${p.aprovadoPor||"-"}<br>
+📦 Reservado: ${p.reservadoPor||"-"}
+</div>
+`}
+</div>
+
+</div>`;
+  });
 }
 
 window.carregarPedidos = carregarPedidos;
