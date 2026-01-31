@@ -627,8 +627,10 @@ async function aprender(p){
 ========================================================= */
 async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
 
-  const q = query(collection(db, "pedidos"));
-  const snap = await getDocs(q);
+  const q = query(
+    collection(db, "pedidos"),
+    where("categoria", "==", "EPI")
+  );
 
   let ultimaData = null;
 
