@@ -473,7 +473,7 @@ async function carregarPedidos(){
 
   const q = query(
     collection(db,"pedidos"),
-    where("categoria", "==", "EPI/Uniforme"),
+    where("categoria", "==", "EPI"),
     limit(25)
   );
 
