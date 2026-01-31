@@ -522,9 +522,11 @@ if (p.categoria === "EPI" && x.ni) {
             onchange="atualizarNI('${p.id}', ${i}, this.value)"
           >
 
+          ${p.categoria === "EPI" ? `
           <div style="font-size:12px;color:#065f46;margin-top:4px">
-            📅 Última solicitação: <b>${ultimaTxt}</b>
+          📅 Última solicitação: <b>${ultimaTxt}</b>
           </div>
+`         : ""}
         </div>
       `;
     }
