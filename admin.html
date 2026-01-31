@@ -497,17 +497,20 @@ async function carregarPedidos(){
 
       let ultimaTxt = "Primeira solicitação";
 
-      if (x.ni) {
-        const ultima = await buscarUltimaSolicitacaoEPI({
-          nome: p.nome,
-          ni: x.ni,
-          pedidoAtualId: p.id
-        });
+// 🔒 SÓ BUSCA HISTÓRICO SE FOR EPI
+if (p.categoria === "EPI" && x.ni) {
 
-        if (ultima) {
-          ultimaTxt = ultima.toLocaleDateString("pt-BR");
-        }
-      }
+  const ultima = await buscarUltimaSolicitacaoEPI({
+    nome: p.nome,
+    ni: x.ni,
+    pedidoAtualId: p.id
+  });
+
+  if (ultima) {
+    ultimaTxt = ultima.toLocaleDateString("pt-BR");
+  }
+}
+
 
       pecasHTML += `
         <div class="peca">
