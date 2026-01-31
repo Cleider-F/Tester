@@ -689,21 +689,30 @@ async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
   const q = query(
     collection(db,"pedidos"),
     where("categoria","==","EPI"),
-    where("nome","==", nome),
-    where("nis","array-contains", ni),
-    orderBy("criadoEm","desc"),
-    limit(5)
+    where("nome","==", nome)
   );
 
   const snap = await getDocs(q);
 
-  for (const doc of snap.docs) {
-    if (doc.id !== pedidoAtualId) {
-      return doc.data().criadoEm.toDate();
-    }
-  }
+  let ultimaData = null;
 
-  return null;
+  snap.forEach(docSnap => {
+    if (docSnap.id === pedidoAtualId) return;
+
+    const p = docSnap.data();
+    if (!p.criadoEm || !p.pecas) return;
+
+    for (const pc of p.pecas) {
+      if (pc.ni === ni) {
+        const data = p.criadoEm.toDate();
+        if (!ultimaData || data > ultimaData) {
+          ultimaData = data;
+        }
+      }
+    }
+  });
+
+  return ultimaData;
 }
 
 /* =========================================================
