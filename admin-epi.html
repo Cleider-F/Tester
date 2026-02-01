@@ -737,7 +737,7 @@ window.gerarRelatorioPeriodo=async()=>{
   const pdf=new jsPDF("landscape");
 
   const snap = await getDocs(
-  query(collection(db,"pedidos"), where("categoria","==","EPI/Uniforme"))
+  query(collection(db,"pedidos"), where("categoria","==","EPI"))
 );
 
   snap.forEach(d=>{
