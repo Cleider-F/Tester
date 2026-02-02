@@ -311,8 +311,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/PedidosCMCApp/firebase-messaging-sw.js",
+      { scope: "/PedidosCMCApp/" }
     );
 
     // sincroniza botões
@@ -587,7 +587,7 @@ ${p.status === "Pendente" ? `
 window.carregarPedidos = carregarPedidos;
 
 
-  
+
 /* =========================================================
    NI
 ========================================================= */
@@ -814,7 +814,7 @@ async function aprovarTodosPendentes() {
   try {
     const batch = writeBatch(db);
     const colRef = collection(db, "pedidos"); // Confirme se o nome da coleção é 'pedidos'
-    
+
     // Busca apenas os que estão com status pendente
     const q = query(colRef, where("status", "==", "pendente"));
     const querySnapshot = await getDocs(q);
@@ -832,7 +832,7 @@ async function aprovarTodosPendentes() {
     await batch.commit();
     alert("Sucesso! Todos os pedidos foram aprovados.");
     location.reload(); // Recarrega a página para atualizar a lista
-    
+
   } catch (error) {
     console.error("Erro ao atualizar em lote:", error);
     alert("Erro ao aprovar pedidos. Verifique o console.");

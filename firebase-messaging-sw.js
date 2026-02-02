@@ -48,14 +48,14 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(title, {
     body,
-    icon: "/Tester/icon-192.png",
-    badge: "/Tester/icon-192.png",
+    icon: "/PedidosCMCApp/icon-192.png",
+    badge: "/PedidosCMCApp/icon-192.png",
 
     tag: "pedidos",
     renotify: true,
 
     data: {
-      url: payload.data?.url || "/Tester/admin.html"
+      url: payload.data?.url || "/PedidosCMCApp/admin.html"
     }
   });
 });
@@ -64,7 +64,7 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener("notificationclick", event => {
   event.notification.close();
 
-  const url = event.notification.data?.url || "/Tester/admin.html";
+  const url = event.notification.data?.url || "/PedidosCMCApp/admin.html";
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true })
@@ -78,4 +78,3 @@ self.addEventListener("notificationclick", event => {
       })
   );
 });
-

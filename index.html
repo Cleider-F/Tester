@@ -8,6 +8,90 @@
 <meta name="theme-color" content="#1f2937">
 
 <style>
+/* BOTÃO HAMBURGER */
+.menu-btn{
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:1001;
+  background:#111827;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:22px;
+  padding:8px 12px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:260px;
+  background:#111827;
+  color:#fff;
+  transform:translateX(-100%);
+  transition:.3s;
+  z-index:1002;
+  display:flex;
+  flex-direction:column;
+}
+
+/* SIDEBAR ATIVA */
+.sidebar.active{
+  transform:translateX(0);
+}
+
+/* HEADER */
+.sidebar-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  border-bottom:1px solid #1f2937;
+}
+
+.sidebar-header button{
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:18px;
+}
+
+/* LINKS */
+.sidebar nav{
+  display:flex;
+  flex-direction:column;
+  padding:10px;
+}
+
+.sidebar nav a{
+  padding:14px;
+  border-radius:10px;
+  color:#fff;
+  text-decoration:none;
+  margin-bottom:6px;
+}
+
+.sidebar nav a:hover{
+  background:#1f2937;
+}
+
+/* OVERLAY */
+.menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:1000;
+  display:none;
+}
+
+.menu-overlay.active{
+  display:block;
+}
+
+
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:180px; width:100%; }
 
@@ -45,10 +129,24 @@ textarea { min-height:50px; }
 
 .peca {
   border:1px solid #e5e7eb;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
+  background:#fafafa;
+  position:relative;
 }
+
+.peca::before {
+  content:"Peças";
+  position:absolute;
+  top:-10px;
+  left:12px;
+  background:#fff;
+  padding:0 6px;
+  font-size:12px;
+  color:#6b7280;
+}
+
 
 .ni-info { font-size:12px; color:#6b7280; }
 
@@ -106,6 +204,41 @@ input:disabled {
 .sugestoes div:hover {
   background:#e5e7eb;
 }
+
+.bloqueio {
+  color:#b91c1c;
+  background:#fee2e2;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:14px;
+}
+@media(max-width:480px){
+  .secundario {
+    position:sticky;
+    bottom:10px;
+    z-index:10;
+  }
+}
+
+.secao {
+  margin-top:16px;
+  padding-top:10px;
+  border-top:1px dashed #e5e7eb;
+}
+
+.secao h3 {
+  font-size:14px;
+  color:#374151;
+}
+
+.sidebar nav a.ativo{
+  background:#2563eb;
+}
+
+
+
+
 </style>
 </head>
 
@@ -115,6 +248,27 @@ input:disabled {
 <script src="lista_solicitantes.js"></script>
 
 <div class="container">
+ 
+ <!-- BOTÃO HAMBURGER -->
+<button class="menu-btn" onclick="abrirMenu()">☰</button>
+
+<!-- OVERLAY -->
+<div class="menu-overlay" onclick="fecharMenu()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <strong>📦 Pedido de Peças – Almoxarifado CMC</strong>
+    <button onclick="fecharMenu()">✖</button>
+  </div>
+
+  <nav>
+    <a href="admin.html">🔧 Área dos Técnicos</a>
+    <a href="acompanhamento.html">📊 Acompanhamento</a>
+    <a href="painel-almoxarife.html">🏭 Área do Almoxarife</a>
+  </nav>
+</aside>
+
   <div class="logo">
     <img src="suzano-logo.png">
   </div>
@@ -152,6 +306,7 @@ input:disabled {
 </div>
 
 
+
     <label>Tipo de Manutenção</label>
     <select id="manutencao" required>
       <option value="">Selecione</option>
@@ -182,6 +337,9 @@ input:disabled {
 <a href="acompanhamento.html">
     <button class="admin-btn">📦 Acompanhamento de Pedidos 🔩 </button>
   </a>
+  <a href="painel-almoxarife.html">
+    <button class="admin-btn">🖥️ Painel do Almoxarife ⚙️</button>
+  </a>
 </div>
 
 </div>
@@ -192,7 +350,7 @@ input:disabled {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const app = initializeApp({
    apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
@@ -214,6 +372,17 @@ const mensagem = document.getElementById("mensagem");
 const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
+
+let nisBloqueadosCache = new Set();
+
+async function carregarNisBloqueados(){
+  const snap = await getDocs(collection(db, "ni_bloqueados"));
+  snap.forEach(doc=>{
+    nisBloqueadosCache.add(doc.id);
+  });
+
+  console.log("🚫 NIs bloqueados carregados:", nisBloqueadosCache.size);
+}
 
 manutencaoSelect.addEventListener("change", () => {
   const semGO = ["Uso Geral", "EPI/Uniforme"].includes(manutencaoSelect.value);
@@ -264,6 +433,8 @@ async function carregarAprendizadoNI() {
   }));
 }
 await carregarAprendizadoNI();
+await carregarNisBloqueados();
+
 
 window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
@@ -276,7 +447,7 @@ window.sugerirPecas = (textarea) => {
 
   let resultados = [];
 
-  
+
   aprendizadoNI.forEach(i => {
     if (i.descricao.includes(termo)) {
       resultados.push({ produto: i.descricao, ni: i.ni });
@@ -296,11 +467,27 @@ window.sugerirPecas = (textarea) => {
   resultados = resultados.slice(0,6);
   if (!resultados.length) { box.style.display="none"; return; }
 
-  box.innerHTML = resultados.map(r => `
-    <div onclick="selecionarPeca(this,'${r.produto}','${r.ni}')">
-      ${r.produto} <span style="color:#6b7280;font-size:11px">| NI ${r.ni}</span>
+ box.innerHTML = resultados.map(r => {
+  const bloqueado = r.ni && nisBloqueadosCache.has(String(r.ni));
+
+  return `
+    <div 
+      onclick="${bloqueado ? "" : `selecionarPeca(this,'${r.produto}','${r.ni}')`}"
+      style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
+    >
+      ${r.produto}
+      <span style="font-size:11px;color:#6b7280">
+        | NI ${r.ni}
+      </span>
+      ${
+        bloqueado
+          ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>`
+          : ""
+      }
     </div>
-  `).join("");
+  `;
+}).join("");
+
 
   box.style.display="block";
 };
@@ -371,23 +558,51 @@ ${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qt
   });
 }
 
+async function verificarBloqueios(nis) {
+  const bloqueados = [];
+
+  for (const ni of nis) {
+    if (!ni) continue;
+
+    const snap = await getDoc(doc(db, "ni_bloqueados", ni));
+    if (snap.exists()) {
+      bloqueados.push(ni);
+    }
+  }
+
+  return bloqueados;
+}
+
 form.addEventListener("submit", async e => {
   e.preventDefault();
   try {
-    const pecas = [];
-    document.querySelectorAll(".peca").forEach(p => {
-      const desc = p.querySelector(".descricao").value;
-      const niManual = p.querySelector(".ni-manual").value.trim();
-      const niAuto =
-        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
-        || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
+  const pecas = [];
+  document.querySelectorAll(".peca").forEach(p => {
+    const desc = p.querySelector(".descricao").value;
+    const niManual = p.querySelector(".ni-manual").value.trim();
+    const niAuto =
+      aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+      || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
 
-      pecas.push({
-        descricao: desc,
-        quantidade: p.querySelector(".quantidade").value,
-        ni: niManual || niAuto || null
-      });
+    pecas.push({
+      descricao: desc,
+      quantidade: p.querySelector(".quantidade").value,
+      ni: niManual || niAuto || null
     });
+  });
+
+  // 🔒 VERIFICA BLOQUEIOS
+  const nisPedido = pecas.map(p => p.ni).filter(Boolean);
+  const nisBloqueados = await verificarBloqueios(nisPedido);
+
+  if (nisBloqueados.length) {
+    mensagem.innerHTML = `
+      ❌ Pedido não permitido<br>
+      NI sem saldo: <strong>${nisBloqueados.join(", ")}</strong><br>
+    `;
+    mensagem.className = "mensagem bloqueio";
+    return;
+  }
 
     const tipoPedido = document.getElementById("isDevolucao").checked
       ? "DEVOLUCAO"
@@ -422,6 +637,24 @@ form.addEventListener("submit", async e => {
     mensagem.className = "mensagem erro";
   }
 });
+
+window.abrirMenu = () => {
+  document.querySelector(".sidebar").classList.add("active");
+  document.querySelector(".menu-overlay").classList.add("active");
+};
+
+window.fecharMenu = () => {
+  document.querySelector(".sidebar").classList.remove("active");
+  document.querySelector(".menu-overlay").classList.remove("active");
+};
+
+
+document.querySelectorAll(".sidebar nav a").forEach(a=>{
+  if(a.href === window.location.href){
+    a.classList.add("ativo");
+  }
+});
+
 </script>
 
 </body>

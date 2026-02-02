@@ -245,7 +245,7 @@ button{
 </div>
 <footer>Criado e Desenvolvido por Cleider Filho</footer>
 <div class="login" id="loginBox">
-  
+
 <h2>🔐 Área de Técnicos - EPI & Uniformes</h2>
   <input type="password" id="senha" placeholder="Senha">
   <button onclick="login()">Entrar</button>
@@ -254,7 +254,7 @@ button{
 <div class="painel" id="painel" style="display:none">
  <div class="header-admin">
   <a href="admin.html" class="btn-home" title="Voltar">↩️</a>
-  <h2>🦺 EPI's e Uniformes</h2>
+  <h2>🦺 EPI & Uniforme</h2>
 </div>
 
 
@@ -325,8 +325,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/Tester/firebase-messaging-sw.js",
-      { scope: "/Tester/" }
+      "/PedidosCMCApp/firebase-messaging-sw.js",
+      { scope: "/PedidosCMCApp/" }
     );
 
     // sincroniza botões
