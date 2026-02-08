@@ -5,263 +5,417 @@
 <title>Pedido de Peças – Almoxarifado CMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f2937">
 
 <style>
-:root{
-  --primaria:#2563eb;
-  --primaria-dark:#1e40af;
-  --fundo:#f1f5f9;
-  --card:#ffffff;
-  --texto:#111827;
-  --cinza:#6b7280;
-  --sucesso:#16a34a;
-  --perigo:#dc2626;
-}
-
-/* FUNDO APP */
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:linear-gradient(180deg,var(--primaria),var(--primaria-dark));
-  display:flex;
-  justify-content:center;
-}
-
-/* CONTAINER */
-.container{
-  background:var(--fundo);
-  width:100%;
-  max-width:420px;
-  min-height:100vh;
-  border-radius:22px 22px 0 0;
-  padding:16px;
-  box-shadow:0 -10px 30px rgba(0,0,0,.15);
-}
-
-/* HEADER */
-.app-header{
-  background:linear-gradient(180deg,#2563eb,#1e40af);
-  color:#fff;
-  border-radius:16px;
-  padding:12px 14px;
-  display:flex;
-  align-items:center;
-}
-
+/* BOTÃO HAMBURGER */
 .menu-btn{
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  background:rgba(255,255,255,.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-}
-
-.app-header .titulo{
-  margin-left:10px;
-  line-height:1.2;
-}
-
-.app-header strong{
-  font-size:16px;
-}
-
-.app-header span{
-  font-size:11px;
-  opacity:.85;
-}
-
-
-/* FORM */
-label{
-  font-size:12px;
-  color:#374151;
-  margin-top:14px;
-  display:block;
-}
-
-input,textarea,select{
-  width:95%;
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:12px;
-  font-size:14px;
-  margin-top:6px;
-}
-
-textarea{min-height:50px}
-
-/* CARD PEÇA */
-.peca{
-  background:#fff;
-  border-radius:16px;
-  padding:16px;
-  margin-top:16px;
-  box-shadow:0 8px 18px rgba(0,0,0,.08);
-  position:relative;
-}
-
-
-.remover{
-  position:absolute;
+  position:fixed;
   top:12px;
-  right:12px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:#fee2e2;
-  color:#b91c1c;
-  font-size:14px;
-  padding:0;
-}
-
-
-/* BOTÕES */
-button{
-  width:100%;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  font-size:15px;
-  margin-top:12px;
+  left:12px;
+  z-index:1001;
+  background:#111827;
   color:#fff;
-}
-
-.secundario{
-  background:#eff6ff;
-  color:#2563eb;
-  border:1px dashed #93c5fd;
-  font-weight:500;
-}
-
-
-.btn-principal{
-  background:#0be023;
-  margin-top:24px;
-  height:54px;
-  font-size:17px;
-  border-radius:18px;
-  box-shadow:0 10px 20px rgba(10, 164, 67, 0.35);
-}
-
-
-/* AUTOCOMPLETE */
-.autocomplete-box{position:relative}
-
-.sugestoes{
-  position:absolute;
-  background:#fff;
-  width:100%;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  max-height:160px;
-  overflow-y:auto;
-  z-index:10;
-}
-
-.sugestoes div{
-  padding:10px;
-  cursor:pointer;
-}
-
-.sugestoes div:hover{
-  background:#f1f5f9;
-}
-
-/* ATALHOS */
-.atalhos{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:20px;
-}
-
-.atalhos a{
-  background:#fff;
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  text-decoration:none;
-  color:#111827;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-  font-size:14px;
+  border:none;
+  border-radius:10px;
+  font-size:22px;
+  width:auto;
+  height:auto;
+  padding:8px 12px;
+  margin:0;
 }
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;
-  inset:0 auto 0 0;
+  top:0;
+  left:0;
+  height:100%;
   width:260px;
   background:#111827;
   color:#fff;
   transform:translateX(-100%);
   transition:.3s;
   z-index:1002;
-  padding:16px;
+  display:flex;
+  flex-direction:column;
 }
 
-.sidebar.active{transform:translateX(0)}
+/* SIDEBAR ATIVA */
+.sidebar.active{
+  transform:translateX(0);
+}
 
-.sidebar a{
-  display:block;
-  padding:12px;
+/* HEADER */
+.sidebar-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  border-bottom:1px solid #1f2937;
+}
+
+.sidebar-header button{
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:18px;
+}
+
+/* LINKS */
+.sidebar nav{
+  display:flex;
+  flex-direction:column;
+  padding:10px;
+}
+
+.sidebar nav a{
+  padding:14px;
   border-radius:10px;
   color:#fff;
   text-decoration:none;
+  margin-bottom:6px;
 }
 
-.sidebar a:hover{background:#1f2937}
+.sidebar nav a:hover{
+  background:#1f2937;
+}
 
+/* OVERLAY */
 .menu-overlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.4);
+  z-index:1000;
   display:none;
-  z-index:1001;
 }
 
-.menu-overlay.active{display:block}
-
-.mensagem{
-  text-align:center;
-  font-weight:bold;
-  margin-top:10px;
+.menu-overlay.active{
+  display:block;
 }
 
-.sucesso{color:var(--sucesso)}
-.erro{color:var(--perigo)}
-.bloqueio{
-  background:#fee2e2;
-  color:#b91c1c;
-  padding:10px;
-  border-radius:12px;
-}
+.logo { text-align:center; margin-bottom:15px; }
+.logo img { max-width:180px; width:100%; }
 
-.btn-remover{
-  position:absolute;
-  top:14px;
-  right:14px;
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  background:#fee2e2;
-  color:#b91c1c;
-  border:none;
-  font-size:14px;
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f2f2f2;
   display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  flex-direction:column;
+}
+
+.container {
+  background:#fff;
+  max-width:480px;
+  width:100%;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+h1 { text-align:center; font-size:20px; }
+label { font-weight:bold; margin-top:10px; display:block; }
+
+input, textarea, select {
+  width:97%;
+  padding:8px;
+  margin-top:5px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+textarea { min-height:50px; }
+
+.peca {
+  border:1px solid #e5e7eb;
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
+  background:#fafafa;
+  position:relative;
+}
+
+.peca::before {
+  content:"Peças";
+  position:absolute;
+  top:-10px;
+  left:12px;
+  background:#fff;
+  padding:0 6px;
+  font-size:12px;
+  color:#6b7280;
+}
+
+.ni-info { font-size:12px; color:#6b7280; }
+
+button {
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border:none;
+  border-radius:8px;
+  background:#16a34a;
+  color:#fff;
+  font-size:15px;
+}
+
+button:hover { background:#15803d; }
+.secundario { background:#2563eb; }
+.remover { background:#dc2626; }
+.admin-btn { background:#111827; }
+
+.mensagem { text-align:center; font-weight:bold; margin-top:10px; }
+.sucesso { color:green; }
+.erro { color:red; }
+
+footer {
+  text-align:center;
+  font-size:11px;
+  color:#6b7280;
+  margin-top:15px;
+}
+
+input:disabled {
+  background:#e5e7eb;
+  cursor:not-allowed;
+}
+
+.autocomplete-box { position: relative; }
+
+.sugestoes {
+  position:absolute;
+  background:#fff;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  width:100%;
+  max-height:160px;
+  overflow-y:auto;
+  z-index:1000;
+}
+
+.sugestoes div {
+  padding:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.sugestoes div:hover {
+  background:#e5e7eb;
+}
+
+.bloqueio {
+  color:#b91c1c;
+  background:#fee2e2;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+  font-size:14px;
+}
+@media(max-width:480px){
+  .secundario {
+    position:sticky;
+    bottom:10px;
+    z-index:10;
+  }
+}
+
+.secao {
+  margin-top:16px;
+  padding-top:10px;
+  border-top:1px dashed #e5e7eb;
+}
+
+.secao h3 {
+  font-size:14px;
+  color:#374151;
+}
+
+.sidebar nav a.ativo{
+  background:#2563eb;
+}
+
+/* TOGGLE DEVOLUÇÃO */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* SWITCH */
+.switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background-color: #d1d5db;
+  border-radius: 999px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  top: 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.toggle-container {
+  gap: 10px;
+  justify-content: flex-start;
+}
+/* LIGADO */
+.switch input:checked + .slider {
+  background-color: #22c55e;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* =========================================================
+   ANIMAÇÕES + TOAST + SPINNER
+========================================================= */
+@keyframes enterFadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-enter { animation: enterFadeSlide .25s ease-out; }
+
+@keyframes popIn {
+  0%   { transform: scale(.98); opacity: 0; }
+  60%  { transform: scale(1.01); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.anim-pop { animation: popIn .22s ease-out; }
+
+@keyframes glowNew {
+  0%   { box-shadow: 0 0 0 rgba(37,99,235,0); }
+  35%  { box-shadow: 0 0 0 6px rgba(37,99,235,.18); }
+  100% { box-shadow: 0 0 0 rgba(37,99,235,0); }
+}
+.anim-highlight { animation: glowNew 1.0s ease-out; }
+
+@keyframes shakeX {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+.anim-shake { animation: shakeX .28s ease-out; }
+
+.field-error {
+  border-color:#ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.12);
+}
+
+/* Botão enviando */
+button.is-sending{
+  opacity:.85;
+  cursor:not-allowed;
+  filter:saturate(.9);
+}
+
+.btn-inline{
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  opacity:.6;
+  gap:10px;
+  width:100%;
 }
 
-.btn-remover:hover{
-  opacity:1;
-  background:#fecaca;
+.spinner{
+  width:16px;
+  height:16px;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast-wrap{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:2000;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:min(520px, calc(100% - 24px));
 }
 
+.toast{
+  background:#111827;
+  color:#fff;
+  border-radius:12px;
+  padding:12px 14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  animation: toastIn .22s ease-out;
+}
+
+@keyframes toastIn{
+  from { opacity:0; transform: translateY(-8px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.toast.success{ background:#16a34a; }
+.toast.error{ background:#dc2626; }
+.toast.warn{ background:#b45309; }
+
+.toast button{
+  width:auto;
+  margin:0;
+  padding:6px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,.18);
+  font-size:13px;
+}
+.toast button:hover{
+  background:rgba(255,255,255,.25);
+}
+
+/* respeita quem desativa animação no sistema */
+@media (prefers-reduced-motion: reduce) {
+  .anim-enter, .anim-pop, .anim-highlight, .anim-shake { animation: none !important; }
+  .spinner { animation: none !important; }
+  .toast { animation: none !important; }
+}
 </style>
 </head>
 
@@ -270,134 +424,208 @@ button{
 <script src="lista_NI.js"></script>
 <script src="lista_solicitantes.js"></script>
 
-<div class="container">
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
-<header class="app-header">
-  <button class="menu-btn" onclick="abrirMenu()">☰</button>
-  <div class="titulo">
-    <strong>Pedido de Peças</strong><br>
-    <span>Almoxarifado CMC</span>
-  </div>
-</header>
+<div class="container" id="containerMain">
 
+ <!-- BOTÃO HAMBURGER -->
+<button class="menu-btn" onclick="abrirMenu()">☰</button>
+
+<!-- OVERLAY -->
 <div class="menu-overlay" onclick="fecharMenu()"></div>
 
+<!-- SIDEBAR -->
 <aside class="sidebar">
+  <div class="sidebar-header">
+    <strong>📦 Pedido de Peças</strong>
+    <button onclick="fecharMenu()">✖</button>
+  </div>
+
+  <nav>
     <a href="index.html">📝 Pedido de Peças</a>
+    <a href="acompanhamento.html">📦 Acompanhamento de Pedidos 🔩</a>
     <a href="admin.html">🔐 Área de Técnicos 🛠️</a>
     <a href="admin-epi.html">🦺 EPI's e Uniformes</a>
-    <a href="acompanhamento.html">📦 Acompanhamento de Pedidos 🔩</a>
     <a href="painel-almoxarife.html">🖥️ Painel do Almoxarife ⚙️</a>
+  </nav>
 </aside>
 
-<form id="formPedido">
+  <div class="logo">
+    <img src="suzano-logo.png">
+  </div>
 
-  <div id="listaPecas">
-    <div class="peca">
-      <label>Descrição da Peça</label>
-      <div class="autocomplete-box">
-        <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
-        <div class="sugestoes" style="display:none"></div>
+  <h1>Pedido de Peças – Almoxarifado CMC</h1>
+
+  <form id="formPedido">
+
+    <div id="listaPecas">
+      <div class="peca">
+        <label>Descrição da Peça</label>
+        <div class="autocomplete-box">
+          <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+          <div class="sugestoes" style="display:none"></div>
+        </div>
+
+        <label>NI</label>
+        <input type="text" class="ni-manual">
+        <div class="ni-info">Materiais sem NI automático devem ser consultados no almoxarifado!</div>
+
+        <label>Quantidade</label>
+        <input type="number" class="quantidade" min="1" required>
+
+        <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
       </div>
-
-      <label>NI</label>
-      <input class="ni-manual">
-
-      <label>Quantidade</label>
-      <input type="number" class="quantidade" min="1" required>
-
-      <button class="btn-remover" title="Remover peça">✕</button>
     </div>
-  </div>
 
-  <button type="button" class="secundario" onclick="adicionarPeca()">➕ Adicionar peça</button>
+    <button
+      type="button"
+      class="secundario btn-adicionar"
+      onclick="adicionarPeca()">
+      ➕ Adicionar peça
+    </button>
 
-  <label>
-    <input type="checkbox" id="isDevolucao"> Pedido de devolução
-  </label>
+    <label class="toggle-container">
+      <span class="switch">
+        <input type="checkbox" id="isDevolucao">
+        <span class="slider"></span>
+      </span>
+      <span class="toggle-label">Pedido de devolução de peças</span>
+    </label>
 
-  <div class="peca">
+    <label>Tipo de Manutenção</label>
+    <select id="manutencao" required>
+      <option value="">Selecione</option>
+      <option>Revisão</option>
+      <option>Preventiva-ITR</option>
+      <option>CNP</option>
+      <option>SOS</option>
+      <option>Uso Geral</option>
+      <option>EPI/Uniforme</option>
+    </select>
 
-  <label>Tipo de Manutenção</label>
-  <select id="manutencao" required>
-    <option value="">Selecione</option>
-    <option>Revisão</option>
-    <option>Preventiva-ITR</option>
-    <option>CNP</option>
-    <option>SOS</option>
-    <option>Uso Geral</option>
-    <option>EPI/Uniforme</option>
-  </select>
+    <label>GO do Equipamento</label>
+    <input id="go" required>
 
-  <label>GO do Equipamento</label>
-  <input id="go">
+    <label>Nome do solicitante</label>
+    <div class="autocomplete-box">
+      <input id="nome" required oninput="sugerirSolicitante(this)">
+      <div class="sugestoes" style="display:none"></div>
+    </div>
 
-  <label>Nome do Solicitante</label>
-  <div class="autocomplete-box">
-    <input id="nome" required oninput="sugerirSolicitante(this)">
-    <div class="sugestoes" style="display:none"></div>
-  </div>
+    <button type="submit" id="btnEnviar">📦 Enviar Pedido</button>
+    <div id="mensagem" class="mensagem"></div>
+  </form>
 
-  <button class="btn-principal" type="submit">📦 Enviar Pedido</button>
-  <div id="mensagem" class="mensagem"></div>
+  <a href="admin.html">
+    <button class="admin-btn" type="button">🔐 Área de Técnicos 🛠️</button>
+  </a>
+  <a href="acompanhamento.html">
+    <button class="admin-btn" type="button">📦 Acompanhamento de Pedidos 🔩</button>
+  </a>
+  <a href="painel-almoxarife.html">
+    <button class="admin-btn" type="button">🖥️ Painel do Almoxarife ⚙️</button>
+  </a>
 </div>
-</form>
 
-<div class="atalhos">
-  <a href="admin.html">🛠️ Técnicos</a>
-  <a href="acompanhamento.html">📦 Pedidos</a>
-</div>
-
-</div>
-
-<script>
-// MENU
-function abrirMenu(){
-  document.querySelector(".sidebar").classList.add("active");
-  document.querySelector(".menu-overlay").classList.add("active");
-}
-function fecharMenu(){
-  document.querySelector(".sidebar").classList.remove("active");
-  document.querySelector(".menu-overlay").classList.remove("active");
-}
-</script>
+<footer>
+  Criado e Desenvolvido por Cleider Filho
+</footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* =========================================================
+   FIREBASE
+========================================================= */
 const app = initializeApp({
-   apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
-
+  apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
-
   projectId: "pedidos-almoxarifado",
-
   storageBucket: "pedidos-almoxarifado.firebasestorage.app",
-
   messagingSenderId: "443882865992",
-
   appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
 });
 const db = getFirestore(app);
 
+/* =========================================================
+   ELEMENTOS
+========================================================= */
 const form = document.getElementById("formPedido");
 const mensagem = document.getElementById("mensagem");
 const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
+const btnEnviar = document.getElementById("btnEnviar");
+const containerMain = document.getElementById("containerMain");
 
+/* =========================================================
+   UI HELPERS (TOAST / ANIMAÇÕES)
+========================================================= */
+function toast(msg, type="success", timeout=2600){
+  const wrap = document.getElementById("toastWrap");
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.innerHTML = `
+    <div style="flex:1; font-size:14px; line-height:1.25">${msg}</div>
+    <button type="button" aria-label="Fechar">✖</button>
+  `;
+  const closeBtn = el.querySelector("button");
+  closeBtn.onclick = () => el.remove();
+  wrap.appendChild(el);
+
+  if (timeout) {
+    setTimeout(()=> { if (el.isConnected) el.remove(); }, timeout);
+  }
+}
+
+function pulseAnim(el, ...classes){
+  if(!el) return;
+  el.classList.remove(...classes);
+  void el.offsetWidth;
+  el.classList.add(...classes);
+  setTimeout(()=> el.classList.remove(...classes), 1200);
+}
+
+function markFieldError(input){
+  if(!input) return;
+  input.classList.add("field-error");
+  pulseAnim(input, "anim-shake");
+  setTimeout(()=> input.classList.remove("field-error"), 1400);
+}
+
+function setSending(isSending){
+  if(isSending){
+    btnEnviar.disabled = true;
+    btnEnviar.classList.add("is-sending");
+    btnEnviar.innerHTML = `<span class="btn-inline"><span class="spinner"></span> Enviando...</span>`;
+  }else{
+    btnEnviar.disabled = false;
+    btnEnviar.classList.remove("is-sending");
+    btnEnviar.textContent = "📦 Enviar Pedido";
+  }
+}
+
+/* entrada suave do container */
+pulseAnim(containerMain, "anim-enter");
+
+/* =========================================================
+   NIs bloqueados em cache
+========================================================= */
 let nisBloqueadosCache = new Set();
 
 async function carregarNisBloqueados(){
   const snap = await getDocs(collection(db, "ni_bloqueados"));
-  snap.forEach(doc=>{
-    nisBloqueadosCache.add(doc.id);
+  snap.forEach(docSnap=>{
+    nisBloqueadosCache.add(docSnap.id);
   });
-
   console.log("🚫 NIs bloqueados carregados:", nisBloqueadosCache.size);
 }
 
+/* =========================================================
+   GO obrigatório dependendo da manutenção
+========================================================= */
 manutencaoSelect.addEventListener("change", () => {
   const semGO = ["Uso Geral", "EPI/Uniforme"].includes(manutencaoSelect.value);
 
@@ -407,6 +635,9 @@ manutencaoSelect.addEventListener("change", () => {
   if (semGO) goInput.value = "";
 });
 
+/* =========================================================
+   ADD/REMOVE PEÇA (com animação pop + highlight)
+========================================================= */
 window.adicionarPeca = () => {
   const div = document.createElement("div");
   div.className = "peca";
@@ -426,13 +657,27 @@ window.adicionarPeca = () => {
     <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
   `;
   lista.appendChild(div);
+
+  // anima entrada e destaque
+  pulseAnim(div, "anim-pop", "anim-highlight");
+
+  // foca no campo descrição
+  const first = div.querySelector(".descricao");
+  if (first) first.focus({ preventScroll:false });
 };
 
 window.removerPeca = (btn) => {
-  if (document.querySelectorAll(".peca").length === 1) return;
+  if (document.querySelectorAll(".peca").length === 1) {
+    toast("Você precisa manter pelo menos 1 peça no pedido.", "warn", 2200);
+    pulseAnim(containerMain, "anim-shake");
+    return;
+  }
   btn.parentElement.remove();
 };
 
+/* =========================================================
+   NORMALIZAÇÃO / APRENDIZADO
+========================================================= */
 function normalizar(txt) {
   return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
@@ -446,10 +691,13 @@ async function carregarAprendizadoNI() {
     ni: d.data().ni
   }));
 }
+
 await carregarAprendizadoNI();
 await carregarNisBloqueados();
 
-
+/* =========================================================
+   AUTOCOMPLETE PEÇAS
+========================================================= */
 window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
   const box = textarea.parentElement.querySelector(".sugestoes");
@@ -460,7 +708,6 @@ window.sugerirPecas = (textarea) => {
   }
 
   let resultados = [];
-
 
   aprendizadoNI.forEach(i => {
     if (i.descricao.includes(termo)) {
@@ -481,31 +728,27 @@ window.sugerirPecas = (textarea) => {
   resultados = resultados.slice(0,6);
   if (!resultados.length) { box.style.display="none"; return; }
 
- box.innerHTML = resultados.map(r => {
-  const bloqueado = r.ni && nisBloqueadosCache.has(String(r.ni));
+  box.innerHTML = resultados.map(r => {
+    const bloqueado = r.ni && nisBloqueadosCache.has(String(r.ni));
 
-  return `
-    <div 
-      onclick="${bloqueado ? "" : `selecionarPeca(this,'${r.produto}','${r.ni}')`}"
-      style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
-    >
-      ${r.produto}
-      <span style="font-size:11px;color:#6b7280">
-        | NI ${r.ni}
-      </span>
-      ${
-        bloqueado
-          ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>`
-          : ""
-      }
-    </div>
-  `;
-}).join("");
-
+    return `
+      <div
+        onclick="${bloqueado ? "" : `selecionarPeca(this,'${r.produto}','${r.ni}')`}"
+        style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
+      >
+        ${r.produto}
+        <span style="font-size:11px;color:#6b7280">| NI ${r.ni}</span>
+        ${bloqueado ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>` : ""}
+      </div>
+    `;
+  }).join("");
 
   box.style.display="block";
 };
 
+/* =========================================================
+   AUTOCOMPLETE SOLICITANTE
+========================================================= */
 window.sugerirSolicitante = (input) => {
   const termo = normalizar(input.value);
   const box = input.parentElement.querySelector(".sugestoes");
@@ -536,15 +779,25 @@ window.selecionarSolicitante = (el, nome) => {
   const input = box.previousElementSibling;
   input.value = nome;
   box.style.display = "none";
+  pulseAnim(input, "anim-highlight");
 };
 
 window.selecionarPeca = (el, produto, ni) => {
   const peca = el.closest(".peca");
-  peca.querySelector(".descricao").value = produto;
-  peca.querySelector(".ni-manual").value = ni;
+  const desc = peca.querySelector(".descricao");
+  const niInp = peca.querySelector(".ni-manual");
+
+  desc.value = produto;
+  niInp.value = ni;
+
   el.parentElement.style.display="none";
+
+  pulseAnim(peca, "anim-highlight");
 };
 
+/* =========================================================
+   TELEGRAM
+========================================================= */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003671947511";
 
@@ -572,6 +825,9 @@ ${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qt
   });
 }
 
+/* =========================================================
+   BLOQUEIOS
+========================================================= */
 async function verificarBloqueios(nis) {
   const bloqueados = [];
 
@@ -587,53 +843,110 @@ async function verificarBloqueios(nis) {
   return bloqueados;
 }
 
-form.addEventListener("submit", async e => {
-  e.preventDefault();
-  try {
-  const pecas = [];
-  document.querySelectorAll(".peca").forEach(p => {
-    const desc = p.querySelector(".descricao").value;
-    const niManual = p.querySelector(".ni-manual").value.trim();
-    const niAuto =
-      aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
-      || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
+/* =========================================================
+   SUBMIT (com validação + shake + spinner)
+========================================================= */
+function validarFormularioAntesDeEnviar(){
+  let ok = true;
 
-    pecas.push({
-      descricao: desc,
-      quantidade: p.querySelector(".quantidade").value,
-      ni: niManual || niAuto || null
-    });
+  // peças
+  document.querySelectorAll(".peca").forEach(pecaEl => {
+    const desc = pecaEl.querySelector(".descricao");
+    const qtd  = pecaEl.querySelector(".quantidade");
+
+    if (!desc.value.trim()){
+      ok = false;
+      markFieldError(desc);
+    }
+    const qtdVal = Number(qtd.value);
+    if (!qtd.value || isNaN(qtdVal) || qtdVal < 1){
+      ok = false;
+      markFieldError(qtd);
+    }
   });
 
-  // 🔒 VERIFICA BLOQUEIOS
-  const nisPedido = pecas.map(p => p.ni).filter(Boolean);
-  const nisBloqueados = await verificarBloqueios(nisPedido);
-
-  if (nisBloqueados.length) {
-    mensagem.innerHTML = `
-      ❌ Pedido não permitido<br>
-      NI sem saldo: <strong>${nisBloqueados.join(", ")}</strong><br>
-    `;
-    mensagem.className = "mensagem bloqueio";
-    return;
+  // manutenção
+  if (!manutencaoSelect.value){
+    ok = false;
+    markFieldError(manutencaoSelect);
   }
+
+  // GO (se necessário)
+  if (!goInput.disabled && !goInput.value.trim()){
+    ok = false;
+    markFieldError(goInput);
+  }
+
+  // nome
+  const nomeInp = document.getElementById("nome");
+  if (!nomeInp.value.trim()){
+    ok = false;
+    markFieldError(nomeInp);
+  }
+
+  if (!ok) {
+    toast("⚠️ Revise os campos destacados.", "warn", 2500);
+    pulseAnim(containerMain, "anim-shake");
+  }
+
+  return ok;
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  // validação com animação
+  if (!validarFormularioAntesDeEnviar()) return;
+
+  setSending(true);
+  mensagem.textContent = "";
+  mensagem.className = "mensagem";
+
+  try {
+    const pecas = [];
+    document.querySelectorAll(".peca").forEach(p => {
+      const desc = p.querySelector(".descricao").value;
+      const niManual = p.querySelector(".ni-manual").value.trim();
+      const niAuto =
+        aprendizadoNI.find(a => a.descricao === normalizar(desc))?.ni
+        || window.LISTA_NI?.find(i => normalizar(i.produto) === normalizar(desc))?.ni;
+
+      pecas.push({
+        descricao: desc,
+        quantidade: p.querySelector(".quantidade").value,
+        ni: niManual || niAuto || null
+      });
+    });
+
+    // 🔒 VERIFICA BLOQUEIOS
+    const nisPedido = pecas.map(p => p.ni).filter(Boolean);
+    const nisBloqueados = await verificarBloqueios(nisPedido);
+
+    if (nisBloqueados.length) {
+      const msg = `❌ Pedido não permitido. NI sem saldo: ${nisBloqueados.join(", ")}`;
+      mensagem.innerHTML = `❌ Pedido não permitido<br>NI sem saldo: <strong>${nisBloqueados.join(", ")}</strong><br>`;
+      mensagem.className = "mensagem bloqueio";
+      toast(msg, "error", 3500);
+      pulseAnim(containerMain, "anim-shake");
+      setSending(false);
+      return;
+    }
 
     const tipoPedido = document.getElementById("isDevolucao").checked
       ? "DEVOLUCAO"
       : "PEDIDO";
 
     await addDoc(collection(db,"pedidos"),{
-  manutencao: manutencaoSelect.value,
-  go: goInput.value,
-  nome: document.getElementById("nome").value,
-  pecas,
-  nis: pecas.map(p => p.ni).filter(Boolean),
-  tipo: tipoPedido,
-  categoria: manutencaoSelect.value === "EPI/Uniforme" ? "EPI" : "CONVENCIONAL",
-  status:"Pendente",
-  criadoEm:new Date()
-});
-
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      nome: document.getElementById("nome").value,
+      pecas,
+      nis: pecas.map(p => p.ni).filter(Boolean),
+      tipo: tipoPedido,
+      categoria: manutencaoSelect.value === "EPI/Uniforme" ? "EPI" : "CONVENCIONAL",
+      status:"Pendente",
+      criadoEm:new Date()
+    });
 
     notificarTelegram({
       nome: document.getElementById("nome").value,
@@ -645,13 +958,33 @@ form.addEventListener("submit", async e => {
 
     mensagem.textContent = "✅ Pedido enviado com sucesso!";
     mensagem.className = "mensagem sucesso";
+    toast("✅ Pedido enviado com sucesso!", "success", 2600);
+
     form.reset();
-  } catch {
+
+    // volta a ter GO obrigatório conforme regra
+    manutencaoSelect.dispatchEvent(new Event("change"));
+
+    // remove peças extras e dá highlight na primeira
+    const pecasEls = document.querySelectorAll(".peca");
+    pecasEls.forEach((el, idx) => { if (idx > 0) el.remove(); });
+    const first = document.querySelector(".peca");
+    if (first) pulseAnim(first, "anim-highlight");
+
+  } catch (err) {
+    console.error(err);
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
+    toast("❌ Erro ao enviar pedido. Tente novamente.", "error", 3200);
+    pulseAnim(containerMain, "anim-shake");
+  } finally {
+    setSending(false);
   }
 });
 
+/* =========================================================
+   MENU
+========================================================= */
 window.abrirMenu = () => {
   document.querySelector(".sidebar").classList.add("active");
   document.querySelector(".menu-overlay").classList.add("active");
@@ -662,13 +995,11 @@ window.fecharMenu = () => {
   document.querySelector(".menu-overlay").classList.remove("active");
 };
 
-
 document.querySelectorAll(".sidebar nav a").forEach(a=>{
   if(a.href === window.location.href){
     a.classList.add("ativo");
   }
 });
-
 </script>
 
 </body>
