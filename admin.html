@@ -664,6 +664,45 @@ footer{
 @media (prefers-reduced-motion: reduce) {
   .anim-new, .anim-approved, .anim-reserved { animation: none !important; }
 }
+/* =========================================================
+   TABS MAIS COMPACTAS NO MOBILE
+========================================================= */
+@media (max-width: 520px){
+  .filters{
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .tab{
+    padding: 6px 8px;          /* antes: 10px 12px */
+    gap: 6px;                  /* antes: 10px */
+    font-size: 12px;           /* antes: padrão */
+    font-weight: 800;          /* menos "gordo" */
+    border-radius: 999px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .tab small{
+    padding: 2px 6px;          /* antes: 4px 9px */
+    font-size: 11px;
+    border-radius: 999px;
+  }
+}
+
+/* ainda menor em telas bem pequenas */
+@media (max-width: 380px){
+  .tab{
+    padding: 5px 7px;
+    font-size: 11px;
+    gap: 5px;
+  }
+  .tab small{
+    padding: 2px 5px;
+    font-size: 10px;
+  }
+}
+
 </style>
 </head>
 
