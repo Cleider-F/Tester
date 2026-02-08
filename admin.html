@@ -1,834 +1,931 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Área de Técnicos CMC</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest-admin.json">
-<meta name="theme-color" content="#0b1220">
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+  <meta charset="UTF-8">
+  <title>Área de Técnicos CMC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest-admin.json">
+  <meta name="theme-color" content="#0b1220">
 
-<style>
-/* =========================================================
-   THEME (igual ao index)
-========================================================= */
-:root{
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --muted:#6b7280;
-  --text:#0f172a;
-  --border:#e5e7eb;
+  <style>
+  /* =========================================================
+    THEME (igual ao index)
+  ========================================================= */
+  :root{
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --text:#0f172a;
+    --border:#e5e7eb;
 
-  --navy-1:#0b1220;
-  --navy-2:#0f1b33;
+    --navy-1:#0b1220;
+    --navy-2:#0f1b33;
 
-  --primary:#16a34a;
-  --primary-hover:#15803d;
+    --primary:#16a34a;
+    --primary-hover:#15803d;
 
-  --secondary:#2563eb;
-  --secondary-hover:#1d4ed8;
+    --secondary:#2563eb;
+    --secondary-hover:#1d4ed8;
 
-  --danger:#dc2626;
-  --danger-hover:#b91c1c;
+    --danger:#dc2626;
+    --danger-hover:#b91c1c;
 
-  --warn:#f59e0b;
+    --warn:#f59e0b;
 
-  /* sombras leves */
-  --shadow: 0 6px 16px rgba(15, 23, 42, .06);
-  --shadow-soft: 0 2px 8px rgba(15, 23, 42, .05);
+    /* sombras leves */
+    --shadow: 0 6px 16px rgba(15, 23, 42, .06);
+    --shadow-soft: 0 2px 8px rgba(15, 23, 42, .05);
 
-  --radius:18px;
-  --max:1200px;
-}
+    --radius:18px;
+    --max:1200px;
+  }
 
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
-  color:var(--text);
-  background: var(--bg);
-  font-size:16px;
-}
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+    color:var(--text);
+    background: var(--bg);
+    font-size:16px;
+  }
 
-/* =========================================================
-   TOPBAR (preview)
-========================================================= */
-.topbar{
-  position: sticky;
-  top:0;
-  z-index: 900;
-  padding: 14px 14px 18px;
-  color:#fff;
-  background:
-    radial-gradient(1200px 320px at 10% -10%, rgba(37,99,235,.35), transparent 55%),
-    radial-gradient(900px 280px at 90% 0%, rgba(22,163,74,.22), transparent 60%),
-    linear-gradient(180deg, var(--navy-2), var(--navy-1));
-  box-shadow: 0 10px 22px rgba(2, 6, 23, .28);
-}
-.topbar-inner{
-  max-width: var(--max);
-  margin: 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
+  /* =========================================================
+    TOPBAR (preview)
+  ========================================================= */
+  .topbar{
+    position: sticky;
+    top:0;
+    z-index: 900;
+    padding: 14px 14px 18px;
+    color:#fff;
+    background:
+      radial-gradient(1200px 320px at 10% -10%, rgba(37,99,235,.35), transparent 55%),
+      radial-gradient(900px 280px at 90% 0%, rgba(22,163,74,.22), transparent 60%),
+      linear-gradient(180deg, var(--navy-2), var(--navy-1));
+    box-shadow: 0 10px 22px rgba(2, 6, 23, .28);
+  }
+  .topbar-inner{
+    max-width: var(--max);
+    margin: 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:0;
-}
-.brand .home{
-  width:44px;
-  height:44px;
-  display:grid;
-  place-items:center;
-  border-radius: 14px;
-  text-decoration:none;
-  color:#fff;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: 0 8px 18px rgba(0,0,0,.16);
-  font-size: 20px;
-}
-.brand .title{
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-}
-.brand .title strong{
-  font-size:18px;
-  line-height:1.2;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.brand .title span{
-  font-size:13px;
-  opacity:.85;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+  }
+  .brand .home{
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    border-radius: 14px;
+    text-decoration:none;
+    color:#fff;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 8px 18px rgba(0,0,0,.16);
+    font-size: 20px;
+  }
+  .brand .title{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  .brand .title strong{
+    font-size:18px;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .brand .title span{
+    font-size:13px;
+    opacity:.85;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
 
-.topbar-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+  .topbar-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
 
-/* mini pills de status no topo */
-.top-pills{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.pill{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding: 9px 10px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 12px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: 0 8px 18px rgba(0,0,0,.12);
-  user-select:none;
-}
-.pill .dot{
-  width:8px;
-  height:8px;
-  border-radius:999px;
-  background: rgba(255,255,255,.70);
-}
-.pill.pend .dot{ background: rgba(245,158,11,.95); }
-.pill.apr  .dot{ background: rgba(34,197,94,.95); }
-.pill.res  .dot{ background: rgba(59,130,246,.95); }
+  /* mini pills de status no topo */
+  .top-pills{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding: 9px 10px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 12px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 8px 18px rgba(0,0,0,.12);
+    user-select:none;
+  }
+  .pill .dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+    background: rgba(255,255,255,.70);
+  }
+  .pill.pend .dot{ background: rgba(245,158,11,.95); }
+  .pill.apr  .dot{ background: rgba(34,197,94,.95); }
+  .pill.res  .dot{ background: rgba(59,130,246,.95); }
 
-.logo-suzano{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding: 8px 10px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-}
-.logo-suzano img{
-  width: 110px;
-  height:auto;
-  display:block;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
-}
+  .logo-suzano{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .logo-suzano img{
+    width: 110px;
+    height:auto;
+    display:block;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
+  }
 
-/* botão do sino + badge */
-.icon-btn{
-  position:relative;
-  appearance:none;
-  border:none;
-  cursor:pointer;
-  color:#fff;
-  background: rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.16);
-  width:42px;
-  height:42px;
-  border-radius: 14px;
-  font-size:20px;
-  display:grid;
-  place-items:center;
-  box-shadow: 0 8px 18px rgba(0,0,0,.16);
-}
-.icon-btn:active{ transform: scale(.98); }
-.badge{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  border-radius:999px;
-  background: #ef4444;
-  color:#fff;
-  font-size: 11px;
-  font-weight: 900;
-  border: 2px solid rgba(11,18,32,.95);
-  box-shadow: 0 10px 18px rgba(0,0,0,.18);
-}
+  /* botão do sino + badge */
+  .icon-btn{
+    position:relative;
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    color:#fff;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    width:42px;
+    height:42px;
+    border-radius: 14px;
+    font-size:20px;
+    display:grid;
+    place-items:center;
+    box-shadow: 0 8px 18px rgba(0,0,0,.16);
+  }
+  .icon-btn:active{ transform: scale(.98); }
+  .badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background: #ef4444;
+    color:#fff;
+    font-size: 11px;
+    font-weight: 900;
+    border: 2px solid rgba(11,18,32,.95);
+    box-shadow: 0 10px 18px rgba(0,0,0,.18);
+  }
 
-/* hamburger */
-.menu-btn{
-  appearance:none;
-  border:none;
-  cursor:pointer;
-  color:#fff;
-  background: rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.16);
-  width:42px;
-  height:42px;
-  border-radius: 14px;
-  font-size:20px;
-  display:grid;
-  place-items:center;
-  box-shadow: 0 8px 18px rgba(0,0,0,.16);
-}
-.menu-btn:active{ transform: scale(.98); }
+  /* hamburger */
+  .menu-btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    color:#fff;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    width:42px;
+    height:42px;
+    border-radius: 14px;
+    font-size:20px;
+    display:grid;
+    place-items:center;
+    box-shadow: 0 8px 18px rgba(0,0,0,.16);
+  }
+  .menu-btn:active{ transform: scale(.98); }
 
-/* =========================================================
-   PAGE / PANELS
-========================================================= */
-.page{
-  max-width: var(--max);
-  margin: -10px auto 104px;
-  padding: 0 14px 22px;
-}
-.panel{
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-soft);
-  overflow: visible;
-  margin-top: 12px;
-}
-.panel-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding: 14px 14px 10px;
-  border-bottom:1px solid rgba(229,231,235,.7);
-  background: #fff;
-}
-.panel-header .h{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight: 900;
-  font-size: 16px;
-}
-.panel-header small{
-  color: var(--muted);
-  font-size: 12px;
-}
-.panel-body{
-  padding: 14px;
-}
-
-/* login */
-.login{
-  max-width: 520px;
-  margin: 14px auto 0;
-}
-
-label{
-  display:block;
-  font-size: 14px;
-  font-weight: 800;
-  color:#111827;
-  margin: 10px 0 6px;
-}
-input, select{
-  width:100%;
-  padding: 12px 12px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  outline:none;
-  font-size: 16px;
-  background:#fff;
-}
-
-/* =========================================================
-   BUTTONS / PILLS
-========================================================= */
-.btn{
-  border:none;
-  cursor:pointer;
-  border-radius: 16px;
-  padding: 12px 14px;
-  font-size: 16px;
-  font-weight: 900;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  width:auto;
-  box-shadow: 0 10px 18px rgba(2, 6, 23, .08);
-}
-.btn:active{ transform: translateY(1px); }
-
-.btn-primary{
-  background: linear-gradient(180deg, #22c55e, var(--primary));
-  color:#fff;
-}
-.btn-secondary{
-  background: linear-gradient(180deg, #3b82f6, var(--secondary));
-  color:#fff;
-}
-.btn-danger{
-  background: linear-gradient(180deg, #ef4444, var(--danger));
-  color:#fff;
-}
-.btn-dark{
-  background: #0b1220;
-  color:#fff;
-}
-.btn-muted{
-  background:#e5e7eb;
-  color:#111827;
-  box-shadow:none;
-}
-.btn-muted:hover{ background:#d1d5db; }
-
-/* barra de ações estilo "app" */
-.actionbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-  justify-content:space-between;
-}
-.actionbar-left, .actionbar-right{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-}
-.pill-btn{
-  border:none;
-  cursor:pointer;
-  padding: 10px 12px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 14px;
-  background:#fff;
-  border: 1px solid rgba(229,231,235,.95);
-  box-shadow: var(--shadow-soft);
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.pill-btn:hover{ background:#f8fafc; }
-
-/* caixas relatórios/notificações */
-.relatorio-box,
-.notificacao-box{
-  margin-top: 12px;
-  background:#f8fafc;
-  border: 1px solid var(--border);
-  padding:12px;
-  border-radius: 16px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-}
-.relatorio-box input{ width:auto; border-radius: 999px; }
-.notificacao-box button{
-  background:#0b1220;
-  color:#fff;
-  border-radius: 999px;
-}
-
-/* =========================================================
-   FILTER TABS (desktop) + carousel (mobile)
-========================================================= */
-.filters{
-  margin-top: 12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  padding-bottom: 4px;
-}
-
-/* mobile: scroll horizontal */
-.filters{
-  overflow-x:auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.filters::-webkit-scrollbar{ display:none; }
-
-.tab{
-  flex: 0 0 auto;
-  border:1px solid rgba(229,231,235,.95);
-  background:#fff;
-  padding: 10px 12px;
-  border-radius: 999px;
-  font-weight: 900;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  box-shadow: var(--shadow-soft);
-  user-select:none;
-}
-.tab small{
-  font-weight: 900;
-  opacity:.9;
-  padding: 4px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(15,23,42,.08);
-  background: rgba(15,23,42,.04);
-}
-
-.tab.active{
-  color:#fff;
-  background: rgba(37,99,235,.26);
-  border-color: rgba(37,99,235,.40);
-}
-.tab.active small{
-  background: rgba(255,255,255,.14);
-  border-color: rgba(255,255,255,.18);
-  color:#fff;
-}
-
-/* cores por tab */
-.tab.pend{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.20); }
-.tab.apr{  background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.20); }
-.tab.res{  background: rgba(37,99,235,.12); border-color: rgba(37,99,235,.20); }
-
-.tab.pend.active{ background: rgba(245,158,11,.24); border-color: rgba(245,158,11,.35); }
-.tab.apr.active{  background: rgba(22,163,74,.22); border-color: rgba(22,163,74,.35); }
-.tab.res.active{  background: rgba(37,99,235,.22); border-color: rgba(37,99,235,.35); }
-
-/* desktop: deixa com cara de abas */
-@media(min-width: 900px){
-  .filters{
+  /* =========================================================
+    PAGE / PANELS
+  ========================================================= */
+  .page{
+    max-width: var(--max);
+    margin: -10px auto 104px;
+    padding: 0 14px 22px;
+  }
+  .panel{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
     overflow: visible;
+    margin-top: 12px;
   }
-  .tab{
+  .panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding: 14px 14px 10px;
+    border-bottom:1px solid rgba(229,231,235,.7);
+    background: #fff;
+  }
+  .panel-header .h{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight: 900;
+    font-size: 16px;
+  }
+  .panel-header small{
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .panel-body{
+    padding: 14px;
+  }
+
+  /* login */
+  .login{
+    max-width: 520px;
+    margin: 14px auto 0;
+  }
+
+  label{
+    display:block;
+    font-size: 14px;
+    font-weight: 800;
+    color:#111827;
+    margin: 10px 0 6px;
+  }
+  input, select{
+    width:100%;
+    padding: 12px 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    outline:none;
+    font-size: 16px;
+    background:#fff;
+  }
+
+  /* =========================================================
+    BUTTONS / PILLS
+  ========================================================= */
+  .btn{
+    border:none;
+    cursor:pointer;
     border-radius: 16px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:auto;
+    box-shadow: 0 10px 18px rgba(2, 6, 23, .08);
   }
-}
+  .btn:active{ transform: translateY(1px); }
 
-/* =========================================================
-   CARDS
-========================================================= */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
-  gap:14px;
-  margin-top: 14px;
-}
+  .btn-primary{
+    background: linear-gradient(180deg, #22c55e, var(--primary));
+    color:#fff;
+  }
+  .btn-secondary{
+    background: linear-gradient(180deg, #3b82f6, var(--secondary));
+    color:#fff;
+  }
+  .btn-danger{
+    background: linear-gradient(180deg, #ef4444, var(--danger));
+    color:#fff;
+  }
+  .btn-dark{
+    background: #0b1220;
+    color:#fff;
+  }
+  .btn-muted{
+    background:#e5e7eb;
+    color:#111827;
+    box-shadow:none;
+  }
+  .btn-muted:hover{ background:#d1d5db; }
 
-.order-card{
-  position:relative;
-  border: 1px solid rgba(229,231,235,.95);
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: var(--shadow-soft);
-  overflow:hidden;
-}
-.order-card::before{
-  content:"";
-  position:absolute;
-  left:0; top:0; bottom:0;
-  width:6px;
-  background: #e5e7eb;
-}
-.order-card.pendente{ background:#fffaf0; }
-.order-card.pendente::before{ background: var(--warn); }
-.order-card.aprovado::before{ background: var(--primary); }
-.order-card.reprovado::before{ background: var(--danger); }
-.order-card.reservado{ background:#eff6ff; }
-.order-card.reservado::before{ background: var(--secondary); }
+  /* barra de ações estilo "app" */
+  .actionbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .actionbar-left, .actionbar-right{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .pill-btn{
+    border:none;
+    cursor:pointer;
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 14px;
+    background:#fff;
+    border: 1px solid rgba(229,231,235,.95);
+    box-shadow: var(--shadow-soft);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .pill-btn:hover{ background:#f8fafc; }
 
-.card-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding: 12px 12px 8px;
-  background: linear-gradient(180deg, rgba(249,250,251,.9), rgba(255,255,255,1));
-  border-bottom: 1px solid rgba(229,231,235,.7);
-}
+  /* caixas relatórios/notificações */
+  .relatorio-box,
+  .notificacao-box{
+    margin-top: 12px;
+    background:#f8fafc;
+    border: 1px solid var(--border);
+    padding:12px;
+    border-radius: 16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .relatorio-box input{ width:auto; border-radius: 999px; }
+  .notificacao-box button{
+    background:#0b1220;
+    color:#fff;
+    border-radius: 999px;
+  }
 
-.status-pill{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight: 900;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(15,23,42,.08);
-  background: rgba(15,23,42,.04);
-}
-.status-pill.pendente{ color:#7c4a03; background: rgba(245,158,11,.16); border-color: rgba(245,158,11,.25); }
-.status-pill.aprovado{ color:#065f46; background: rgba(22,163,74,.16); border-color: rgba(22,163,74,.25); }
-.status-pill.reprovado{ color:#991b1b; background: rgba(220,38,38,.14); border-color: rgba(220,38,38,.22); }
-.status-pill.reservado{ color:#1e40af; background: rgba(37,99,235,.14); border-color: rgba(37,99,235,.22); }
+  /* =========================================================
+    FILTER TABS (desktop) + carousel (mobile)
+  ========================================================= */
+  .filters{
+    margin-top: 12px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    padding-bottom: 4px;
+  }
 
-.btn-excluir{
-  border:none;
-  background: rgba(15,23,42,.06);
-  border: 1px solid rgba(15,23,42,.08);
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  cursor:pointer;
-  font-size:18px;
-  line-height: 1;
-  color:#dc2626;
-}
-.btn-excluir:hover{ background: rgba(220,38,38,.10); border-color: rgba(220,38,38,.18); }
+  /* mobile: scroll horizontal */
+  .filters{
+    overflow-x:auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar{ display:none; }
 
-.card-body-inner{ padding: 12px; }
+  .tab{
+    flex: 0 0 auto;
+    border:1px solid rgba(229,231,235,.95);
+    background:#fff;
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-weight: 900;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow: var(--shadow-soft);
+    user-select:none;
+  }
+  .tab small{
+    font-weight: 900;
+    opacity:.9;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(15,23,42,.08);
+    background: rgba(15,23,42,.04);
+  }
 
-.info{ margin-bottom:8px; font-size: 15px; }
-.info b{
-  display:block;
-  color:#374151;
-  font-size: 12px;
-  margin-bottom: 2px;
-}
+  .tab.active{
+    color:#fff;
+    background: rgba(37,99,235,.26);
+    border-color: rgba(37,99,235,.40);
+  }
+  .tab.active small{
+    background: rgba(255,255,255,.14);
+    border-color: rgba(255,255,255,.18);
+    color:#fff;
+  }
 
-.selo{
-  background:#f3f4f6;
-  border: 1px solid rgba(229,231,235,.9);
-  padding:10px;
-  border-radius: 14px;
-  text-align:center;
-  font-weight: 900;
-  color:#0f172a;
-}
+  /* cores por tab */
+  .tab.pend{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.20); }
+  .tab.apr{  background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.20); }
+  .tab.res{  background: rgba(37,99,235,.12); border-color: rgba(37,99,235,.20); }
 
-.selo-devolucao{
-  background:#dbeafe;
-  color:#1e40af;
-  font-weight:900;
-  text-align:center;
-  padding:8px 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(37,99,235,.22);
-  margin: 10px 0 8px;
-}
+  .tab.pend.active{ background: rgba(245,158,11,.24); border-color: rgba(245,158,11,.35); }
+  .tab.apr.active{  background: rgba(22,163,74,.22); border-color: rgba(22,163,74,.35); }
+  .tab.res.active{  background: rgba(37,99,235,.22); border-color: rgba(37,99,235,.35); }
 
-.peca{
-  margin-top:10px;
-  padding-top:8px;
-  border-top:1px dashed #d1d5db;
-}
-.peca b{ display:block; font-weight: 900; }
-.peca input{
-  width:100%;
-  padding: 11px 12px;
-  margin-top: 8px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  font-size: 16px;
-}
+  /* desktop: deixa com cara de abas */
+  @media(min-width: 900px){
+    .filters{
+      overflow: visible;
+    }
+    .tab{
+      border-radius: 16px;
+    }
+  }
 
-.acoes{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-top: 12px;
-}
-.acoes .btn{ width:100%; }
+  /* =========================================================
+    CARDS
+  ========================================================= */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
+    gap:14px;
+    margin-top: 14px;
+  }
 
-.aprovar{ background: linear-gradient(180deg, #22c55e, var(--primary)); color:#fff; }
-.reprovar{ background: linear-gradient(180deg, #ef4444, var(--danger)); color:#fff; }
-.btn-reservar{ background: linear-gradient(180deg, #3b82f6, var(--secondary)); color:#fff; }
-.aprovar:disabled{
-  background:#9ca3af !important;
-  cursor:not-allowed;
-  box-shadow:none;
-}
+  .order-card{
+    position:relative;
+    border: 1px solid rgba(229,231,235,.95);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: var(--shadow-soft);
+    overflow:hidden;
+  }
+  .order-card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:6px;
+    background: #e5e7eb;
+  }
+  .order-card.pendente{ background:#fffaf0; }
+  .order-card.pendente::before{ background: var(--warn); }
+  .order-card.aprovado::before{ background: var(--primary); }
+  .order-card.reprovado::before{ background: var(--danger); }
+  .order-card.reservado{ background:#eff6ff; }
+  .order-card.reservado::before{ background: var(--secondary); }
 
-/* =========================================================
-   SIDEBAR / OVERLAY
-========================================================= */
-.menu-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  z-index:1000;
-  display:none;
-}
-.menu-overlay.active{ display:block; }
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding: 12px 12px 8px;
+    background: linear-gradient(180deg, rgba(249,250,251,.9), rgba(255,255,255,1));
+    border-bottom: 1px solid rgba(229,231,235,.7);
+  }
 
-.sidebar{
-  position:fixed;
-  top:0;
-  left:0;
-  height:100%;
-  width:270px;
-  background: linear-gradient(180deg, #0b1220, #0f1b33);
-  color:#fff;
-  transform:translateX(-100%);
-  transition:.25s;
-  z-index:1001;
-  display:flex;
-  flex-direction:column;
-  box-shadow: 30px 0 80px rgba(0,0,0,.35);
-}
-.sidebar.active{ transform:translateX(0); }
+  .status-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight: 900;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(15,23,42,.08);
+    background: rgba(15,23,42,.04);
+  }
+  .status-pill.pendente{ color:#7c4a03; background: rgba(245,158,11,.16); border-color: rgba(245,158,11,.25); }
+  .status-pill.aprovado{ color:#065f46; background: rgba(22,163,74,.16); border-color: rgba(22,163,74,.25); }
+  .status-pill.reprovado{ color:#991b1b; background: rgba(220,38,38,.14); border-color: rgba(220,38,38,.22); }
+  .status-pill.reservado{ color:#1e40af; background: rgba(37,99,235,.14); border-color: rgba(37,99,235,.22); }
 
-.sidebar-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-  border-bottom:1px solid rgba(255,255,255,.10);
-}
-.sidebar-header button{
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.16);
-  color:#fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  cursor:pointer;
-}
-.sidebar nav{
-  display:flex;
-  flex-direction:column;
-  padding:10px;
-  gap:8px;
-}
-.sidebar nav a{
-  padding:12px;
-  border-radius:14px;
-  color:#fff;
-  text-decoration:none;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.08);
-}
-.sidebar nav a:hover{ background: rgba(255,255,255,.10); }
-.sidebar nav a.ativo{ background: rgba(37,99,235,.35); border-color: rgba(37,99,235,.40); }
+  .btn-excluir{
+    border:none;
+    background: rgba(15,23,42,.06);
+    border: 1px solid rgba(15,23,42,.08);
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    cursor:pointer;
+    font-size:18px;
+    line-height: 1;
+    color:#dc2626;
+  }
+  .btn-excluir:hover{ background: rgba(220,38,38,.10); border-color: rgba(220,38,38,.18); }
 
-/* =========================================================
-   BOTTOM NAV (4 itens)
-========================================================= */
-.bottom-nav{
-  position: fixed;
-  left: 0; right: 0;
-  bottom: 0;
-  z-index: 800;
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-  background: rgba(11,18,32,.92);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-.bottom-nav .inner{
-  max-width: 520px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap:10px;
-}
-.nav-btn{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  color:#e5e7eb;
-  font-size: 11px;
-  padding: 10px 8px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.06);
-  transition: .15s;
-}
-.nav-btn:hover{ background: rgba(255,255,255,.10); }
-.nav-btn span.icon{ font-size: 18px; line-height: 1; }
-.nav-btn.active{
-  color:#fff;
-  background: rgba(37,99,235,.28);
-  border-color: rgba(37,99,235,.45);
-  box-shadow: 0 10px 18px rgba(37,99,235,.15);
-}
-.nav-btn.active .icon{
-  filter: drop-shadow(0 6px 12px rgba(37,99,235,.35));
-}
+  .card-body-inner{ padding: 12px; }
 
-footer{
-  text-align:center;
-  margin: 16px 0 110px;
-  font-size:11px;
-  color: var(--muted);
-}
+  .info{ margin-bottom:8px; font-size: 15px; }
+  .info b{
+    display:block;
+    color:#374151;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
 
-/* =========================================================
-   ANIMAÇÕES (mantidas)
-========================================================= */
-@keyframes slideIn {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-@keyframes glowYellow {
-  0%   { box-shadow: 0 0 0 rgba(245,158,11,0); }
-  30%  { box-shadow: 0 0 0 6px rgba(245,158,11,.25); }
-  100% { box-shadow: 0 0 0 rgba(245,158,11,0); }
-}
-@keyframes glowGreen {
-  0%   { box-shadow: 0 0 0 rgba(22,163,74,0); }
-  30%  { box-shadow: 0 0 0 6px rgba(22,163,74,.22); }
-  100% { box-shadow: 0 0 0 rgba(22,163,74,0); }
-}
-@keyframes glowBlue {
-  0%   { box-shadow: 0 0 0 rgba(37,99,235,0); }
-  30%  { box-shadow: 0 0 0 6px rgba(37,99,235,.22); }
-  100% { box-shadow: 0 0 0 rgba(37,99,235,0); }
-}
-@keyframes bounceSmall {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-.anim-new { animation: slideIn .25s ease-out, glowYellow 1.1s ease-out; }
-.anim-approved { animation: glowGreen 1.2s ease-out, bounceSmall .35s ease-out; }
-.anim-reserved { animation: glowBlue 1.2s ease-out, bounceSmall .35s ease-out; }
+  .selo{
+    background:#f3f4f6;
+    border: 1px solid rgba(229,231,235,.9);
+    padding:10px;
+    border-radius: 14px;
+    text-align:center;
+    font-weight: 900;
+    color:#0f172a;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .anim-new, .anim-approved, .anim-reserved { animation: none !important; }
-}
+  .selo-devolucao{
+    background:#dbeafe;
+    color:#1e40af;
+    font-weight:900;
+    text-align:center;
+    padding:8px 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(37,99,235,.22);
+    margin: 10px 0 8px;
+  }
 
-/* packs da topbar */
-.left-pack, .right-pack{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+  .peca{
+    margin-top:10px;
+    padding-top:8px;
+    border-top:1px dashed #d1d5db;
+  }
+  .peca b{ display:block; font-weight: 900; }
+  .peca input{
+    width:100%;
+    padding: 11px 12px;
+    margin-top: 8px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+  }
 
-/* deixa a topbar menor por padrão */
-.topbar{
-  padding: 10px 10px 12px;
-}
-.topbar-inner{
-  gap:10px;
-}
+  .acoes{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top: 12px;
+  }
+  .acoes .btn{ width:100%; }
 
-/* reduz elementos */
-.brand .home{ width:40px; height:40px; border-radius: 14px; }
-.menu-btn{ width:40px; height:40px; border-radius: 14px; }
-.icon-btn{ width:40px; height:40px; border-radius: 14px; }
+  .aprovar{ background: linear-gradient(180deg, #22c55e, var(--primary)); color:#fff; }
+  .reprovar{ background: linear-gradient(180deg, #ef4444, var(--danger)); color:#fff; }
+  .btn-reservar{ background: linear-gradient(180deg, #3b82f6, var(--secondary)); color:#fff; }
+  .aprovar:disabled{
+    background:#9ca3af !important;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
 
-.logo-suzano{ padding:6px 8px; border-radius: 14px; }
-.logo-suzano img{ width: 92px; }
+  /* =========================================================
+    SIDEBAR / OVERLAY
+  ========================================================= */
+  .menu-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:1000;
+    display:none;
+  }
+  .menu-overlay.active{ display:block; }
 
-/* chip compacto (mobile) */
-.status-chip{
-  display:none; /* liga no mobile */
-  align-items:center;
-  gap:8px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: 0 8px 18px rgba(0,0,0,.12);
-  font-size: 12px;
-  font-weight: 900;
-}
-.status-chip .sep{ opacity:.8; font-weight: 900; }
-.status-chip b{ min-width: 14px; text-align:center; }
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    width:270px;
+    background: linear-gradient(180deg, #0b1220, #0f1b33);
+    color:#fff;
+    transform:translateX(-100%);
+    transition:.25s;
+    z-index:1001;
+    display:flex;
+    flex-direction:column;
+    box-shadow: 30px 0 80px rgba(0,0,0,.35);
+  }
+  .sidebar.active{ transform:translateX(0); }
 
-.status-chip .dot{
-  width:8px;
-  height:8px;
-  border-radius:999px;
-  display:inline-block;
-}
-.status-chip .dot.pend{ background: rgba(245,158,11,.95); }
-.status-chip .dot.apr{ background: rgba(34,197,94,.95); }
-.status-chip .dot.res{ background: rgba(59,130,246,.95); }
+  .sidebar-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px;
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .sidebar-header button{
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    color:#fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    cursor:pointer;
+  }
+  .sidebar nav{
+    display:flex;
+    flex-direction:column;
+    padding:10px;
+    gap:8px;
+  }
+  .sidebar nav a{
+    padding:12px;
+    border-radius:14px;
+    color:#fff;
+    text-decoration:none;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar nav a:hover{ background: rgba(255,255,255,.10); }
+  .sidebar nav a.ativo{ background: rgba(37,99,235,.35); border-color: rgba(37,99,235,.40); }
 
-/* MOBILE: simplifica a topbar */
-@media (max-width: 560px){
-  .topbar{ padding: 8px 10px 10px; }
+  /* =========================================================
+    BOTTOM NAV (4 itens)
+  ========================================================= */
+  .bottom-nav{
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 0;
+    z-index: 800;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(11,18,32,.92);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .bottom-nav .inner{
+    max-width: 520px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:10px;
+  }
+  .nav-btn{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    color:#e5e7eb;
+    font-size: 11px;
+    padding: 10px 8px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.06);
+    transition: .15s;
+  }
+  .nav-btn:hover{ background: rgba(255,255,255,.10); }
+  .nav-btn span.icon{ font-size: 18px; line-height: 1; }
+  .nav-btn.active{
+    color:#fff;
+    background: rgba(37,99,235,.28);
+    border-color: rgba(37,99,235,.45);
+    box-shadow: 0 10px 18px rgba(37,99,235,.15);
+  }
+  .nav-btn.active .icon{
+    filter: drop-shadow(0 6px 12px rgba(37,99,235,.35));
+  }
 
-  /* some com as 3 pills e aparece o chip */
-  .top-pills{ display:none !important; }
-  .status-chip{ display:flex; }
+  footer{
+    text-align:center;
+    margin: 16px 0 110px;
+    font-size:11px;
+    color: var(--muted);
+  }
 
-  /* encurta subtítulo */
-  .brand .title span{ display:none; }
-  .brand .title strong{ font-size: 16px; }
+  /* =========================================================
+    ANIMAÇÕES (mantidas)
+  ========================================================= */
+  @keyframes slideIn {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes glowYellow {
+    0%   { box-shadow: 0 0 0 rgba(245,158,11,0); }
+    30%  { box-shadow: 0 0 0 6px rgba(245,158,11,.25); }
+    100% { box-shadow: 0 0 0 rgba(245,158,11,0); }
+  }
+  @keyframes glowGreen {
+    0%   { box-shadow: 0 0 0 rgba(22,163,74,0); }
+    30%  { box-shadow: 0 0 0 6px rgba(22,163,74,.22); }
+    100% { box-shadow: 0 0 0 rgba(22,163,74,0); }
+  }
+  @keyframes glowBlue {
+    0%   { box-shadow: 0 0 0 rgba(37,99,235,0); }
+    30%  { box-shadow: 0 0 0 6px rgba(37,99,235,.22); }
+    100% { box-shadow: 0 0 0 rgba(37,99,235,0); }
+  }
+  @keyframes bounceSmall {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+  .anim-new { animation: slideIn .25s ease-out, glowYellow 1.1s ease-out; }
+  .anim-approved { animation: glowGreen 1.2s ease-out, bounceSmall .35s ease-out; }
+  .anim-reserved { animation: glowBlue 1.2s ease-out, bounceSmall .35s ease-out; }
 
-  /* logo menor */
-  .logo-suzano img{ width: 78px; }
+  @media (prefers-reduced-motion: reduce) {
+    .anim-new, .anim-approved, .anim-reserved { animation: none !important; }
+  }
 
-  /* menos espaço entre itens */
-  .left-pack, .right-pack{ gap:8px; }
-}
+  /* packs da topbar */
+  .left-pack, .right-pack{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
 
-</style>
-</head>
+  /* deixa a topbar menor por padrão */
+  .topbar{
+    padding: 10px 10px 12px;
+  }
+  .topbar-inner{
+    gap:10px;
+  }
 
-<body>
+  /* reduz elementos */
+  .brand .home{ width:40px; height:40px; border-radius: 14px; }
+  .menu-btn{ width:40px; height:40px; border-radius: 14px; }
+  .icon-btn{ width:40px; height:40px; border-radius: 14px; }
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="left-pack">
-      <button class="menu-btn" onclick="abrirMenu()" aria-label="Abrir menu">☰</button>
+  .logo-suzano{ padding:6px 8px; border-radius: 14px; }
+  .logo-suzano img{ width: 92px; }
 
-      <div class="brand">
-        <a class="home" href="index.html" title="Voltar ao início">🏠</a>
-        <div class="title">
-          <strong>Área de Técnicos</strong>
-          <span>CMC • pedidos</span>
-        </div>
-      </div>
-    </div>
+  /* chip compacto (mobile) */
+  .status-chip{
+    display:none; /* liga no mobile */
+    align-items:center;
+    gap:8px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 8px 18px rgba(0,0,0,.12);
+    font-size: 12px;
+    font-weight: 900;
+  }
+  .status-chip .sep{ opacity:.8; font-weight: 900; }
+  .status-chip b{ min-width: 14px; text-align:center; }
 
-    <div class="right-pack">
-      <!-- Desktop: pills -->
-      <div class="top-pills" id="topPills">
-        <div class="pill pend"><span class="dot"></span> Pend. <span id="topPend">0</span></div>
-        <div class="pill apr"><span class="dot"></span> Apr. <span id="topApr">0</span></div>
-        <div class="pill res"><span class="dot"></span> Res. <span id="topRes">0</span></div>
-      </div>
+  .status-chip .dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+    display:inline-block;
+  }
+  .status-chip .dot.pend{ background: rgba(245,158,11,.95); }
+  .status-chip .dot.apr{ background: rgba(34,197,94,.95); }
+  .status-chip .dot.res{ background: rgba(59,130,246,.95); }
 
-      <!-- Mobile: chip compacto -->
-      <div class="status-chip" id="statusChip">
+  /* MOBILE: simplifica a topbar */
+  @media (max-width: 560px){
+    .topbar{ padding: 8px 10px 10px; }
+
+    /* some com as 3 pills e aparece o chip */
+    .top-pills{ display:none !important; }
+    .status-chip{ display:flex; }
+
+    /* encurta subtítulo */
+    .brand .title span{ display:none; }
+    .brand .title strong{ font-size: 16px; }
+
+    /* logo menor */
+    .logo-suzano img{ width: 78px; }
+
+    /* menos espaço entre itens */
+    .left-pack, .right-pack{ gap:8px; }
+  }
+
+  /* ===== TOPBAR MINIMAL ===== */
+  .topbar{
+    position: sticky;
+    top:0;
+    z-index: 900;
+    padding: 8px 10px 10px;
+    color:#fff;
+    background:
+      radial-gradient(1200px 320px at 10% -10%, rgba(37,99,235,.30), transparent 55%),
+      radial-gradient(900px 280px at 90% 0%, rgba(22,163,74,.18), transparent 60%),
+      linear-gradient(180deg, var(--navy-2), var(--navy-1));
+    box-shadow: 0 10px 22px rgba(2, 6, 23, .26);
+  }
+
+  .topbar-inner{
+    max-width: var(--max);
+    margin: 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  /* agrupa direita */
+  .topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  /* BOTÕES PADRONIZADOS (menores) */
+  .icon-ctl{
+    position:relative;
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    color:#fff;
+    width:36px;
+    height:36px;
+    border-radius: 12px;
+    font-size:18px;
+    display:grid;
+    place-items:center;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 6px 14px rgba(0,0,0,.14);
+  }
+  .icon-ctl:active{ transform: scale(.98); }
+
+  /* badge menor */
+  .badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:#ef4444;
+    color:#fff;
+    font-size:10px;
+    font-weight:900;
+    border:2px solid rgba(11,18,32,.95);
+  }
+
+  /* chip status mais compacto */
+  .status-chip{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 6px 14px rgba(0,0,0,.12);
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    white-space:nowrap;
+  }
+  .status-chip .sep{ opacity:.75; }
+  .status-chip b{ min-width: 14px; text-align:center; }
+  .status-chip .dot{
+    width:7px;
+    height:7px;
+    border-radius:999px;
+    display:inline-block;
+  }
+  .status-chip .dot.pend{ background: rgba(245,158,11,.95); }
+  .status-chip .dot.apr{  background: rgba(34,197,94,.95); }
+  .status-chip .dot.res{  background: rgba(59,130,246,.95); }
+
+  /* logo compacto */
+  .logo-suzano.compact{
+    padding: 6px 8px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .logo-suzano.compact img{
+    width: 72px;
+    height:auto;
+    display:block;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
+  }
+
+  /* MOBILE EXTRA PEQUENO: aperta mais ainda */
+  @media (max-width: 380px){
+    .status-chip{ padding: 6px 8px; font-size: 11px; gap:6px; }
+    .icon-ctl{ width:34px; height:34px; border-radius: 11px; font-size:17px; }
+    .logo-suzano.compact img{ width: 64px; }
+  }
+  </style>
+  </head>
+
+  <body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-inner topbar-min">
+      <button class="icon-ctl" onclick="abrirMenu()" aria-label="Abrir menu">☰</button>
+
+      <!-- Mobile-first: chip compacto -->
+      <div class="status-chip" id="statusChip" title="Pendentes • Aprovados • Reservados">
         <span class="dot pend"></span><b id="chipPend">0</b>
         <span class="sep">•</span>
         <span class="dot apr"></span><b id="chipApr">0</b>
@@ -836,908 +933,910 @@ footer{
         <span class="dot res"></span><b id="chipRes">0</b>
       </div>
 
-      <button class="icon-btn" type="button" title="Notificações" onclick="toggleNotificacaoBox()">
-        🔔
-        <span class="badge" id="bellBadge">0</span>
-      </button>
+      <div class="topbar-right">
+        <button class="icon-ctl" type="button" title="Notificações" onclick="toggleNotificacaoBox()">
+          🔔
+          <span class="badge" id="bellBadge">0</span>
+        </button>
 
-      <div class="logo-suzano">
-        <img src="suzano-logo.png" alt="Suzano">
+        <div class="logo-suzano compact">
+          <img src="suzano-logo.png" alt="Suzano">
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<!-- OVERLAY -->
-<div class="menu-overlay" onclick="fecharMenu()"></div>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <strong>📦 Pedido de Peças</strong>
-    <button onclick="fecharMenu()" aria-label="Fechar menu">✖</button>
-  </div>
-  <nav>
-    <a href="index.html">📝 Pedido de Peças</a>
-    <a href="acompanhamento.html">📦 Acompanhamento de Pedidos 🔩</a>
-    <a href="admin.html">🔐 Área de Técnicos 🛠️</a>
-    <a href="admin-epi.html">🦺 EPI's e Uniformes</a>
-    <a href="painel-almoxarife.html">🖥️ Painel do Almoxarife ⚙️</a>
+  <!-- OVERLAY -->
+  <div class="menu-overlay" onclick="fecharMenu()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <strong>📦 Pedido de Peças</strong>
+      <button onclick="fecharMenu()" aria-label="Fechar menu">✖</button>
+    </div>
+    <nav>
+      <a href="index.html">📝 Pedido de Peças</a>
+      <a href="acompanhamento.html">📦 Acompanhamento de Pedidos 🔩</a>
+      <a href="admin.html">🔐 Área de Técnicos 🛠️</a>
+      <a href="admin-epi.html">🦺 EPI's e Uniformes</a>
+      <a href="painel-almoxarife.html">🖥️ Painel do Almoxarife ⚙️</a>
+    </nav>
+  </aside>
+
+  <main class="page">
+
+    <!-- LOGIN -->
+    <section class="panel login" id="loginBox">
+      <div class="panel-header">
+        <div class="h">🔐 Login</div>
+        <small>Área de Técnicos</small>
+      </div>
+      <div class="panel-body">
+        <label>Senha</label>
+        <input type="password" id="senha" placeholder="Senha">
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="login()">Entrar</button>
+        <div style="height:6px"></div>
+        <small style="color:var(--muted)">Use sua senha interna para acessar.</small>
+      </div>
+    </section>
+
+    <!-- PAINEL -->
+    <section class="panel" id="painel" style="display:none">
+      <div class="panel-header">
+        <div class="h">📦 Pedidos Recebidos</div>
+        <small>aprovar, reprovar, reservar e editar NI</small>
+      </div>
+
+      <div class="panel-body">
+
+        <!-- ACTION BAR (pills) -->
+        <div class="actionbar">
+          <div class="actionbar-left">
+            <button class="pill-btn" onclick="logout()">🚪 Sair</button>
+            <button class="pill-btn" onclick="toggleRelatorio()">📊 Relatórios</button>
+            <button class="pill-btn" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
+          </div>
+
+          <div class="actionbar-right">
+            <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
+            <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
+          </div>
+        </div>
+
+        <!-- RELATÓRIOS -->
+        <div class="relatorio-box" id="relatorioBox" style="display:none;">
+          <button class="btn btn-primary" onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
+          <button class="btn btn-primary" onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
+          <input type="date" id="inicio">
+          <input type="date" id="fim">
+        </div>
+
+        <!-- NOTIFICAÇÕES -->
+        <div class="notificacao-box" id="notificacaoBox" style="display:none;">
+          <button class="btn btn-dark" id="btnNovo" onclick="toggleNotificacao('novo', this)"></button>
+          <button class="btn btn-dark" id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
+        </div>
+
+        <!-- TABS / CAROUSEL -->
+        <div class="filters" aria-label="Filtros">
+          <div class="tab active" id="tabTodos" onclick="setFiltro('TODOS')">📋 Todos <small id="countTodos">0</small></div>
+          <div class="tab pend" id="tabPend" onclick="setFiltro('Pendente')">🟠 Pendentes <small id="countPendentes">0</small></div>
+          <div class="tab apr" id="tabApr" onclick="setFiltro('Aprovado')">🟢 Aprovados <small id="countAprovados">0</small></div>
+          <div class="tab res" id="tabRes" onclick="setFiltro('Reservado')">🔵 Reservados <small id="countReservados">0</small></div>
+        </div>
+
+        <div class="cards" id="lista"></div>
+      </div>
+    </section>
+
+    <footer>Criado e Desenvolvido por Cleider Filho</footer>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" aria-label="Acessos">
+    <div class="inner">
+      <a class="nav-btn" data-nav="pedido" href="index.html">
+        <span class="icon">📝</span>
+        <span>Pedido</span>
+      </a>
+      <a class="nav-btn" data-nav="tecnicos" href="admin.html">
+        <span class="icon">🔐</span>
+        <span>Técnicos</span>
+      </a>
+      <a class="nav-btn" data-nav="acomp" href="acompanhamento.html">
+        <span class="icon">📦</span>
+        <span>Acomp.</span>
+      </a>
+      <a class="nav-btn" data-nav="painel" href="painel-almoxarife.html">
+        <span class="icon">🖥️</span>
+        <span>Painel</span>
+      </a>
+    </div>
   </nav>
-</aside>
 
-<main class="page">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
-  <!-- LOGIN -->
-  <section class="panel login" id="loginBox">
-    <div class="panel-header">
-      <div class="h">🔐 Login</div>
-      <small>Área de Técnicos</small>
-    </div>
-    <div class="panel-body">
-      <label>Senha</label>
-      <input type="password" id="senha" placeholder="Senha">
-      <div style="height:10px"></div>
-      <button class="btn btn-primary" style="width:100%" onclick="login()">Entrar</button>
-      <div style="height:6px"></div>
-      <small style="color:var(--muted)">Use sua senha interna para acessar.</small>
-    </div>
-  </section>
+  <script type="module">
+  /* =========================================================
+    IMPORTS
+  ========================================================= */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import {
+    getFirestore, collection, getDocs, addDoc,
+    doc, updateDoc, getDoc, query, orderBy,
+    deleteDoc, limit, where, setDoc, writeBatch, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
 
-  <!-- PAINEL -->
-  <section class="panel" id="painel" style="display:none">
-    <div class="panel-header">
-      <div class="h">📦 Pedidos Recebidos</div>
-      <small>aprovar, reprovar, reservar e editar NI</small>
-    </div>
-
-    <div class="panel-body">
-
-      <!-- ACTION BAR (pills) -->
-      <div class="actionbar">
-        <div class="actionbar-left">
-          <button class="pill-btn" onclick="logout()">🚪 Sair</button>
-          <button class="pill-btn" onclick="toggleRelatorio()">📊 Relatórios</button>
-          <button class="pill-btn" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
-        </div>
-
-        <div class="actionbar-right">
-          <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
-          <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
-        </div>
-      </div>
-
-      <!-- RELATÓRIOS -->
-      <div class="relatorio-box" id="relatorioBox" style="display:none;">
-        <button class="btn btn-primary" onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
-        <button class="btn btn-primary" onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
-        <input type="date" id="inicio">
-        <input type="date" id="fim">
-      </div>
-
-      <!-- NOTIFICAÇÕES -->
-      <div class="notificacao-box" id="notificacaoBox" style="display:none;">
-        <button class="btn btn-dark" id="btnNovo" onclick="toggleNotificacao('novo', this)"></button>
-        <button class="btn btn-dark" id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
-      </div>
-
-      <!-- TABS / CAROUSEL -->
-      <div class="filters" aria-label="Filtros">
-        <div class="tab active" id="tabTodos" onclick="setFiltro('TODOS')">📋 Todos <small id="countTodos">0</small></div>
-        <div class="tab pend" id="tabPend" onclick="setFiltro('Pendente')">🟠 Pendentes <small id="countPendentes">0</small></div>
-        <div class="tab apr" id="tabApr" onclick="setFiltro('Aprovado')">🟢 Aprovados <small id="countAprovados">0</small></div>
-        <div class="tab res" id="tabRes" onclick="setFiltro('Reservado')">🔵 Reservados <small id="countReservados">0</small></div>
-      </div>
-
-      <div class="cards" id="lista"></div>
-    </div>
-  </section>
-
-  <footer>Criado e Desenvolvido por Cleider Filho</footer>
-</main>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav" aria-label="Acessos">
-  <div class="inner">
-    <a class="nav-btn" data-nav="pedido" href="index.html">
-      <span class="icon">📝</span>
-      <span>Pedido</span>
-    </a>
-    <a class="nav-btn" data-nav="tecnicos" href="admin.html">
-      <span class="icon">🔐</span>
-      <span>Técnicos</span>
-    </a>
-    <a class="nav-btn" data-nav="acomp" href="acompanhamento.html">
-      <span class="icon">📦</span>
-      <span>Acomp.</span>
-    </a>
-    <a class="nav-btn" data-nav="painel" href="painel-almoxarife.html">
-      <span class="icon">🖥️</span>
-      <span>Painel</span>
-    </a>
-  </div>
-</nav>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-
-<script type="module">
-/* =========================================================
-   IMPORTS
-========================================================= */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore, collection, getDocs, addDoc,
-  doc, updateDoc, getDoc, query, orderBy,
-  deleteDoc, limit, where, setDoc, writeBatch, onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
-
-/* =========================================================
-   FIREBASE
-========================================================= */
-const app = initializeApp({
-  apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
-  authDomain: "pedidos-almoxarifado.firebaseapp.com",
-  projectId: "pedidos-almoxarifado",
-  storageBucket: "pedidos-almoxarifado.firebasestorage.app",
-  messagingSenderId: "443882865992",
-  appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
-});
-
-const db = getFirestore(app);
-const messaging = getMessaging(app);
-
-/* =========================================================
-   ELEMENTOS UI
-========================================================= */
-const loginBox = document.getElementById("loginBox");
-const painel = document.getElementById("painel");
-const lista = document.getElementById("lista");
-
-const bellBadge = document.getElementById("bellBadge");
-const topPills = document.getElementById("topPills");
-const topPend = document.getElementById("topPend");
-const topApr  = document.getElementById("topApr");
-const topRes  = document.getElementById("topRes");
-
-const tabTodos = document.getElementById("tabTodos");
-const tabPend  = document.getElementById("tabPend");
-const tabApr   = document.getElementById("tabApr");
-const tabRes   = document.getElementById("tabRes");
-
-const countTodos = document.getElementById("countTodos");
-const countPendentes = document.getElementById("countPendentes");
-const countAprovados = document.getElementById("countAprovados");
-const countReservados = document.getElementById("countReservados");
-
-/* =========================================================
-   SERVICE WORKER
-========================================================= */
-let swRegistration = null;
-
-(async () => {
-  if ("serviceWorker" in navigator) {
-    swRegistration = await navigator.serviceWorker.register(
-      "/PedidosCMCApp/firebase-messaging-sw.js",
-      { scope: "/PedidosCMCApp/" }
-    );
-
-    ajustarBotaoNotificacao("novo", document.getElementById("btnNovo"));
-    ajustarBotaoNotificacao("status", document.getElementById("btnStatus"));
-  }
-})();
-
-/* =========================================================
-   PUSH NOTIFICATIONS
-========================================================= */
-const textos = {
-  novo: {
-    on: "🔕 Desativar notificações – Novos pedidos",
-    off: "🔔 Ativar notificações – Novos pedidos"
-  },
-  status: {
-    on: "🔕 Desativar notificações – Pedidos aprovados",
-    off: "🔔 Ativar notificações – Pedidos aprovados"
-  }
-};
-
-async function ajustarBotaoNotificacao(tipo, botao) {
-  if (!botao || !swRegistration) return;
-
-  const token = await getToken(messaging, {
-    vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-    serviceWorkerRegistration: swRegistration
+  /* =========================================================
+    FIREBASE
+  ========================================================= */
+  const app = initializeApp({
+    apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
+    authDomain: "pedidos-almoxarifado.firebaseapp.com",
+    projectId: "pedidos-almoxarifado",
+    storageBucket: "pedidos-almoxarifado.firebasestorage.app",
+    messagingSenderId: "443882865992",
+    appId: "1:443882865992:web:1afcc37c29bd8800eedf7d"
   });
 
-  if (!token) return;
+  const db = getFirestore(app);
+  const messaging = getMessaging(app);
 
-  const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
-  const snap = await getDoc(ref);
+  /* =========================================================
+    ELEMENTOS UI
+  ========================================================= */
+  const loginBox = document.getElementById("loginBox");
+  const painel = document.getElementById("painel");
+  const lista = document.getElementById("lista");
 
-  botao.innerText =
-    snap.exists() && snap.data().ativo
-      ? textos[tipo].on
-      : textos[tipo].off;
-}
+  const bellBadge = document.getElementById("bellBadge");
+  const topPills = document.getElementById("topPills");
+  const topPend = document.getElementById("topPend");
+  const topApr  = document.getElementById("topApr");
+  const topRes  = document.getElementById("topRes");
 
-async function toggleNotificacao(tipo, botao) {
-  if (!swRegistration) return alert("Service Worker não pronto");
+  const tabTodos = document.getElementById("tabTodos");
+  const tabPend  = document.getElementById("tabPend");
+  const tabApr   = document.getElementById("tabApr");
+  const tabRes   = document.getElementById("tabRes");
 
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") return alert("Permissão negada");
+  const countTodos = document.getElementById("countTodos");
+  const countPendentes = document.getElementById("countPendentes");
+  const countAprovados = document.getElementById("countAprovados");
+  const countReservados = document.getElementById("countReservados");
 
-  const token = await getToken(messaging, {
-    vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
-    serviceWorkerRegistration: swRegistration
-  });
+  /* =========================================================
+    SERVICE WORKER
+  ========================================================= */
+  let swRegistration = null;
 
-  if (!token) return alert("Token não gerado");
+  (async () => {
+    if ("serviceWorker" in navigator) {
+      swRegistration = await navigator.serviceWorker.register(
+        "/PedidosCMCApp/firebase-messaging-sw.js",
+        { scope: "/PedidosCMCApp/" }
+      );
 
-  const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
-  const snap = await getDoc(ref);
+      ajustarBotaoNotificacao("novo", document.getElementById("btnNovo"));
+      ajustarBotaoNotificacao("status", document.getElementById("btnStatus"));
+    }
+  })();
 
-  if (!snap.exists()) {
-    await setDoc(ref,{
-      usuario: localStorage.getItem("usuario_nome"),
-      token,
-      tipo,
-      ativo:true,
-      perfil:"admin",
-      criadoEm:new Date()
+  /* =========================================================
+    PUSH NOTIFICATIONS
+  ========================================================= */
+  const textos = {
+    novo: {
+      on: "🔕 Desativar notificações – Novos pedidos",
+      off: "🔔 Ativar notificações – Novos pedidos"
+    },
+    status: {
+      on: "🔕 Desativar notificações – Pedidos aprovados",
+      off: "🔔 Ativar notificações – Pedidos aprovados"
+    }
+  };
+
+  async function ajustarBotaoNotificacao(tipo, botao) {
+    if (!botao || !swRegistration) return;
+
+    const token = await getToken(messaging, {
+      vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+      serviceWorkerRegistration: swRegistration
     });
 
-    botao.innerText = textos[tipo].on;
-    return alert("🔔 Notificações ativadas");
+    if (!token) return;
+
+    const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
+    const snap = await getDoc(ref);
+
+    botao.innerText =
+      snap.exists() && snap.data().ativo
+        ? textos[tipo].on
+        : textos[tipo].off;
   }
 
-  const novoEstado = !snap.data().ativo;
+  async function toggleNotificacao(tipo, botao) {
+    if (!swRegistration) return alert("Service Worker não pronto");
 
-  await updateDoc(ref,{
-    ativo:novoEstado,
-    atualizadoEm:new Date()
-  });
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return alert("Permissão negada");
 
-  botao.innerText = novoEstado ? textos[tipo].on : textos[tipo].off;
-  alert(novoEstado ? "🔔 Notificações ativadas" : "🔕 Notificações desativadas");
-}
+    const token = await getToken(messaging, {
+      vapidKey: "BFjRfkUJ8hXuoy7gWDDfUzSN28VQxTFrR2UrYgxLe_1oZehIdFVfNHdZba21LN9afSHWiKUppajQ2fQGeWR3-n0",
+      serviceWorkerRegistration: swRegistration
+    });
 
-window.toggleNotificacao = toggleNotificacao;
-window.toggleNotificacaoBox = () => {
-  const box = document.getElementById("notificacaoBox");
-  box.style.display = box.style.display === "none" ? "flex" : "none";
-};
+    if (!token) return alert("Token não gerado");
 
-/* =========================================================
-   TELEGRAM
-========================================================= */
-const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
-const TELEGRAM_CHAT_ID = "-1003646317990";
+    const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
+    const snap = await getDoc(ref);
 
-async function enviarTelegram(msg){
-  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      chat_id: TELEGRAM_CHAT_ID,
-      text: msg,
-      parse_mode: "Markdown"
-    })
-  });
-}
+    if (!snap.exists()) {
+      await setDoc(ref,{
+        usuario: localStorage.getItem("usuario_nome"),
+        token,
+        tipo,
+        ativo:true,
+        perfil:"admin",
+        criadoEm:new Date()
+      });
 
-/* =========================================================
-   USUÁRIOS / LOGIN
-========================================================= */
-const USUARIOS = {
-  "cleider": "Cleider Filho",
-  "salles2026": "Douglas Salles",
-  "gleyson2026": "Gleyson Murça",
-  "robson2026": "Robson Jesus",
-  "otto2026": "Leonardo Otto",
-  "junior2026": "Geraldo Junior",
-  "castro2026": "Cleiton Castro",
-  "amanda2026": "Amanda",
-  "mariana2026": "Mariana",
-  "couto2026": "Graziele Couto",
-  "breno2026": "Breno",
-  "luiz2026": "Luiz",
-  "joaquim2026": "Joaquim Pereira",
-  "reginaldo2026": "Reginaldo Bocafoli"
-};
+      botao.innerText = textos[tipo].on;
+      return alert("🔔 Notificações ativadas");
+    }
 
-window.login = () => {
-  const senha = document.getElementById("senha").value;
-  if (!USUARIOS[senha]) return alert("Senha inválida");
+    const novoEstado = !snap.data().ativo;
 
-  localStorage.setItem("admin","true");
-  localStorage.setItem("usuario_nome",USUARIOS[senha]);
+    await updateDoc(ref,{
+      ativo:novoEstado,
+      atualizadoEm:new Date()
+    });
 
-  loginBox.style.display="none";
-  painel.style.display="block";
-
-  iniciarListenerPedidos(); // realtime
-};
-
-window.logout = ()=>{
-  if (unsubscribePedidos) unsubscribePedidos();
-  localStorage.clear();
-  location.reload();
-};
-
-/* =========================================================
-   NORMALIZAÇÃO
-========================================================= */
-const norm = t =>
-  t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-
-/* =========================================================
-   FILTROS (abas)
-========================================================= */
-let filtroAtual = "TODOS";   // TODOS | Pendente | Aprovado | Reservado
-let ultimosPedidos = [];
-
-window.setFiltro = (filtro) => {
-  filtroAtual = filtro;
-
-  // ativa a aba
-  tabTodos.classList.toggle("active", filtroAtual === "TODOS");
-  tabPend.classList.toggle("active", filtroAtual === "Pendente");
-  tabApr.classList.toggle("active", filtroAtual === "Aprovado");
-  tabRes.classList.toggle("active", filtroAtual === "Reservado");
-
-  // re-renderiza com cache
-  renderizarPedidos(aplicarFiltro(ultimosPedidos));
-};
-
-function aplicarFiltro(pedidos){
-  if (filtroAtual === "TODOS") return pedidos;
-  return pedidos.filter(p => p.status === filtroAtual);
-}
-
-/* =========================================================
-   CONTADORES + BADGE (tabs + topbar)
-========================================================= */
-function setBadge(el, value){
-  if (!el) return;
-  const n = Number(value || 0);
-  if (n > 0){
-    el.textContent = String(n);
-    el.style.display = "inline-flex";
-  } else {
-    el.style.display = "none";
+    botao.innerText = novoEstado ? textos[tipo].on : textos[tipo].off;
+    alert(novoEstado ? "🔔 Notificações ativadas" : "🔕 Notificações desativadas");
   }
-}
 
-function atualizarContadores(pedidos){
-  const total = pedidos.length;
-  const pend = pedidos.filter(p => p.status === "Pendente").length;
-  const apr  = pedidos.filter(p => p.status === "Aprovado").length;
-  const res  = pedidos.filter(p => p.status === "Reservado").length;
+  window.toggleNotificacao = toggleNotificacao;
+  window.toggleNotificacaoBox = () => {
+    const box = document.getElementById("notificacaoBox");
+    box.style.display = box.style.display === "none" ? "flex" : "none";
+  };
 
-  countTodos.textContent = total;
-  countPendentes.textContent = pend;
-  countAprovados.textContent = apr;
-  countReservados.textContent = res;
+  /* =========================================================
+    TELEGRAM
+  ========================================================= */
+  const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
+  const TELEGRAM_CHAT_ID = "-1003646317990";
 
-  topPills.style.display = "flex";
-  topPend.textContent = pend;
-  topApr.textContent = apr;
-  topRes.textContent = res;
+  async function enviarTelegram(msg){
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: msg,
+        parse_mode: "Markdown"
+      })
+    });
+  }
 
-  // ✅ chip compacto (mobile)
-  const chipPend = document.getElementById("chipPend");
-  const chipApr  = document.getElementById("chipApr");
-  const chipRes  = document.getElementById("chipRes");
-  if (chipPend) chipPend.textContent = pend;
-  if (chipApr)  chipApr.textContent  = apr;
-  if (chipRes)  chipRes.textContent  = res;
+  /* =========================================================
+    USUÁRIOS / LOGIN
+  ========================================================= */
+  const USUARIOS = {
+    "cleider": "Cleider Filho",
+    "salles2026": "Douglas Salles",
+    "gleyson2026": "Gleyson Murça",
+    "robson2026": "Robson Jesus",
+    "otto2026": "Leonardo Otto",
+    "junior2026": "Geraldo Junior",
+    "castro2026": "Cleiton Castro",
+    "amanda2026": "Amanda",
+    "mariana2026": "Mariana",
+    "couto2026": "Graziele Couto",
+    "breno2026": "Breno",
+    "luiz2026": "Luiz",
+    "joaquim2026": "Joaquim Pereira",
+    "reginaldo2026": "Reginaldo Bocafoli"
+  };
 
-  // badge no sino = pendentes
-  setBadge(bellBadge, pend);
-}
+  window.login = () => {
+    const senha = document.getElementById("senha").value;
+    if (!USUARIOS[senha]) return alert("Senha inválida");
 
-/* =========================================================
-   ANIMAÇÕES por docChanges (mantido)
-========================================================= */
-const prevStatusById = new Map();
-let primeiraCarga = true;
+    localStorage.setItem("admin","true");
+    localStorage.setItem("usuario_nome",USUARIOS[senha]);
 
-function aplicarAnimacao(id, tipo){
-  const el = document.getElementById(`card-${id}`);
-  if(!el) return;
+    loginBox.style.display="none";
+    painel.style.display="block";
 
-  el.classList.remove("anim-new","anim-approved","anim-reserved");
-  void el.offsetWidth;
+    iniciarListenerPedidos(); // realtime
+  };
 
-  if (tipo === "new") el.classList.add("anim-new");
-  if (tipo === "approved") el.classList.add("anim-approved");
-  if (tipo === "reserved") el.classList.add("anim-reserved");
+  window.logout = ()=>{
+    if (unsubscribePedidos) unsubscribePedidos();
+    localStorage.clear();
+    location.reload();
+  };
 
-  setTimeout(() => {
+  /* =========================================================
+    NORMALIZAÇÃO
+  ========================================================= */
+  const norm = t =>
+    t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+
+  /* =========================================================
+    FILTROS (abas)
+  ========================================================= */
+  let filtroAtual = "TODOS";   // TODOS | Pendente | Aprovado | Reservado
+  let ultimosPedidos = [];
+
+  window.setFiltro = (filtro) => {
+    filtroAtual = filtro;
+
+    // ativa a aba
+    tabTodos.classList.toggle("active", filtroAtual === "TODOS");
+    tabPend.classList.toggle("active", filtroAtual === "Pendente");
+    tabApr.classList.toggle("active", filtroAtual === "Aprovado");
+    tabRes.classList.toggle("active", filtroAtual === "Reservado");
+
+    // re-renderiza com cache
+    renderizarPedidos(aplicarFiltro(ultimosPedidos));
+  };
+
+  function aplicarFiltro(pedidos){
+    if (filtroAtual === "TODOS") return pedidos;
+    return pedidos.filter(p => p.status === filtroAtual);
+  }
+
+  /* =========================================================
+    CONTADORES + BADGE (tabs + topbar)
+  ========================================================= */
+  function setBadge(el, value){
+    if (!el) return;
+    const n = Number(value || 0);
+    if (n > 0){
+      el.textContent = String(n);
+      el.style.display = "inline-flex";
+    } else {
+      el.style.display = "none";
+    }
+  }
+
+  function atualizarContadores(pedidos){
+    const total = pedidos.length;
+    const pend = pedidos.filter(p => p.status === "Pendente").length;
+    const apr  = pedidos.filter(p => p.status === "Aprovado").length;
+    const res  = pedidos.filter(p => p.status === "Reservado").length;
+
+    countTodos.textContent = total;
+    countPendentes.textContent = pend;
+    countAprovados.textContent = apr;
+    countReservados.textContent = res;
+
+    topPills.style.display = "flex";
+    topPend.textContent = pend;
+    topApr.textContent = apr;
+    topRes.textContent = res;
+
+    // ✅ chip compacto (mobile)
+    const chipPend = document.getElementById("chipPend");
+    const chipApr  = document.getElementById("chipApr");
+    const chipRes  = document.getElementById("chipRes");
+    if (chipPend) chipPend.textContent = pend;
+    if (chipApr)  chipApr.textContent  = apr;
+    if (chipRes)  chipRes.textContent  = res;
+
+    // badge no sino = pendentes
+    setBadge(bellBadge, pend);
+  }
+
+  /* =========================================================
+    ANIMAÇÕES por docChanges (mantido)
+  ========================================================= */
+  const prevStatusById = new Map();
+  let primeiraCarga = true;
+
+  function aplicarAnimacao(id, tipo){
+    const el = document.getElementById(`card-${id}`);
+    if(!el) return;
+
     el.classList.remove("anim-new","anim-approved","anim-reserved");
-  }, 1600);
-}
+    void el.offsetWidth;
 
-function processarMudancas(snapshot){
-  if (primeiraCarga) {
-    snapshot.docs.forEach(d => prevStatusById.set(d.id, (d.data()||{}).status));
-    primeiraCarga = false;
-    return;
+    if (tipo === "new") el.classList.add("anim-new");
+    if (tipo === "approved") el.classList.add("anim-approved");
+    if (tipo === "reserved") el.classList.add("anim-reserved");
+
+    setTimeout(() => {
+      el.classList.remove("anim-new","anim-approved","anim-reserved");
+    }, 1600);
   }
 
-  snapshot.docChanges().forEach(change => {
-    const id = change.doc.id;
-    const data = change.doc.data() || {};
-    const novoStatus = data.status;
-
-    if (change.type === "added") {
-      aplicarAnimacao(id, "new");
-      prevStatusById.set(id, novoStatus);
+  function processarMudancas(snapshot){
+    if (primeiraCarga) {
+      snapshot.docs.forEach(d => prevStatusById.set(d.id, (d.data()||{}).status));
+      primeiraCarga = false;
       return;
     }
 
-    if (change.type === "modified") {
-      const antigo = prevStatusById.get(id);
+    snapshot.docChanges().forEach(change => {
+      const id = change.doc.id;
+      const data = change.doc.data() || {};
+      const novoStatus = data.status;
 
-      if (antigo !== novoStatus) {
-        if (novoStatus === "Aprovado") aplicarAnimacao(id, "approved");
-        if (novoStatus === "Reservado") aplicarAnimacao(id, "reserved");
+      if (change.type === "added") {
+        aplicarAnimacao(id, "new");
+        prevStatusById.set(id, novoStatus);
+        return;
       }
 
-      prevStatusById.set(id, novoStatus);
-    }
+      if (change.type === "modified") {
+        const antigo = prevStatusById.get(id);
 
-    if (change.type === "removed") {
-      prevStatusById.delete(id);
-    }
-  });
-}
-
-/* =========================================================
-   PEDIDOS (REALTIME) - mantido
-========================================================= */
-let unsubscribePedidos = null;
-
-// cache EPI
-const cacheUltimaEPI = new Map();
-function limparCacheUltimaEPI(){ cacheUltimaEPI.clear(); }
-
-async function renderizarPedidos(pedidos){
-  lista.innerHTML = "";
-
-  // pendentes primeiro
-  pedidos.sort((a,b)=>{
-    if(a.status==="Pendente" && b.status!=="Pendente") return -1;
-    if(a.status!=="Pendente" && b.status==="Pendente") return 1;
-    return 0;
-  });
-
-  for (const p of pedidos) {
-    const finalizado = p.status !== "Pendente";
-    const faltaNI = (p.pecas || []).some(x => !x.ni);
-
-    let pecasHTML = "";
-
-    for (let i = 0; i < (p.pecas || []).length; i++) {
-      const x = p.pecas[i];
-
-      let ultimaTxt = "Primeira solicitação";
-
-      if (p.categoria === "EPI" && x.ni) {
-        const key = `${p.nome}|${x.ni}`;
-
-        if (!cacheUltimaEPI.has(key)) {
-          const ultima = await buscarUltimaSolicitacaoEPI({
-            nome: p.nome,
-            ni: x.ni,
-            pedidoAtualId: p.id
-          });
-          cacheUltimaEPI.set(key, ultima || null);
+        if (antigo !== novoStatus) {
+          if (novoStatus === "Aprovado") aplicarAnimacao(id, "approved");
+          if (novoStatus === "Reservado") aplicarAnimacao(id, "reserved");
         }
 
-        const ultima = cacheUltimaEPI.get(key);
-        if (ultima) ultimaTxt = ultima.toLocaleDateString("pt-BR");
+        prevStatusById.set(id, novoStatus);
       }
 
-      pecasHTML += `
-        <div class="peca">
-          <b>${x.descricao} (${x.quantidade})</b>
+      if (change.type === "removed") {
+        prevStatusById.delete(id);
+      }
+    });
+  }
 
-          <input
-            value="${x.ni || ""}"
-            ${finalizado ? "disabled" : ""}
-            onchange="atualizarNI('${p.id}', ${i}, this.value)"
-          >
+  /* =========================================================
+    PEDIDOS (REALTIME) - mantido
+  ========================================================= */
+  let unsubscribePedidos = null;
 
-          ${p.categoria === "EPI" ? `
-            <div style="font-size:12px;color:#065f46;margin-top:6px">
-              📅 Última solicitação: <b>${ultimaTxt}</b>
+  // cache EPI
+  const cacheUltimaEPI = new Map();
+  function limparCacheUltimaEPI(){ cacheUltimaEPI.clear(); }
+
+  async function renderizarPedidos(pedidos){
+    lista.innerHTML = "";
+
+    // pendentes primeiro
+    pedidos.sort((a,b)=>{
+      if(a.status==="Pendente" && b.status!=="Pendente") return -1;
+      if(a.status!=="Pendente" && b.status==="Pendente") return 1;
+      return 0;
+    });
+
+    for (const p of pedidos) {
+      const finalizado = p.status !== "Pendente";
+      const faltaNI = (p.pecas || []).some(x => !x.ni);
+
+      let pecasHTML = "";
+
+      for (let i = 0; i < (p.pecas || []).length; i++) {
+        const x = p.pecas[i];
+
+        let ultimaTxt = "Primeira solicitação";
+
+        if (p.categoria === "EPI" && x.ni) {
+          const key = `${p.nome}|${x.ni}`;
+
+          if (!cacheUltimaEPI.has(key)) {
+            const ultima = await buscarUltimaSolicitacaoEPI({
+              nome: p.nome,
+              ni: x.ni,
+              pedidoAtualId: p.id
+            });
+            cacheUltimaEPI.set(key, ultima || null);
+          }
+
+          const ultima = cacheUltimaEPI.get(key);
+          if (ultima) ultimaTxt = ultima.toLocaleDateString("pt-BR");
+        }
+
+        pecasHTML += `
+          <div class="peca">
+            <b>${x.descricao} (${x.quantidade})</b>
+
+            <input
+              value="${x.ni || ""}"
+              ${finalizado ? "disabled" : ""}
+              onchange="atualizarNI('${p.id}', ${i}, this.value)"
+            >
+
+            ${p.categoria === "EPI" ? `
+              <div style="font-size:12px;color:#065f46;margin-top:6px">
+                📅 Última solicitação: <b>${ultimaTxt}</b>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }
+
+      const statusLower = (p.status || "").toLowerCase();
+
+      lista.innerHTML += `
+        <div class="order-card ${statusLower}" id="card-${p.id}">
+          <div class="card-top">
+            <div class="status-pill ${statusLower}">
+              ${p.status === "Pendente" ? "🟠" : p.status === "Aprovado" ? "🟢" : p.status === "Reservado" ? "🔵" : "🔴"}
+              ${p.status}
             </div>
-          ` : ""}
+
+            ${!finalizado ? `<button class="btn-excluir" onclick="excluir('${p.id}')" title="Excluir">✕</button>` : `<div></div>`}
+          </div>
+
+          <div class="card-body-inner">
+            ${p.tipo==="DEVOLUCAO" ? `<div class="selo-devolucao">🔁 PEDIDO DE DEVOLUÇÃO</div>` : ""}
+
+            <div class="info"><b>Solicitante</b>${p.nome}</div>
+            <div class="info"><b>Manutenção</b>${p.manutencao}</div>
+            <div class="info"><b>GO</b>${p.go || "-"}</div>
+
+            <div class="info"><b>Peças</b></div>
+            ${pecasHTML}
+
+            <div class="acoes">
+              ${p.status === "Pendente" ? `
+                <button class="btn aprovar" ${faltaNI?"disabled":""}
+                  onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
+
+                <button class="btn reprovar"
+                  onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>
+              ` : p.status === "Aprovado" ? `
+                <button class="btn btn-reservar"
+                  onclick="reservarPedido('${p.id}')">
+                  📦 Reservar
+                </button>
+
+                <div class="selo">
+                  ✔ Pedido Aprovado<br>
+                  👷‍♂️ ${p.aprovadoPor||"-"}
+                </div>
+              ` : `
+                <div class="selo">
+                  ✔ Pedido ${p.status}<br>
+                  👷‍♂️ Aprovado: ${p.aprovadoPor||"-"}<br>
+                  📦 Reservado: ${p.reservadoPor||"-"}
+                </div>
+              `}
+            </div>
+          </div>
         </div>
       `;
     }
-
-    const statusLower = (p.status || "").toLowerCase();
-
-    lista.innerHTML += `
-      <div class="order-card ${statusLower}" id="card-${p.id}">
-        <div class="card-top">
-          <div class="status-pill ${statusLower}">
-            ${p.status === "Pendente" ? "🟠" : p.status === "Aprovado" ? "🟢" : p.status === "Reservado" ? "🔵" : "🔴"}
-            ${p.status}
-          </div>
-
-          ${!finalizado ? `<button class="btn-excluir" onclick="excluir('${p.id}')" title="Excluir">✕</button>` : `<div></div>`}
-        </div>
-
-        <div class="card-body-inner">
-          ${p.tipo==="DEVOLUCAO" ? `<div class="selo-devolucao">🔁 PEDIDO DE DEVOLUÇÃO</div>` : ""}
-
-          <div class="info"><b>Solicitante</b>${p.nome}</div>
-          <div class="info"><b>Manutenção</b>${p.manutencao}</div>
-          <div class="info"><b>GO</b>${p.go || "-"}</div>
-
-          <div class="info"><b>Peças</b></div>
-          ${pecasHTML}
-
-          <div class="acoes">
-            ${p.status === "Pendente" ? `
-              <button class="btn aprovar" ${faltaNI?"disabled":""}
-                onclick="mudarStatus('${p.id}','Aprovado')">✅ Aprovar</button>
-
-              <button class="btn reprovar"
-                onclick="mudarStatus('${p.id}','Reprovado')">❌ Reprovar</button>
-            ` : p.status === "Aprovado" ? `
-              <button class="btn btn-reservar"
-                onclick="reservarPedido('${p.id}')">
-                📦 Reservar
-              </button>
-
-              <div class="selo">
-                ✔ Pedido Aprovado<br>
-                👷‍♂️ ${p.aprovadoPor||"-"}
-              </div>
-            ` : `
-              <div class="selo">
-                ✔ Pedido ${p.status}<br>
-                👷‍♂️ Aprovado: ${p.aprovadoPor||"-"}<br>
-                📦 Reservado: ${p.reservadoPor||"-"}
-              </div>
-            `}
-          </div>
-        </div>
-      </div>
-    `;
   }
-}
 
-function iniciarListenerPedidos(){
-  if (unsubscribePedidos) unsubscribePedidos();
-  limparCacheUltimaEPI();
+  function iniciarListenerPedidos(){
+    if (unsubscribePedidos) unsubscribePedidos();
+    limparCacheUltimaEPI();
 
-  prevStatusById.clear();
-  primeiraCarga = true;
+    prevStatusById.clear();
+    primeiraCarga = true;
 
-  const q = query(
-    collection(db,"pedidos"),
-    orderBy("criadoEm", "desc"),
-    limit(25)
-  );
-
-  unsubscribePedidos = onSnapshot(
-    q,
-    async (snap) => {
-      const pedidos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      ultimosPedidos = pedidos;
-
-      atualizarContadores(ultimosPedidos);
-      await renderizarPedidos(aplicarFiltro(ultimosPedidos));
-
-      processarMudancas(snap);
-    },
-    (err) => console.error("Erro onSnapshot(pedidos):", err)
-  );
-}
-
-window.carregarPedidos = iniciarListenerPedidos;
-
-/* =========================================================
-   NI (mantido)
-========================================================= */
-window.atualizarNI=async(id,i,ni)=>{
-  const ref=doc(db,"pedidos",id);
-  const snap=await getDoc(ref);
-  if(!snap.exists())return;
-
-  const p=snap.data();
-  p.pecas[i].ni=ni.trim();
-
-  await updateDoc(ref,{pecas:p.pecas});
-};
-
-/* =========================================================
-   APRENDIZADO (mantido)
-========================================================= */
-async function aprender(p){
-  for(const x of (p.pecas || [])){
-    if(!x.ni)continue;
-
-    const q=query(
-      collection(db,"aprendizado_ni"),
-      where("descricao","==",norm(x.descricao)),
-      where("ni","==",x.ni.trim())
+    const q = query(
+      collection(db,"pedidos"),
+      orderBy("criadoEm", "desc"),
+      limit(25)
     );
 
-    const snap=await getDocs(q);
-    if(!snap.empty)continue;
+    unsubscribePedidos = onSnapshot(
+      q,
+      async (snap) => {
+        const pedidos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        ultimosPedidos = pedidos;
 
-    await addDoc(collection(db,"aprendizado_ni"),{
-      descricao:norm(x.descricao),
-      ni:x.ni.trim(),
-      validadoEm:new Date()
-    });
+        atualizarContadores(ultimosPedidos);
+        await renderizarPedidos(aplicarFiltro(ultimosPedidos));
+
+        processarMudancas(snap);
+      },
+      (err) => console.error("Erro onSnapshot(pedidos):", err)
+    );
   }
-}
 
-/* =========================================================
-   BUSCAR ÚLTIMA SOLICITAÇÃO EPI (mantido)
-========================================================= */
-async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
-  const q = query(
-    collection(db, "pedidos"),
-    where("categoria", "==", "EPI")
-  );
+  window.carregarPedidos = iniciarListenerPedidos;
 
-  const snap = await getDocs(q);
-  let ultimaData = null;
+  /* =========================================================
+    NI (mantido)
+  ========================================================= */
+  window.atualizarNI=async(id,i,ni)=>{
+    const ref=doc(db,"pedidos",id);
+    const snap=await getDoc(ref);
+    if(!snap.exists())return;
 
-  snap.forEach(docSnap => {
-    const p = docSnap.data();
+    const p=snap.data();
+    p.pecas[i].ni=ni.trim();
 
-    if (docSnap.id === pedidoAtualId) return;
-    if (!p.criadoEm) return;
-    if (p.nome !== nome) return;
+    await updateDoc(ref,{pecas:p.pecas});
+  };
 
-    for (const peca of p.pecas || []) {
-      if (peca.ni && peca.ni === ni) {
-        const data = p.criadoEm.toDate();
-        if (!ultimaData || data > ultimaData) ultimaData = data;
-      }
-    }
-  });
+  /* =========================================================
+    APRENDIZADO (mantido)
+  ========================================================= */
+  async function aprender(p){
+    for(const x of (p.pecas || [])){
+      if(!x.ni)continue;
 
-  return ultimaData;
-}
+      const q=query(
+        collection(db,"aprendizado_ni"),
+        where("descricao","==",norm(x.descricao)),
+        where("ni","==",x.ni.trim())
+      );
 
-/* =========================================================
-   STATUS + TELEGRAM (mantido)
-========================================================= */
-window.mudarStatus=async(id,status)=>{
-  const ref=doc(db,"pedidos",id);
-  const snapDoc = await getDoc(ref);
-  if (!snapDoc.exists()) return;
+      const snap=await getDocs(q);
+      if(!snap.empty)continue;
 
-  const p = snapDoc.data();
-  if(p.status!=="Pendente") return;
-
-  await updateDoc(ref,{
-    status,
-    finalizadoEm:new Date(),
-    aprovadoPor:localStorage.getItem("usuario_nome")||"Não identificado"
-  });
-
-  if(status==="Aprovado") await aprender(p);
-
-  const agora=new Date().toLocaleString("pt-BR");
-
-  const tituloTelegram=
-    p.tipo==="DEVOLUCAO"
-    ?"🚨🚨🚨 *DEVOLUÇÃO* 🚨🚨🚨"
-    :"🧰 *PEDIDO DE PEÇAS APROVADO*";
-
-  await enviarTelegram(
-`${tituloTelegram}
-
-👤 *Solicitante:* ${p.nome}
-🛠 *Manutenção:* ${p.manutencao}
-🚚 *GO:* ${p.go||"-"}
-
-📦 *Peças:*
-${(p.pecas || []).map(x=>`• ${x.descricao} (${x.quantidade}) | NI: ${x.ni||"-"}`).join("\n")}
-
-👷‍♂️ *Aprovado por:* ${localStorage.getItem("usuario_nome")}
-⏰ *Data:* ${agora}`
-  );
-};
-
-window.reservarPedido = async (id) => {
-  if (!confirm("Confirmar que este pedido foi reservado?")) return;
-
-  const ref = doc(db, "pedidos", id);
-
-  await updateDoc(ref, {
-    status: "Reservado",
-    reservadoPor: localStorage.getItem("usuario_nome") || "Não identificado",
-    reservadoEm: new Date()
-  });
-};
-
-/* =========================================================
-   EXCLUIR (mantido)
-========================================================= */
-window.excluir=async(id)=>{
-  if(confirm("Excluir pedido pendente?")){
-    await deleteDoc(doc(db,"pedidos",id));
-  }
-};
-
-/* =========================================================
-   RELATÓRIOS (mantido)
-========================================================= */
-window.toggleRelatorio=()=>{
-  const box=document.getElementById("relatorioBox");
-  box.style.display=box.style.display==="none"?"flex":"none";
-};
-
-const inicio = document.getElementById("inicio");
-const fim = document.getElementById("fim");
-
-window.gerarRelatorioDia=()=>{
-  const hoje=new Date().toISOString().split("T")[0];
-  inicio.value=hoje; fim.value=hoje;
-  gerarRelatorioPeriodo();
-};
-
-window.gerarRelatorioPeriodo = async () => {
-  const dataInicio = new Date(inicio.value + "T00:00:00");
-  const dataFim    = new Date(fim.value + "T23:59:59");
-
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("landscape");
-
-  const snap = await getDocs(collection(db, "pedidos"));
-  const rows = [];
-
-  snap.forEach(d => {
-    const p = d.data();
-    if (!p.criadoEm) return;
-
-    const criado = p.criadoEm.toDate();
-
-    if (criado >= dataInicio && criado <= dataFim) {
-      rows.push({
-        criado,
-        dados: [
-          p.nome,
-          p.manutencao,
-          p.go || "-",
-          (p.pecas || []).map(x => `${x.descricao} (${x.quantidade})`).join("\n"),
-          p.status,
-          criado.toLocaleString("pt-BR")
-        ]
+      await addDoc(collection(db,"aprendizado_ni"),{
+        descricao:norm(x.descricao),
+        ni:x.ni.trim(),
+        validadoEm:new Date()
       });
     }
-  });
-
-  rows.sort((a, b) => b.criado - a.criado);
-  const body = rows.map(r => r.dados);
-
-  if (body.length === 0) {
-    alert("Nenhum pedido encontrado no período selecionado.");
-    return;
   }
 
-  pdf.autoTable({
-    head: [["Solicitante", "Manutenção", "GO", "Peças", "Status", "Criado em"]],
-    body
-  });
+  /* =========================================================
+    BUSCAR ÚLTIMA SOLICITAÇÃO EPI (mantido)
+  ========================================================= */
+  async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
+    const q = query(
+      collection(db, "pedidos"),
+      where("categoria", "==", "EPI")
+    );
 
-  pdf.save("relatorio-pedidos.pdf");
-};
+    const snap = await getDocs(q);
+    let ultimaData = null;
 
-/* =========================================================
-   AUTOLOGIN (mantido)
-========================================================= */
-if(localStorage.getItem("admin")==="true"){
-  loginBox.style.display="none";
-  painel.style.display="block";
-  iniciarListenerPedidos();
-}
+    snap.forEach(docSnap => {
+      const p = docSnap.data();
 
-/* =========================================================
-   APROVAR TODOS (mantido)
-========================================================= */
-async function aprovarTodosPendentes() {
-  if (!confirm("Tem certeza que deseja aprovar TODOS os pedidos pendentes?")) return;
+      if (docSnap.id === pedidoAtualId) return;
+      if (!p.criadoEm) return;
+      if (p.nome !== nome) return;
 
-  try {
-    const batch = writeBatch(db);
-    const colRef = collection(db, "pedidos");
+      for (const peca of p.pecas || []) {
+        if (peca.ni && peca.ni === ni) {
+          const data = p.criadoEm.toDate();
+          if (!ultimaData || data > ultimaData) ultimaData = data;
+        }
+      }
+    });
 
-    const q = query(colRef, where("status", "==", "Pendente"));
-    const querySnapshot = await getDocs(q);
+    return ultimaData;
+  }
 
-    if (querySnapshot.empty) {
-      alert("Não há pedidos pendentes para aprovar.");
+  /* =========================================================
+    STATUS + TELEGRAM (mantido)
+  ========================================================= */
+  window.mudarStatus=async(id,status)=>{
+    const ref=doc(db,"pedidos",id);
+    const snapDoc = await getDoc(ref);
+    if (!snapDoc.exists()) return;
+
+    const p = snapDoc.data();
+    if(p.status!=="Pendente") return;
+
+    await updateDoc(ref,{
+      status,
+      finalizadoEm:new Date(),
+      aprovadoPor:localStorage.getItem("usuario_nome")||"Não identificado"
+    });
+
+    if(status==="Aprovado") await aprender(p);
+
+    const agora=new Date().toLocaleString("pt-BR");
+
+    const tituloTelegram=
+      p.tipo==="DEVOLUCAO"
+      ?"🚨🚨🚨 *DEVOLUÇÃO* 🚨🚨🚨"
+      :"🧰 *PEDIDO DE PEÇAS APROVADO*";
+
+    await enviarTelegram(
+  `${tituloTelegram}
+
+  👤 *Solicitante:* ${p.nome}
+  🛠 *Manutenção:* ${p.manutencao}
+  🚚 *GO:* ${p.go||"-"}
+
+  📦 *Peças:*
+  ${(p.pecas || []).map(x=>`• ${x.descricao} (${x.quantidade}) | NI: ${x.ni||"-"}`).join("\n")}
+
+  👷‍♂️ *Aprovado por:* ${localStorage.getItem("usuario_nome")}
+  ⏰ *Data:* ${agora}`
+    );
+  };
+
+  window.reservarPedido = async (id) => {
+    if (!confirm("Confirmar que este pedido foi reservado?")) return;
+
+    const ref = doc(db, "pedidos", id);
+
+    await updateDoc(ref, {
+      status: "Reservado",
+      reservadoPor: localStorage.getItem("usuario_nome") || "Não identificado",
+      reservadoEm: new Date()
+    });
+  };
+
+  /* =========================================================
+    EXCLUIR (mantido)
+  ========================================================= */
+  window.excluir=async(id)=>{
+    if(confirm("Excluir pedido pendente?")){
+      await deleteDoc(doc(db,"pedidos",id));
+    }
+  };
+
+  /* =========================================================
+    RELATÓRIOS (mantido)
+  ========================================================= */
+  window.toggleRelatorio=()=>{
+    const box=document.getElementById("relatorioBox");
+    box.style.display=box.style.display==="none"?"flex":"none";
+  };
+
+  const inicio = document.getElementById("inicio");
+  const fim = document.getElementById("fim");
+
+  window.gerarRelatorioDia=()=>{
+    const hoje=new Date().toISOString().split("T")[0];
+    inicio.value=hoje; fim.value=hoje;
+    gerarRelatorioPeriodo();
+  };
+
+  window.gerarRelatorioPeriodo = async () => {
+    const dataInicio = new Date(inicio.value + "T00:00:00");
+    const dataFim    = new Date(fim.value + "T23:59:59");
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("landscape");
+
+    const snap = await getDocs(collection(db, "pedidos"));
+    const rows = [];
+
+    snap.forEach(d => {
+      const p = d.data();
+      if (!p.criadoEm) return;
+
+      const criado = p.criadoEm.toDate();
+
+      if (criado >= dataInicio && criado <= dataFim) {
+        rows.push({
+          criado,
+          dados: [
+            p.nome,
+            p.manutencao,
+            p.go || "-",
+            (p.pecas || []).map(x => `${x.descricao} (${x.quantidade})`).join("\n"),
+            p.status,
+            criado.toLocaleString("pt-BR")
+          ]
+        });
+      }
+    });
+
+    rows.sort((a, b) => b.criado - a.criado);
+    const body = rows.map(r => r.dados);
+
+    if (body.length === 0) {
+      alert("Nenhum pedido encontrado no período selecionado.");
       return;
     }
 
-    querySnapshot.forEach((documento) => {
-      const docRef = doc(db, "pedidos", documento.id);
-      batch.update(docRef, {
-        status: "Aprovado",
-        finalizadoEm: new Date(),
-        aprovadoPor: localStorage.getItem("usuario_nome") || "Não identificado"
-      });
+    pdf.autoTable({
+      head: [["Solicitante", "Manutenção", "GO", "Peças", "Status", "Criado em"]],
+      body
     });
 
-    await batch.commit();
-    alert("Sucesso! Todos os pedidos foram aprovados.");
-
-  } catch (error) {
-    console.error("Erro ao atualizar em lote:", error);
-    alert("Erro ao aprovar pedidos. Verifique o console.");
-  }
-}
-window.aprovarTodosPendentes = aprovarTodosPendentes;
-
-/* =========================================================
-   BADGE NO TÍTULO DA GUIA (mantido)
-========================================================= */
-const baseTitle = "Área de Técnicos CMC";
-const statsRef  = doc(db, "stats/pedidos");
-
-onSnapshot(statsRef, (snap) => {
-  if (!snap.exists()) {
-    document.title = baseTitle;
-    return;
-  }
-
-  const { Pendente = 0, aprovados = 0 } = snap.data();
-
-  let prefix = [];
-  if (aprovados > 3) prefix.push(`Aguardando reserva`);
-
-  document.title = prefix.length
-    ? `(${prefix.join(" | ")}) ${baseTitle}`
-    : baseTitle;
-});
-
-/* =========================================================
-   MENU + ACTIVE STATES
-========================================================= */
-window.abrirMenu = () => {
-  document.querySelector(".sidebar").classList.add("active");
-  document.querySelector(".menu-overlay").classList.add("active");
-};
-window.fecharMenu = () => {
-  document.querySelector(".sidebar").classList.remove("active");
-  document.querySelector(".menu-overlay").classList.remove("active");
-};
-
-document.querySelectorAll(".sidebar nav a").forEach(a=>{
-  if(a.href === window.location.href){
-    a.classList.add("ativo");
-  }
-});
-
-/* Bottom nav ativo (admin) */
-(function marcarNavAtiva(){
-  const path = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
-  const map = {
-    "index.html": "pedido",
-    "admin.html": "tecnicos",
-    "acompanhamento.html": "acomp",
-    "painel-almoxarife.html": "painel"
+    pdf.save("relatorio-pedidos.pdf");
   };
-  const key = map[path] || "tecnicos";
-  document.querySelectorAll(".nav-btn").forEach(a=>{
-    if (a.dataset.nav === key) a.classList.add("active");
-  });
-})();
-</script>
 
-</body>
-</html>
+  /* =========================================================
+    AUTOLOGIN (mantido)
+  ========================================================= */
+  if(localStorage.getItem("admin")==="true"){
+    loginBox.style.display="none";
+    painel.style.display="block";
+    iniciarListenerPedidos();
+  }
+
+  /* =========================================================
+    APROVAR TODOS (mantido)
+  ========================================================= */
+  async function aprovarTodosPendentes() {
+    if (!confirm("Tem certeza que deseja aprovar TODOS os pedidos pendentes?")) return;
+
+    try {
+      const batch = writeBatch(db);
+      const colRef = collection(db, "pedidos");
+
+      const q = query(colRef, where("status", "==", "Pendente"));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        alert("Não há pedidos pendentes para aprovar.");
+        return;
+      }
+
+      querySnapshot.forEach((documento) => {
+        const docRef = doc(db, "pedidos", documento.id);
+        batch.update(docRef, {
+          status: "Aprovado",
+          finalizadoEm: new Date(),
+          aprovadoPor: localStorage.getItem("usuario_nome") || "Não identificado"
+        });
+      });
+
+      await batch.commit();
+      alert("Sucesso! Todos os pedidos foram aprovados.");
+
+    } catch (error) {
+      console.error("Erro ao atualizar em lote:", error);
+      alert("Erro ao aprovar pedidos. Verifique o console.");
+    }
+  }
+  window.aprovarTodosPendentes = aprovarTodosPendentes;
+
+  /* =========================================================
+    BADGE NO TÍTULO DA GUIA (mantido)
+  ========================================================= */
+  const baseTitle = "Área de Técnicos CMC";
+  const statsRef  = doc(db, "stats/pedidos");
+
+  onSnapshot(statsRef, (snap) => {
+    if (!snap.exists()) {
+      document.title = baseTitle;
+      return;
+    }
+
+    const { Pendente = 0, aprovados = 0 } = snap.data();
+
+    let prefix = [];
+    if (aprovados > 3) prefix.push(`Aguardando reserva`);
+
+    document.title = prefix.length
+      ? `(${prefix.join(" | ")}) ${baseTitle}`
+      : baseTitle;
+  });
+
+  /* =========================================================
+    MENU + ACTIVE STATES
+  ========================================================= */
+  window.abrirMenu = () => {
+    document.querySelector(".sidebar").classList.add("active");
+    document.querySelector(".menu-overlay").classList.add("active");
+  };
+  window.fecharMenu = () => {
+    document.querySelector(".sidebar").classList.remove("active");
+    document.querySelector(".menu-overlay").classList.remove("active");
+  };
+
+  document.querySelectorAll(".sidebar nav a").forEach(a=>{
+    if(a.href === window.location.href){
+      a.classList.add("ativo");
+    }
+  });
+
+  /* Bottom nav ativo (admin) */
+  (function marcarNavAtiva(){
+    const path = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
+    const map = {
+      "index.html": "pedido",
+      "admin.html": "tecnicos",
+      "acompanhamento.html": "acomp",
+      "painel-almoxarife.html": "painel"
+    };
+    const key = map[path] || "tecnicos";
+    document.querySelectorAll(".nav-btn").forEach(a=>{
+      if (a.dataset.nav === key) a.classList.add("active");
+    });
+  })();
+  </script>
+
+  </body>
+  </html>
