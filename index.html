@@ -8,7 +8,368 @@
 <meta name="theme-color" content="#1f2937">
 
 <style>
-/* BOTÃO HAMBURGER */
+/* =========================
+   BASE
+========================= */
+:root{
+  --bg:#f3f4f6;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --text:#111827;
+  --border:#e5e7eb;
+
+  --primary:#16a34a;
+  --primary-hover:#15803d;
+
+  --secondary:#2563eb;
+  --secondary-hover:#1d4ed8;
+
+  --danger:#dc2626;
+  --danger-hover:#b91c1c;
+
+  --shadow:0 10px 25px rgba(0,0,0,.08);
+  --shadow-soft:0 4px 12px rgba(0,0,0,.06);
+  --radius:16px;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-height:100vh;
+  padding:18px 12px 30px;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container{
+  width:100%;
+  max-width:820px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+  position:relative;
+}
+
+/* TOPBAR */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 10px 14px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:14px;
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:18px;
+  line-height:1.2;
+  letter-spacing:.2px;
+}
+
+.brand p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.brand-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand-right img{
+  width:120px;
+  max-width:120px;
+  height:auto;
+  display:block;
+}
+
+/* =========================
+   SEÇÕES
+========================= */
+.section{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  margin-top:12px;
+  background:#fff;
+  box-shadow:var(--shadow-soft);
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.section-title h2{
+  margin:0;
+  font-size:14px;
+  letter-spacing:.2px;
+}
+
+.section-title span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+label{
+  font-size:12px;
+  font-weight:700;
+  color:#374151;
+  display:block;
+  margin-top:10px;
+  margin-bottom:6px;
+}
+
+/* INPUTS */
+input, textarea, select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid #d1d5db;
+  outline:none;
+  font-size:14px;
+  background:#fff;
+  transition: box-shadow .15s, border-color .15s, transform .08s;
+}
+
+textarea{ min-height:48px; resize:vertical; }
+
+input:focus, textarea:focus, select:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 4px rgba(59,130,246,.15);
+}
+
+input:disabled{
+  background:#f3f4f6;
+  cursor:not-allowed;
+}
+
+/* =========================
+   PEÇAS (CARDS)
+========================= */
+#listaPecas{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.peca{
+  position:relative; /* ✅ para posicionar a lixeira */
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  padding-top:42px; /* ✅ espaço para a lixeira no topo */
+  background:#fafafa;
+}
+
+/* ✅ Lixeira no canto superior direito */
+.btn-icon{
+  position:absolute;
+  top:10px;
+  right:10px;
+  border:none;
+  background:transparent;
+  color:var(--danger);
+  font-size:18px;
+  cursor:pointer;
+  padding:6px 8px;
+  border-radius:10px;
+  width:auto;
+  margin:0;
+}
+
+.btn-icon:hover{
+  background:#fee2e2;
+  color:var(--danger-hover);
+}
+
+.grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+
+.ni-info{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* AUTOCOMPLETE */
+.autocomplete-box{ position: relative; }
+
+.sugestoes{
+  position:absolute;
+  inset:auto 0  auto 0;
+  top:calc(100% + 6px);
+  background:#fff;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  width:100%;
+  max-height:180px;
+  overflow-y:auto;
+  z-index:1000;
+  box-shadow:var(--shadow-soft);
+}
+
+.sugestoes div{
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:13px;
+  border-bottom:1px solid #f3f4f6;
+}
+
+.sugestoes div:last-child{ border-bottom:none; }
+
+.sugestoes div:hover{
+  background:#f3f4f6;
+}
+
+/* =========================
+   BOTÕES
+========================= */
+button{
+  width:100%;
+  padding:12px 14px;
+  margin-top:12px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.2px;
+  transition: transform .06s ease, background .15s ease, opacity .15s ease;
+}
+
+button:active{ transform:scale(.99); }
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+.btn-primary:hover{ background:var(--primary-hover); }
+
+.btn-secondary{
+  background:var(--secondary);
+  color:#fff;
+}
+.btn-secondary:hover{ background:var(--secondary-hover); }
+
+.btn-admin{
+  background:#111827;
+  color:#fff;
+}
+.btn-admin:hover{ background:#0b1220; }
+
+/* Mensagens */
+.mensagem{
+  text-align:center;
+  font-weight:800;
+  margin-top:12px;
+  font-size:14px;
+}
+.sucesso{ color:#166534; }
+.erro{ color:#b91c1c; }
+.bloqueio{
+  color:#b91c1c;
+  background:#fee2e2;
+  padding:10px;
+  border-radius:12px;
+  margin-top:12px;
+  font-size:14px;
+  border:1px solid #fecaca;
+}
+
+/* =========================
+   TOGGLE DEVOLUÇÃO
+========================= */
+.toggle-container{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:12px 0 4px;
+  padding:10px 12px;
+  background:#f9fafb;
+  border-radius:14px;
+  border:1px solid var(--border);
+}
+
+.toggle-label{
+  font-size:13px;
+  color:#374151;
+  font-weight:700;
+}
+
+.switch{
+  position:relative;
+  width:46px;
+  height:26px;
+  flex:0 0 auto;
+}
+
+.switch input{ display:none; }
+
+.slider{
+  position:absolute;
+  inset:0;
+  background-color:#d1d5db;
+  border-radius:999px;
+  transition:.25s;
+  cursor:pointer;
+}
+
+.slider::before{
+  content:"";
+  position:absolute;
+  height:20px;
+  width:20px;
+  left:3px;
+  top:3px;
+  background-color:#fff;
+  border-radius:50%;
+  transition:.25s;
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+
+.switch input:checked + .slider{ background-color:#22c55e; }
+.switch input:checked + .slider::before{ transform:translateX(20px); }
+
+/* =========================
+   FOOTER
+========================= */
+footer{
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:14px;
+}
+
+/* =========================
+   SIDEBAR / HAMBURGER (mantido)
+========================= */
 .menu-btn{
   position:fixed;
   top:12px;
@@ -17,16 +378,15 @@
   background:#111827;
   color:#fff;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   font-size:22px;
-
   width:auto;
   height:auto;
   padding:8px 12px;
   margin:0;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
 }
 
-/* SIDEBAR */
 .sidebar{
   position:fixed;
   top:0;
@@ -41,9 +401,9 @@
   display:flex;
   flex-direction:column;
 }
+
 .sidebar.active{ transform:translateX(0); }
 
-/* HEADER */
 .sidebar-header{
   display:flex;
   justify-content:space-between;
@@ -51,29 +411,37 @@
   padding:16px;
   border-bottom:1px solid #1f2937;
 }
+
 .sidebar-header button{
   background:none;
   border:none;
   color:#fff;
   font-size:18px;
+  width:auto;
+  padding:6px 10px;
+  margin:0;
 }
 
-/* LINKS */
 .sidebar nav{
   display:flex;
   flex-direction:column;
   padding:10px;
 }
+
 .sidebar nav a{
   padding:14px;
-  border-radius:10px;
+  border-radius:12px;
   color:#fff;
   text-decoration:none;
   margin-bottom:6px;
+  font-weight:700;
+  font-size:14px;
 }
+
 .sidebar nav a:hover{ background:#1f2937; }
 
-/* OVERLAY */
+.sidebar nav a.ativo{ background:#2563eb; }
+
 .menu-overlay{
   position:fixed;
   inset:0;
@@ -81,225 +449,14 @@
   z-index:1000;
   display:none;
 }
+
 .menu-overlay.active{ display:block; }
 
-.logo { text-align:center; margin-bottom:15px; }
-.logo img { max-width:180px; width:100%; }
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background:#f2f2f2;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  flex-direction:column;
-}
-
-.container {
-  background:#fff;
-  max-width:480px;
-  width:100%;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-}
-
-h1 { text-align:center; font-size:20px; }
-label { font-weight:bold; margin-top:10px; display:block; }
-
-input, textarea, select {
-  width:97%;
-  padding:8px;
-  margin-top:5px;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-
-textarea { min-height:50px; }
-
-.peca {
-  border:1px solid #e5e7eb;
-  padding:14px;
-  border-radius:12px;
-  margin-top:12px;
-  background:#fafafa;
-  position:relative;
-}
-.peca::before {
-  content:"Peças";
-  position:absolute;
-  top:-10px;
-  left:12px;
-  background:#fff;
-  padding:0 6px;
-  font-size:12px;
-  color:#6b7280;
-}
-
-.ni-info { font-size:12px; color:#6b7280; }
-
-button {
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border:none;
-  border-radius:8px;
-  background:#16a34a;
-  color:#fff;
-  font-size:15px;
-}
-button:hover { background:#15803d; }
-
-.secundario { background:#2563eb; }
-.remover { background:#dc2626; }
-.admin-btn { background:#111827; }
-
-.mensagem { text-align:center; font-weight:bold; margin-top:10px; }
-.sucesso { color:green; }
-.erro { color:red; }
-
-footer {
-  text-align:center;
-  font-size:11px;
-  color:#6b7280;
-  margin-top:15px;
-}
-
-input:disabled {
-  background:#e5e7eb;
-  cursor:not-allowed;
-}
-
-.autocomplete-box { position: relative; }
-
-.sugestoes {
-  position:absolute;
-  background:#fff;
-  border:1px solid #d1d5db;
-  border-radius:8px;
-  width:100%;
-  max-height:160px;
-  overflow-y:auto;
-  z-index:1000;
-}
-.sugestoes div {
-  padding:8px;
-  cursor:pointer;
-  font-size:14px;
-}
-.sugestoes div:hover { background:#e5e7eb; }
-
-.bloqueio {
-  color:#b91c1c;
-  background:#fee2e2;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
-  font-size:14px;
-}
-
-@media(max-width:480px){
-  .secundario {
-    position:sticky;
-    bottom:10px;
-    z-index:10;
-  }
-}
-
-.sidebar nav a.ativo{ background:#2563eb; }
-
-/* TOGGLE DEVOLUÇÃO */
-.toggle-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 16px 0;
-  padding: 10px 12px;
-  background: #f9fafb;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  gap:10px;
-  justify-content:flex-start;
-}
-.toggle-label {
-  font-size: 14px;
-  color: #374151;
-  font-weight: 500;
-}
-
-/* SWITCH */
-.switch { position: relative; width: 46px; height: 26px; }
-.switch input { display: none; }
-
-.slider {
-  position: absolute;
-  inset: 0;
-  background-color: #d1d5db;
-  border-radius: 999px;
-  transition: 0.3s;
-  cursor: pointer;
-}
-.slider::before {
-  content: "";
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  top: 3px;
-  background-color: #fff;
-  border-radius: 50%;
-  transition: 0.3s;
-  box-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
-.switch input:checked + .slider { background-color: #22c55e; }
-.switch input:checked + .slider::before { transform: translateX(20px); }
-
-/* =========================================================
-   OFFLINE BAR (FILA)
-========================================================= */
-.offline-bar{
-  display:none;
-  margin:12px 0 6px;
-  padding:10px 12px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#f9fafb;
-}
-.offline-bar .row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.offline-bar .left{
-  font-size:13px;
-  color:#374151;
-}
-.offline-bar .chip{
-  display:inline-block;
-  padding:2px 8px;
-  border-radius:999px;
-  font-size:12px;
-  margin-left:8px;
-  border:1px solid #e5e7eb;
-  background:#fff;
-  color:#374151;
-}
-.offline-bar .chip.off{ color:#b91c1c; border-color:#fecaca; background:#fee2e2; }
-.offline-bar .chip.on{ color:#166534; border-color:#bbf7d0; background:#dcfce7; }
-.offline-bar .chip.sync{ color:#1e40af; border-color:#bfdbfe; background:#dbeafe; }
-.offline-bar button{
-  width:auto;
-  margin:0;
-  padding:8px 10px;
-  border-radius:10px;
-  background:#111827;
-  font-size:13px;
-}
-.offline-bar button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+/* Responsivo */
+@media (max-width:560px){
+  .container{ padding:14px; }
+  .brand-right img{ width:96px; }
+  .grid-2{ grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -309,12 +466,13 @@ input:disabled {
 <script src="lista_NI.js"></script>
 <script src="lista_solicitantes.js"></script>
 
-<div class="container">
-
+<!-- BOTÃO HAMBURGER -->
 <button class="menu-btn" onclick="abrirMenu()">☰</button>
 
+<!-- OVERLAY -->
 <div class="menu-overlay" onclick="fecharMenu()"></div>
 
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-header">
     <strong>📦 Pedido de Peças</strong>
@@ -330,86 +488,137 @@ input:disabled {
   </nav>
 </aside>
 
-  <div class="logo">
-    <img src="suzano-logo.png">
-  </div>
+<div class="container">
 
-  <h1>Pedido de Peças – Almoxarifado CMC</h1>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <h1>Pedido de Peças</h1>
+      <p>Almoxarifado CMC • preencha e envie o pedido</p>
+    </div>
 
-  <!-- ✅ OFFLINE QUEUE BAR -->
-  <div class="offline-bar" id="offlineBar">
-    <div class="row">
-      <div class="left">
-        <b>📦 Pendentes:</b> <span id="offlineCount">0</span>
-        <span class="chip" id="offlineChip">🟢 Online</span>
-      </div>
-      <button type="button" id="btnSyncNow">🔄 Sincronizar agora</button>
+    <div class="brand-right">
+      <img src="suzano-logo.png" alt="Suzano">
     </div>
   </div>
 
   <form id="formPedido">
 
-    <div id="listaPecas">
-      <div class="peca">
-        <label>Descrição da Peça</label>
-        <div class="autocomplete-box">
-          <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
-          <div class="sugestoes" style="display:none"></div>
-        </div>
-
-        <label>NI</label>
-        <input type="text" class="ni-manual">
-        <div class="ni-info">Materiais sem NI automático devem ser consultados no almoxarifado!</div>
-
-        <label>Quantidade</label>
-        <input type="number" class="quantidade" min="1" required>
-
-        <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
+    <!-- SEÇÃO PEÇAS -->
+    <div class="section">
+      <div class="section-title">
+        <h2>🔩 Peças</h2>
+        <span>Adicione uma ou mais peças</span>
       </div>
+
+      <div id="listaPecas">
+        <div class="peca">
+          <!-- ✅ lixeira no canto superior direito -->
+          <button type="button" class="btn-icon" title="Remover peça" onclick="removerPeca(this)">🗑️</button>
+
+          <label>Descrição da Peça</label>
+          <div class="autocomplete-box">
+            <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
+            <div class="sugestoes" style="display:none"></div>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label>NI</label>
+              <input type="text" class="ni-manual">
+              <div class="ni-info">Materiais sem NI automático devem ser consultados no almoxarifado.</div>
+            </div>
+
+            <div>
+              <label>Quantidade</label>
+              <input type="number" class="quantidade" min="1" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="adicionarPeca()">
+        ➕ Adicionar peça
+      </button>
     </div>
 
-<button type="button" class="secundario btn-adicionar" onclick="adicionarPeca()">
-  ➕ Adicionar peça
-</button>
+    <!-- SEÇÃO DETALHES -->
+    <div class="section">
+      <div class="section-title">
+        <h2>🧾 Detalhes do Pedido</h2>
+        <span>tipo, GO e devolução</span>
+      </div>
 
-<label class="toggle-container">
-  <span class="switch">
-    <input type="checkbox" id="isDevolucao">
-    <span class="slider"></span>
-  </span>
-  <span class="toggle-label">Pedido de devolução de peças</span>
-</label>
+      <!-- TOGGLE DEVOLUÇÃO (mantido) -->
+      <label class="toggle-container">
+        <span class="switch">
+          <input type="checkbox" id="isDevolucao">
+          <span class="slider"></span>
+        </span>
+        <span class="toggle-label">Pedido de devolução de peças</span>
+      </label>
 
-    <label>Tipo de Manutenção</label>
-    <select id="manutencao" required>
-      <option value="">Selecione</option>
-      <option>Revisão</option>
-      <option>Preventiva-ITR</option>
-      <option>CNP</option>
-      <option>SOS</option>
-      <option>Uso Geral</option>
-      <option>EPI/Uniforme</option>
-    </select>
+      <label>Tipo de Manutenção</label>
+      <select id="manutencao" required>
+        <option value="">Selecione</option>
+        <option>Revisão</option>
+        <option>Preventiva-ITR</option>
+        <option>CNP</option>
+        <option>SOS</option>
+        <option>Uso Geral</option>
+        <option>EPI/Uniforme</option>
+      </select>
 
-    <label>GO do Equipamento</label>
-    <input id="go" required>
-
-    <label>Nome do solicitante</label>
-    <div class="autocomplete-box">
-      <input id="nome" required oninput="sugerirSolicitante(this)">
-      <div class="sugestoes" style="display:none"></div>
+      <label>GO do Equipamento</label>
+      <input id="go" required>
     </div>
 
-    <button type="submit">📦 Enviar Pedido</button>
-    <div id="mensagem" class="mensagem"></div>
+    <!-- SEÇÃO SOLICITANTE -->
+    <div class="section">
+      <div class="section-title">
+        <h2>👤 Solicitante</h2>
+        <span>quem está solicitando</span>
+      </div>
+
+      <label>Nome do solicitante</label>
+      <div class="autocomplete-box">
+        <input id="nome" required oninput="sugerirSolicitante(this)">
+        <div class="sugestoes" style="display:none"></div>
+      </div>
+
+      <button type="submit" class="btn-primary">📦 Enviar Pedido</button>
+      <div id="mensagem" class="mensagem"></div>
+    </div>
+
   </form>
 
-  <a href="admin.html"><button class="admin-btn" type="button">🔐 Área de Técnicos 🛠️</button></a>
-  <a href="acompanhamento.html"><button class="admin-btn" type="button">📦 Acompanhamento de Pedidos 🔩</button></a>
-  <a href="painel-almoxarife.html"><button class="admin-btn" type="button">🖥️ Painel do Almoxarife ⚙️</button></a>
-</div>
+  <!-- AÇÕES -->
+  <div class="section" style="margin-top:14px;">
+    <div class="section-title">
+      <h2>🔐 Acessos</h2>
+      <span>áreas internas</span>
+    </div>
 
-<footer>Criado e Desenvolvido por Cleider Filho</footer>
+    <a href="admin.html" style="text-decoration:none;">
+      <button type="button" class="btn-admin">🔐 Área de Técnicos 🛠️</button>
+    </a>
+
+    <a href="acompanhamento.html" style="text-decoration:none;">
+      <button type="button" class="btn-admin">📦 Acompanhamento de Pedidos 🔩</button>
+    </a>
+
+    <a href="painel-almoxarife.html" style="text-decoration:none;">
+      <button type="button" class="btn-admin">🖥️ Painel do Almoxarife ⚙️</button>
+    </a>
+  </div>
+
+  <footer>
+    Criado e Desenvolvido por Cleider Filho
+  </footer>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -431,259 +640,20 @@ const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
 
-/* =========================================================
-   ANTI-DUPLICIDADE (HASH LOCAL)
-========================================================= */
-const SENT_HASH_KEY = "sent_pedidos_hash_v1";
-// janela anti-dupe (10 min): se tentar mandar igual em seguida, bloqueia
-const DUP_WINDOW_MS = 10 * 60 * 1000;
-// limpeza: remove hashes enviados há mais de 48h
-const SENT_TTL_MS = 48 * 60 * 60 * 1000;
-
-// FNV-1a 32-bit (rápido e suficiente)
-function fnv1a(str){
-  let h = 0x811c9dc5;
-  for (let i=0; i<str.length; i++){
-    h ^= str.charCodeAt(i);
-    h = (h + ((h<<1) + (h<<4) + (h<<7) + (h<<8) + (h<<24))) >>> 0;
-  }
-  return ("00000000" + h.toString(16)).slice(-8);
-}
-
-function stableStringify(obj){
-  if (obj === null) return "null";
-  if (Array.isArray(obj)) return "[" + obj.map(stableStringify).join(",") + "]";
-  if (typeof obj === "object"){
-    const keys = Object.keys(obj).sort();
-    return "{" + keys.map(k => JSON.stringify(k) + ":" + stableStringify(obj[k])).join(",") + "}";
-  }
-  return JSON.stringify(obj);
-}
-
-function pedidoToHashBase(p){
-  // remove campos variáveis (datas) e mantém a essência do pedido
-  return {
-    nome: (p.nome || "").trim(),
-    manutencao: (p.manutencao || "").trim(),
-    go: (p.go || "").trim(),
-    tipo: (p.tipo || "").trim(),
-    categoria: (p.categoria || "").trim(),
-    pecas: (p.pecas || []).map(x => ({
-      descricao: (x.descricao || "").trim(),
-      ni: (x.ni || "").trim(),
-      quantidade: String(x.quantidade ?? "").trim()
-    }))
-  };
-}
-
-function calcPedidoHash(pedidoPayload){
-  return fnv1a(stableStringify(pedidoToHashBase(pedidoPayload)));
-}
-
-function readSentMap(){
-  try { return JSON.parse(localStorage.getItem(SENT_HASH_KEY) || "{}"); }
-  catch { return {}; }
-}
-function writeSentMap(map){
-  localStorage.setItem(SENT_HASH_KEY, JSON.stringify(map));
-}
-function cleanupSentMap(){
-  const m = readSentMap();
-  const now = Date.now();
-  let changed = false;
-
-  for (const [hash, ts] of Object.entries(m)){
-    if (!ts || (now - ts) > SENT_TTL_MS){
-      delete m[hash];
-      changed = true;
-    }
-  }
-  if (changed) writeSentMap(m);
-}
-function markSent(hash){
-  const m = readSentMap();
-  m[hash] = Date.now();
-  writeSentMap(m);
-}
-function wasSentRecently(hash){
-  cleanupSentMap();
-  const m = readSentMap();
-  const ts = m[hash];
-  if (!ts) return false;
-  return (Date.now() - ts) <= DUP_WINDOW_MS;
-}
-
-/* =========================================================
-   OFFLINE QUEUE (FILA LOCAL) + ANTI-DUPE
-========================================================= */
-const OFFLINE_QUEUE_KEY = "offline_pedidos_queue_v1";
-
-const offlineBar = document.getElementById("offlineBar");
-const offlineCountEl = document.getElementById("offlineCount");
-const offlineChip = document.getElementById("offlineChip");
-const btnSyncNow = document.getElementById("btnSyncNow");
-
-function readQueue(){
-  try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || "[]"); }
-  catch { return []; }
-}
-function writeQueue(arr){
-  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(arr));
-}
-function queueCount(){
-  return readQueue().length;
-}
-function makeIdLocal(){
-  if (crypto && crypto.randomUUID) return crypto.randomUUID();
-  return String(Date.now()) + "_" + Math.random().toString(16).slice(2);
-}
-function queueHasHash(hash){
-  return readQueue().some(i => i?.hash === hash);
-}
-
-function enqueuePedido(pedidoPayload, hash){
-  // anti-dupe: se já está na fila OU foi enviado recentemente, não duplica
-  if (queueHasHash(hash) || wasSentRecently(hash)) return false;
-
-  const q = readQueue();
-  q.push({
-    idLocal: makeIdLocal(),
-    criadoLocalEm: new Date().toISOString(),
-    hash,
-    pedido: pedidoPayload
-  });
-  writeQueue(q);
-  renderOfflineBar();
-  return true;
-}
-
-function dequeueFirst(){
-  const q = readQueue();
-  q.shift();
-  writeQueue(q);
-  renderOfflineBar();
-}
-
-function setChip(state){
-  if (!offlineChip) return;
-  offlineChip.classList.remove("on","off","sync");
-
-  if (state === "OFFLINE"){
-    offlineChip.classList.add("off");
-    offlineChip.textContent = "🔴 Offline";
-  } else if (state === "SYNC"){
-    offlineChip.classList.add("sync");
-    offlineChip.textContent = "⏳ Sincronizando...";
-  } else {
-    offlineChip.classList.add("on");
-    offlineChip.textContent = "🟢 Online";
-  }
-}
-
-let syncInProgress = false;
-
-function renderOfflineBar(){
-  const count = queueCount();
-  if (offlineCountEl) offlineCountEl.textContent = String(count);
-
-  if (offlineBar){
-    offlineBar.style.display = count > 0 ? "block" : "none";
-  }
-
-  if (navigator.onLine) setChip(syncInProgress ? "SYNC" : "ONLINE");
-  else setChip("OFFLINE");
-
-  if (btnSyncNow){
-    btnSyncNow.disabled = !navigator.onLine || count === 0 || syncInProgress;
-  }
-}
-
-// envia Firestore + Telegram (Telegram só depois do Firestore confirmar)
-async function trySendPedidoOnline(pedidoPayload, hash){
-  // anti-dupe: se já enviou recentemente, não reenviar
-  if (wasSentRecently(hash)) return;
-
-  await addDoc(collection(db,"pedidos"), pedidoPayload);
-
-  // marca como enviado assim que Firestore confirma
-  markSent(hash);
-
-  notificarTelegram({
-    nome: pedidoPayload.nome,
-    manutencao: pedidoPayload.manutencao,
-    go: pedidoPayload.go,
-    pecas: pedidoPayload.pecas,
-    tipo: pedidoPayload.tipo
-  });
-}
-
-async function syncQueue(){
-  if (syncInProgress) return;
-  if (!navigator.onLine) { renderOfflineBar(); return; }
-
-  const count = queueCount();
-  if (count === 0) { renderOfflineBar(); return; }
-
-  syncInProgress = true;
-  try {
-    renderOfflineBar();
-
-    while (queueCount() > 0 && navigator.onLine){
-      const item = readQueue()[0];
-
-      // se já foi enviado (por exemplo: usuário enviou online em outra tentativa),
-      // descarta da fila para não duplicar
-      if (item?.hash && wasSentRecently(item.hash)){
-        dequeueFirst();
-        continue;
-      }
-
-      try {
-        await trySendPedidoOnline(item.pedido, item.hash);
-        dequeueFirst();
-      } catch (err) {
-        console.error("Falha ao sincronizar item da fila:", err);
-        break; // para e tenta depois (não perde fila)
-      }
-    }
-
-  } finally {
-    syncInProgress = false;
-    renderOfflineBar();
-  }
-}
-
-btnSyncNow?.addEventListener("click", syncQueue);
-
-window.addEventListener("online", () => {
-  renderOfflineBar();
-  syncQueue();
-});
-window.addEventListener("offline", renderOfflineBar);
-
-// init
-cleanupSentMap();
-renderOfflineBar();
-
-/* =========================================================
-   NIs bloqueados cache
-========================================================= */
 let nisBloqueadosCache = new Set();
 
 async function carregarNisBloqueados(){
   const snap = await getDocs(collection(db, "ni_bloqueados"));
-  snap.forEach(docSnap=>{
-    nisBloqueadosCache.add(docSnap.id);
+  snap.forEach(doc=>{
+    nisBloqueadosCache.add(doc.id);
   });
   console.log("🚫 NIs bloqueados carregados:", nisBloqueadosCache.size);
 }
 
 manutencaoSelect.addEventListener("change", () => {
   const semGO = ["Uso Geral", "EPI/Uniforme"].includes(manutencaoSelect.value);
-
   goInput.required = !semGO;
   goInput.disabled = semGO;
-
   if (semGO) goInput.value = "";
 });
 
@@ -691,26 +661,33 @@ window.adicionarPeca = () => {
   const div = document.createElement("div");
   div.className = "peca";
   div.innerHTML = `
+    <button type="button" class="btn-icon" title="Remover peça" onclick="removerPeca(this)">🗑️</button>
+
     <label>Descrição da Peça</label>
     <div class="autocomplete-box">
       <textarea class="descricao" required oninput="sugerirPecas(this)"></textarea>
       <div class="sugestoes" style="display:none"></div>
     </div>
 
-    <label>NI</label>
-    <input type="text" class="ni-manual">
+    <div class="grid-2">
+      <div>
+        <label>NI</label>
+        <input type="text" class="ni-manual">
+        <div class="ni-info">Materiais sem NI automático devem ser consultados no almoxarifado.</div>
+      </div>
 
-    <label>Quantidade</label>
-    <input type="number" class="quantidade" min="1" required>
-
-    <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
+      <div>
+        <label>Quantidade</label>
+        <input type="number" class="quantidade" min="1" required>
+      </div>
+    </div>
   `;
   lista.appendChild(div);
 };
 
 window.removerPeca = (btn) => {
   if (document.querySelectorAll(".peca").length === 1) return;
-  btn.parentElement.remove();
+  btn.closest(".peca").remove();
 };
 
 function normalizar(txt) {
@@ -761,21 +738,14 @@ window.sugerirPecas = (textarea) => {
 
   box.innerHTML = resultados.map(r => {
     const bloqueado = r.ni && nisBloqueadosCache.has(String(r.ni));
-
     return `
       <div
         onclick="${bloqueado ? "" : `selecionarPeca(this,'${r.produto}','${r.ni}')`}"
         style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
       >
         ${r.produto}
-        <span style="font-size:11px;color:#6b7280">
-          | NI ${r.ni}
-        </span>
-        ${
-          bloqueado
-            ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>`
-            : ""
-        }
+        <span style="font-size:11px;color:#6b7280"> | NI ${r.ni}</span>
+        ${bloqueado ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>` : ""}
       </div>
     `;
   }).join("");
@@ -895,7 +865,7 @@ form.addEventListener("submit", async e => {
       ? "DEVOLUCAO"
       : "PEDIDO";
 
-    const pedidoPayload = {
+    await addDoc(collection(db,"pedidos"),{
       manutencao: manutencaoSelect.value,
       go: goInput.value,
       nome: document.getElementById("nome").value,
@@ -905,68 +875,21 @@ form.addEventListener("submit", async e => {
       categoria: manutencaoSelect.value === "EPI/Uniforme" ? "EPI" : "CONVENCIONAL",
       status:"Pendente",
       criadoEm:new Date()
-      // se quiser registrar no Firestore sem impactar nada:
-      // clientHash: undefined (set abaixo)
-    };
+    });
 
-    const hash = calcPedidoHash(pedidoPayload);
-    pedidoPayload.clientHash = hash;
+    notificarTelegram({
+      nome: document.getElementById("nome").value,
+      manutencao: manutencaoSelect.value,
+      go: goInput.value,
+      pecas,
+      tipo: tipoPedido
+    });
 
-    // anti-dupe: se já foi enviado recentemente ou já está na fila
-    if (wasSentRecently(hash) || queueHasHash(hash)) {
-      mensagem.textContent = "⚠️ Esse pedido já foi enviado (ou está na fila). Aguarde a sincronização.";
-      mensagem.className = "mensagem bloqueio";
-      renderOfflineBar();
-      return;
-    }
+    mensagem.textContent = "✅ Pedido enviado com sucesso!";
+    mensagem.className = "mensagem sucesso";
+    form.reset();
 
-    // OFFLINE: salva na fila e sai
-    if (!navigator.onLine) {
-      const ok = enqueuePedido(pedidoPayload, hash);
-
-      if (!ok) {
-        mensagem.textContent = "⚠️ Esse pedido já está na fila (ou foi enviado recentemente).";
-        mensagem.className = "mensagem bloqueio";
-        return;
-      }
-
-      mensagem.textContent = "📥 Sem internet: pedido salvo e será enviado automaticamente quando a conexão voltar.";
-      mensagem.className = "mensagem sucesso";
-
-      form.reset();
-      manutencaoSelect.dispatchEvent(new Event("change"));
-      return;
-    }
-
-    // ONLINE: tenta enviar normal
-    try {
-      await trySendPedidoOnline(pedidoPayload, hash);
-
-      mensagem.textContent = "✅ Pedido enviado com sucesso!";
-      mensagem.className = "mensagem sucesso";
-
-      form.reset();
-      manutencaoSelect.dispatchEvent(new Event("change"));
-
-    } catch (err) {
-      console.error("Falha ao enviar (instabilidade). Salvando na fila:", err);
-
-      const ok = enqueuePedido(pedidoPayload, hash);
-      if (ok) {
-        mensagem.textContent = "📥 Instabilidade: pedido salvo e será enviado assim que possível.";
-        mensagem.className = "mensagem sucesso";
-        syncQueue();
-      } else {
-        mensagem.textContent = "⚠️ Esse pedido já está na fila (ou foi enviado recentemente).";
-        mensagem.className = "mensagem bloqueio";
-      }
-
-      form.reset();
-      manutencaoSelect.dispatchEvent(new Event("change"));
-    }
-
-  } catch (err) {
-    console.error(err);
+  } catch {
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
   }
