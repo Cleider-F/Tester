@@ -19,6 +19,7 @@
   border:none;
   border-radius:10px;
   font-size:22px;
+
   width:auto;
   height:auto;
   padding:8px 12px;
@@ -40,11 +41,7 @@
   display:flex;
   flex-direction:column;
 }
-
-/* SIDEBAR ATIVA */
-.sidebar.active{
-  transform:translateX(0);
-}
+.sidebar.active{ transform:translateX(0); }
 
 /* HEADER */
 .sidebar-header{
@@ -54,7 +51,6 @@
   padding:16px;
   border-bottom:1px solid #1f2937;
 }
-
 .sidebar-header button{
   background:none;
   border:none;
@@ -68,7 +64,6 @@
   flex-direction:column;
   padding:10px;
 }
-
 .sidebar nav a{
   padding:14px;
   border-radius:10px;
@@ -76,10 +71,7 @@
   text-decoration:none;
   margin-bottom:6px;
 }
-
-.sidebar nav a:hover{
-  background:#1f2937;
-}
+.sidebar nav a:hover{ background:#1f2937; }
 
 /* OVERLAY */
 .menu-overlay{
@@ -89,10 +81,7 @@
   z-index:1000;
   display:none;
 }
-
-.menu-overlay.active{
-  display:block;
-}
+.menu-overlay.active{ display:block; }
 
 .logo { text-align:center; margin-bottom:15px; }
 .logo img { max-width:180px; width:100%; }
@@ -137,7 +126,6 @@ textarea { min-height:50px; }
   background:#fafafa;
   position:relative;
 }
-
 .peca::before {
   content:"Peças";
   position:absolute;
@@ -161,8 +149,8 @@ button {
   color:#fff;
   font-size:15px;
 }
-
 button:hover { background:#15803d; }
+
 .secundario { background:#2563eb; }
 .remover { background:#dc2626; }
 .admin-btn { background:#111827; }
@@ -195,16 +183,12 @@ input:disabled {
   overflow-y:auto;
   z-index:1000;
 }
-
 .sugestoes div {
   padding:8px;
   cursor:pointer;
   font-size:14px;
 }
-
-.sugestoes div:hover {
-  background:#e5e7eb;
-}
+.sugestoes div:hover { background:#e5e7eb; }
 
 .bloqueio {
   color:#b91c1c;
@@ -214,6 +198,7 @@ input:disabled {
   margin-top:10px;
   font-size:14px;
 }
+
 @media(max-width:480px){
   .secundario {
     position:sticky;
@@ -222,20 +207,7 @@ input:disabled {
   }
 }
 
-.secao {
-  margin-top:16px;
-  padding-top:10px;
-  border-top:1px dashed #e5e7eb;
-}
-
-.secao h3 {
-  font-size:14px;
-  color:#374151;
-}
-
-.sidebar nav a.ativo{
-  background:#2563eb;
-}
+.sidebar nav a.ativo{ background:#2563eb; }
 
 /* TOGGLE DEVOLUÇÃO */
 .toggle-container {
@@ -247,8 +219,9 @@ input:disabled {
   background: #f9fafb;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
+  gap:10px;
+  justify-content:flex-start;
 }
-
 .toggle-label {
   font-size: 14px;
   color: #374151;
@@ -256,15 +229,8 @@ input:disabled {
 }
 
 /* SWITCH */
-.switch {
-  position: relative;
-  width: 46px;
-  height: 26px;
-}
-
-.switch input {
-  display: none;
-}
+.switch { position: relative; width: 46px; height: 26px; }
+.switch input { display: none; }
 
 .slider {
   position: absolute;
@@ -274,7 +240,6 @@ input:disabled {
   transition: 0.3s;
   cursor: pointer;
 }
-
 .slider::before {
   content: "";
   position: absolute;
@@ -287,134 +252,54 @@ input:disabled {
   transition: 0.3s;
   box-shadow: 0 1px 4px rgba(0,0,0,.2);
 }
-.toggle-container {
-  gap: 10px;
-  justify-content: flex-start;
-}
-/* LIGADO */
-.switch input:checked + .slider {
-  background-color: #22c55e;
-}
-
-.switch input:checked + .slider::before {
-  transform: translateX(20px);
-}
+.switch input:checked + .slider { background-color: #22c55e; }
+.switch input:checked + .slider::before { transform: translateX(20px); }
 
 /* =========================================================
-   ANIMAÇÕES + TOAST + SPINNER
+   OFFLINE BAR (FILA)
 ========================================================= */
-@keyframes enterFadeSlide {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.anim-enter { animation: enterFadeSlide .25s ease-out; }
-
-@keyframes popIn {
-  0%   { transform: scale(.98); opacity: 0; }
-  60%  { transform: scale(1.01); opacity: 1; }
-  100% { transform: scale(1); }
-}
-.anim-pop { animation: popIn .22s ease-out; }
-
-@keyframes glowNew {
-  0%   { box-shadow: 0 0 0 rgba(37,99,235,0); }
-  35%  { box-shadow: 0 0 0 6px rgba(37,99,235,.18); }
-  100% { box-shadow: 0 0 0 rgba(37,99,235,0); }
-}
-.anim-highlight { animation: glowNew 1.0s ease-out; }
-
-@keyframes shakeX {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
-}
-.anim-shake { animation: shakeX .28s ease-out; }
-
-.field-error {
-  border-color:#ef4444 !important;
-  box-shadow: 0 0 0 3px rgba(239,68,68,.12);
-}
-
-/* Botão enviando */
-button.is-sending{
-  opacity:.85;
-  cursor:not-allowed;
-  filter:saturate(.9);
-}
-
-.btn-inline{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  width:100%;
-}
-
-.spinner{
-  width:16px;
-  height:16px;
-  border:2px solid rgba(255,255,255,.35);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Toast */
-.toast-wrap{
-  position:fixed;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:2000;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  width:min(520px, calc(100% - 24px));
-}
-
-.toast{
-  background:#111827;
-  color:#fff;
+.offline-bar{
+  display:none;
+  margin:12px 0 6px;
+  padding:10px 12px;
+  border:1px solid #e5e7eb;
   border-radius:12px;
-  padding:12px 14px;
-  box-shadow:0 10px 25px rgba(0,0,0,.18);
+  background:#f9fafb;
+}
+.offline-bar .row{
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:space-between;
   gap:10px;
-  animation: toastIn .22s ease-out;
 }
-
-@keyframes toastIn{
-  from { opacity:0; transform: translateY(-8px); }
-  to   { opacity:1; transform: translateY(0); }
+.offline-bar .left{
+  font-size:13px;
+  color:#374151;
 }
-
-.toast.success{ background:#16a34a; }
-.toast.error{ background:#dc2626; }
-.toast.warn{ background:#b45309; }
-
-.toast button{
+.offline-bar .chip{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:12px;
+  margin-left:8px;
+  border:1px solid #e5e7eb;
+  background:#fff;
+  color:#374151;
+}
+.offline-bar .chip.off{ color:#b91c1c; border-color:#fecaca; background:#fee2e2; }
+.offline-bar .chip.on{ color:#166534; border-color:#bbf7d0; background:#dcfce7; }
+.offline-bar .chip.sync{ color:#1e40af; border-color:#bfdbfe; background:#dbeafe; }
+.offline-bar button{
   width:auto;
   margin:0;
-  padding:6px 10px;
+  padding:8px 10px;
   border-radius:10px;
-  background:rgba(255,255,255,.18);
+  background:#111827;
   font-size:13px;
 }
-.toast button:hover{
-  background:rgba(255,255,255,.25);
-}
-
-/* respeita quem desativa animação no sistema */
-@media (prefers-reduced-motion: reduce) {
-  .anim-enter, .anim-pop, .anim-highlight, .anim-shake { animation: none !important; }
-  .spinner { animation: none !important; }
-  .toast { animation: none !important; }
+.offline-bar button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 </style>
 </head>
@@ -424,18 +309,12 @@ button.is-sending{
 <script src="lista_NI.js"></script>
 <script src="lista_solicitantes.js"></script>
 
-<!-- TOAST CONTAINER -->
-<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+<div class="container">
 
-<div class="container" id="containerMain">
-
- <!-- BOTÃO HAMBURGER -->
 <button class="menu-btn" onclick="abrirMenu()">☰</button>
 
-<!-- OVERLAY -->
 <div class="menu-overlay" onclick="fecharMenu()"></div>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-header">
     <strong>📦 Pedido de Peças</strong>
@@ -456,6 +335,17 @@ button.is-sending{
   </div>
 
   <h1>Pedido de Peças – Almoxarifado CMC</h1>
+
+  <!-- ✅ OFFLINE QUEUE BAR -->
+  <div class="offline-bar" id="offlineBar">
+    <div class="row">
+      <div class="left">
+        <b>📦 Pendentes:</b> <span id="offlineCount">0</span>
+        <span class="chip" id="offlineChip">🟢 Online</span>
+      </div>
+      <button type="button" id="btnSyncNow">🔄 Sincronizar agora</button>
+    </div>
+  </div>
 
   <form id="formPedido">
 
@@ -478,20 +368,17 @@ button.is-sending{
       </div>
     </div>
 
-    <button
-      type="button"
-      class="secundario btn-adicionar"
-      onclick="adicionarPeca()">
-      ➕ Adicionar peça
-    </button>
+<button type="button" class="secundario btn-adicionar" onclick="adicionarPeca()">
+  ➕ Adicionar peça
+</button>
 
-    <label class="toggle-container">
-      <span class="switch">
-        <input type="checkbox" id="isDevolucao">
-        <span class="slider"></span>
-      </span>
-      <span class="toggle-label">Pedido de devolução de peças</span>
-    </label>
+<label class="toggle-container">
+  <span class="switch">
+    <input type="checkbox" id="isDevolucao">
+    <span class="slider"></span>
+  </span>
+  <span class="toggle-label">Pedido de devolução de peças</span>
+</label>
 
     <label>Tipo de Manutenção</label>
     <select id="manutencao" required>
@@ -513,32 +400,21 @@ button.is-sending{
       <div class="sugestoes" style="display:none"></div>
     </div>
 
-    <button type="submit" id="btnEnviar">📦 Enviar Pedido</button>
+    <button type="submit">📦 Enviar Pedido</button>
     <div id="mensagem" class="mensagem"></div>
   </form>
 
-  <a href="admin.html">
-    <button class="admin-btn" type="button">🔐 Área de Técnicos 🛠️</button>
-  </a>
-  <a href="acompanhamento.html">
-    <button class="admin-btn" type="button">📦 Acompanhamento de Pedidos 🔩</button>
-  </a>
-  <a href="painel-almoxarife.html">
-    <button class="admin-btn" type="button">🖥️ Painel do Almoxarife ⚙️</button>
-  </a>
+  <a href="admin.html"><button class="admin-btn" type="button">🔐 Área de Técnicos 🛠️</button></a>
+  <a href="acompanhamento.html"><button class="admin-btn" type="button">📦 Acompanhamento de Pedidos 🔩</button></a>
+  <a href="painel-almoxarife.html"><button class="admin-btn" type="button">🖥️ Painel do Almoxarife ⚙️</button></a>
 </div>
 
-<footer>
-  Criado e Desenvolvido por Cleider Filho
-</footer>
+<footer>Criado e Desenvolvido por Cleider Filho</footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* =========================================================
-   FIREBASE
-========================================================= */
 const app = initializeApp({
   apiKey: "AIzaSyCAJPyQ7-a4Efxxh5yTXQ_326hn22OYAuc",
   authDomain: "pedidos-almoxarifado.firebaseapp.com",
@@ -549,69 +425,248 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
-/* =========================================================
-   ELEMENTOS
-========================================================= */
 const form = document.getElementById("formPedido");
 const mensagem = document.getElementById("mensagem");
 const lista = document.getElementById("listaPecas");
 const manutencaoSelect = document.getElementById("manutencao");
 const goInput = document.getElementById("go");
-const btnEnviar = document.getElementById("btnEnviar");
-const containerMain = document.getElementById("containerMain");
 
 /* =========================================================
-   UI HELPERS (TOAST / ANIMAÇÕES)
+   ANTI-DUPLICIDADE (HASH LOCAL)
 ========================================================= */
-function toast(msg, type="success", timeout=2600){
-  const wrap = document.getElementById("toastWrap");
-  const el = document.createElement("div");
-  el.className = `toast ${type}`;
-  el.innerHTML = `
-    <div style="flex:1; font-size:14px; line-height:1.25">${msg}</div>
-    <button type="button" aria-label="Fechar">✖</button>
-  `;
-  const closeBtn = el.querySelector("button");
-  closeBtn.onclick = () => el.remove();
-  wrap.appendChild(el);
+const SENT_HASH_KEY = "sent_pedidos_hash_v1";
+// janela anti-dupe (10 min): se tentar mandar igual em seguida, bloqueia
+const DUP_WINDOW_MS = 10 * 60 * 1000;
+// limpeza: remove hashes enviados há mais de 48h
+const SENT_TTL_MS = 48 * 60 * 60 * 1000;
 
-  if (timeout) {
-    setTimeout(()=> { if (el.isConnected) el.remove(); }, timeout);
+// FNV-1a 32-bit (rápido e suficiente)
+function fnv1a(str){
+  let h = 0x811c9dc5;
+  for (let i=0; i<str.length; i++){
+    h ^= str.charCodeAt(i);
+    h = (h + ((h<<1) + (h<<4) + (h<<7) + (h<<8) + (h<<24))) >>> 0;
   }
+  return ("00000000" + h.toString(16)).slice(-8);
 }
 
-function pulseAnim(el, ...classes){
-  if(!el) return;
-  el.classList.remove(...classes);
-  void el.offsetWidth;
-  el.classList.add(...classes);
-  setTimeout(()=> el.classList.remove(...classes), 1200);
-}
-
-function markFieldError(input){
-  if(!input) return;
-  input.classList.add("field-error");
-  pulseAnim(input, "anim-shake");
-  setTimeout(()=> input.classList.remove("field-error"), 1400);
-}
-
-function setSending(isSending){
-  if(isSending){
-    btnEnviar.disabled = true;
-    btnEnviar.classList.add("is-sending");
-    btnEnviar.innerHTML = `<span class="btn-inline"><span class="spinner"></span> Enviando...</span>`;
-  }else{
-    btnEnviar.disabled = false;
-    btnEnviar.classList.remove("is-sending");
-    btnEnviar.textContent = "📦 Enviar Pedido";
+function stableStringify(obj){
+  if (obj === null) return "null";
+  if (Array.isArray(obj)) return "[" + obj.map(stableStringify).join(",") + "]";
+  if (typeof obj === "object"){
+    const keys = Object.keys(obj).sort();
+    return "{" + keys.map(k => JSON.stringify(k) + ":" + stableStringify(obj[k])).join(",") + "}";
   }
+  return JSON.stringify(obj);
 }
 
-/* entrada suave do container */
-pulseAnim(containerMain, "anim-enter");
+function pedidoToHashBase(p){
+  // remove campos variáveis (datas) e mantém a essência do pedido
+  return {
+    nome: (p.nome || "").trim(),
+    manutencao: (p.manutencao || "").trim(),
+    go: (p.go || "").trim(),
+    tipo: (p.tipo || "").trim(),
+    categoria: (p.categoria || "").trim(),
+    pecas: (p.pecas || []).map(x => ({
+      descricao: (x.descricao || "").trim(),
+      ni: (x.ni || "").trim(),
+      quantidade: String(x.quantidade ?? "").trim()
+    }))
+  };
+}
+
+function calcPedidoHash(pedidoPayload){
+  return fnv1a(stableStringify(pedidoToHashBase(pedidoPayload)));
+}
+
+function readSentMap(){
+  try { return JSON.parse(localStorage.getItem(SENT_HASH_KEY) || "{}"); }
+  catch { return {}; }
+}
+function writeSentMap(map){
+  localStorage.setItem(SENT_HASH_KEY, JSON.stringify(map));
+}
+function cleanupSentMap(){
+  const m = readSentMap();
+  const now = Date.now();
+  let changed = false;
+
+  for (const [hash, ts] of Object.entries(m)){
+    if (!ts || (now - ts) > SENT_TTL_MS){
+      delete m[hash];
+      changed = true;
+    }
+  }
+  if (changed) writeSentMap(m);
+}
+function markSent(hash){
+  const m = readSentMap();
+  m[hash] = Date.now();
+  writeSentMap(m);
+}
+function wasSentRecently(hash){
+  cleanupSentMap();
+  const m = readSentMap();
+  const ts = m[hash];
+  if (!ts) return false;
+  return (Date.now() - ts) <= DUP_WINDOW_MS;
+}
 
 /* =========================================================
-   NIs bloqueados em cache
+   OFFLINE QUEUE (FILA LOCAL) + ANTI-DUPE
+========================================================= */
+const OFFLINE_QUEUE_KEY = "offline_pedidos_queue_v1";
+
+const offlineBar = document.getElementById("offlineBar");
+const offlineCountEl = document.getElementById("offlineCount");
+const offlineChip = document.getElementById("offlineChip");
+const btnSyncNow = document.getElementById("btnSyncNow");
+
+function readQueue(){
+  try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || "[]"); }
+  catch { return []; }
+}
+function writeQueue(arr){
+  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(arr));
+}
+function queueCount(){
+  return readQueue().length;
+}
+function makeIdLocal(){
+  if (crypto && crypto.randomUUID) return crypto.randomUUID();
+  return String(Date.now()) + "_" + Math.random().toString(16).slice(2);
+}
+function queueHasHash(hash){
+  return readQueue().some(i => i?.hash === hash);
+}
+
+function enqueuePedido(pedidoPayload, hash){
+  // anti-dupe: se já está na fila OU foi enviado recentemente, não duplica
+  if (queueHasHash(hash) || wasSentRecently(hash)) return false;
+
+  const q = readQueue();
+  q.push({
+    idLocal: makeIdLocal(),
+    criadoLocalEm: new Date().toISOString(),
+    hash,
+    pedido: pedidoPayload
+  });
+  writeQueue(q);
+  renderOfflineBar();
+  return true;
+}
+
+function dequeueFirst(){
+  const q = readQueue();
+  q.shift();
+  writeQueue(q);
+  renderOfflineBar();
+}
+
+function setChip(state){
+  if (!offlineChip) return;
+  offlineChip.classList.remove("on","off","sync");
+
+  if (state === "OFFLINE"){
+    offlineChip.classList.add("off");
+    offlineChip.textContent = "🔴 Offline";
+  } else if (state === "SYNC"){
+    offlineChip.classList.add("sync");
+    offlineChip.textContent = "⏳ Sincronizando...";
+  } else {
+    offlineChip.classList.add("on");
+    offlineChip.textContent = "🟢 Online";
+  }
+}
+
+let syncInProgress = false;
+
+function renderOfflineBar(){
+  const count = queueCount();
+  if (offlineCountEl) offlineCountEl.textContent = String(count);
+
+  if (offlineBar){
+    offlineBar.style.display = count > 0 ? "block" : "none";
+  }
+
+  if (navigator.onLine) setChip(syncInProgress ? "SYNC" : "ONLINE");
+  else setChip("OFFLINE");
+
+  if (btnSyncNow){
+    btnSyncNow.disabled = !navigator.onLine || count === 0 || syncInProgress;
+  }
+}
+
+// envia Firestore + Telegram (Telegram só depois do Firestore confirmar)
+async function trySendPedidoOnline(pedidoPayload, hash){
+  // anti-dupe: se já enviou recentemente, não reenviar
+  if (wasSentRecently(hash)) return;
+
+  await addDoc(collection(db,"pedidos"), pedidoPayload);
+
+  // marca como enviado assim que Firestore confirma
+  markSent(hash);
+
+  notificarTelegram({
+    nome: pedidoPayload.nome,
+    manutencao: pedidoPayload.manutencao,
+    go: pedidoPayload.go,
+    pecas: pedidoPayload.pecas,
+    tipo: pedidoPayload.tipo
+  });
+}
+
+async function syncQueue(){
+  if (syncInProgress) return;
+  if (!navigator.onLine) { renderOfflineBar(); return; }
+
+  const count = queueCount();
+  if (count === 0) { renderOfflineBar(); return; }
+
+  syncInProgress = true;
+  try {
+    renderOfflineBar();
+
+    while (queueCount() > 0 && navigator.onLine){
+      const item = readQueue()[0];
+
+      // se já foi enviado (por exemplo: usuário enviou online em outra tentativa),
+      // descarta da fila para não duplicar
+      if (item?.hash && wasSentRecently(item.hash)){
+        dequeueFirst();
+        continue;
+      }
+
+      try {
+        await trySendPedidoOnline(item.pedido, item.hash);
+        dequeueFirst();
+      } catch (err) {
+        console.error("Falha ao sincronizar item da fila:", err);
+        break; // para e tenta depois (não perde fila)
+      }
+    }
+
+  } finally {
+    syncInProgress = false;
+    renderOfflineBar();
+  }
+}
+
+btnSyncNow?.addEventListener("click", syncQueue);
+
+window.addEventListener("online", () => {
+  renderOfflineBar();
+  syncQueue();
+});
+window.addEventListener("offline", renderOfflineBar);
+
+// init
+cleanupSentMap();
+renderOfflineBar();
+
+/* =========================================================
+   NIs bloqueados cache
 ========================================================= */
 let nisBloqueadosCache = new Set();
 
@@ -623,9 +678,6 @@ async function carregarNisBloqueados(){
   console.log("🚫 NIs bloqueados carregados:", nisBloqueadosCache.size);
 }
 
-/* =========================================================
-   GO obrigatório dependendo da manutenção
-========================================================= */
 manutencaoSelect.addEventListener("change", () => {
   const semGO = ["Uso Geral", "EPI/Uniforme"].includes(manutencaoSelect.value);
 
@@ -635,9 +687,6 @@ manutencaoSelect.addEventListener("change", () => {
   if (semGO) goInput.value = "";
 });
 
-/* =========================================================
-   ADD/REMOVE PEÇA (com animação pop + highlight)
-========================================================= */
 window.adicionarPeca = () => {
   const div = document.createElement("div");
   div.className = "peca";
@@ -657,27 +706,13 @@ window.adicionarPeca = () => {
     <button type="button" class="remover" onclick="removerPeca(this)">❌ Remover</button>
   `;
   lista.appendChild(div);
-
-  // anima entrada e destaque
-  pulseAnim(div, "anim-pop", "anim-highlight");
-
-  // foca no campo descrição
-  const first = div.querySelector(".descricao");
-  if (first) first.focus({ preventScroll:false });
 };
 
 window.removerPeca = (btn) => {
-  if (document.querySelectorAll(".peca").length === 1) {
-    toast("Você precisa manter pelo menos 1 peça no pedido.", "warn", 2200);
-    pulseAnim(containerMain, "anim-shake");
-    return;
-  }
+  if (document.querySelectorAll(".peca").length === 1) return;
   btn.parentElement.remove();
 };
 
-/* =========================================================
-   NORMALIZAÇÃO / APRENDIZADO
-========================================================= */
 function normalizar(txt) {
   return txt.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 }
@@ -691,13 +726,9 @@ async function carregarAprendizadoNI() {
     ni: d.data().ni
   }));
 }
-
 await carregarAprendizadoNI();
 await carregarNisBloqueados();
 
-/* =========================================================
-   AUTOCOMPLETE PEÇAS
-========================================================= */
 window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
   const box = textarea.parentElement.querySelector(".sugestoes");
@@ -737,8 +768,14 @@ window.sugerirPecas = (textarea) => {
         style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
       >
         ${r.produto}
-        <span style="font-size:11px;color:#6b7280">| NI ${r.ni}</span>
-        ${bloqueado ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>` : ""}
+        <span style="font-size:11px;color:#6b7280">
+          | NI ${r.ni}
+        </span>
+        ${
+          bloqueado
+            ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>`
+            : ""
+        }
       </div>
     `;
   }).join("");
@@ -746,9 +783,6 @@ window.sugerirPecas = (textarea) => {
   box.style.display="block";
 };
 
-/* =========================================================
-   AUTOCOMPLETE SOLICITANTE
-========================================================= */
 window.sugerirSolicitante = (input) => {
   const termo = normalizar(input.value);
   const box = input.parentElement.querySelector(".sugestoes");
@@ -779,25 +813,15 @@ window.selecionarSolicitante = (el, nome) => {
   const input = box.previousElementSibling;
   input.value = nome;
   box.style.display = "none";
-  pulseAnim(input, "anim-highlight");
 };
 
 window.selecionarPeca = (el, produto, ni) => {
   const peca = el.closest(".peca");
-  const desc = peca.querySelector(".descricao");
-  const niInp = peca.querySelector(".ni-manual");
-
-  desc.value = produto;
-  niInp.value = ni;
-
+  peca.querySelector(".descricao").value = produto;
+  peca.querySelector(".ni-manual").value = ni;
   el.parentElement.style.display="none";
-
-  pulseAnim(peca, "anim-highlight");
 };
 
-/* =========================================================
-   TELEGRAM
-========================================================= */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003671947511";
 
@@ -825,82 +849,18 @@ ${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qt
   });
 }
 
-/* =========================================================
-   BLOQUEIOS
-========================================================= */
 async function verificarBloqueios(nis) {
   const bloqueados = [];
-
   for (const ni of nis) {
     if (!ni) continue;
-
     const snap = await getDoc(doc(db, "ni_bloqueados", ni));
-    if (snap.exists()) {
-      bloqueados.push(ni);
-    }
+    if (snap.exists()) bloqueados.push(ni);
   }
-
   return bloqueados;
-}
-
-/* =========================================================
-   SUBMIT (com validação + shake + spinner)
-========================================================= */
-function validarFormularioAntesDeEnviar(){
-  let ok = true;
-
-  // peças
-  document.querySelectorAll(".peca").forEach(pecaEl => {
-    const desc = pecaEl.querySelector(".descricao");
-    const qtd  = pecaEl.querySelector(".quantidade");
-
-    if (!desc.value.trim()){
-      ok = false;
-      markFieldError(desc);
-    }
-    const qtdVal = Number(qtd.value);
-    if (!qtd.value || isNaN(qtdVal) || qtdVal < 1){
-      ok = false;
-      markFieldError(qtd);
-    }
-  });
-
-  // manutenção
-  if (!manutencaoSelect.value){
-    ok = false;
-    markFieldError(manutencaoSelect);
-  }
-
-  // GO (se necessário)
-  if (!goInput.disabled && !goInput.value.trim()){
-    ok = false;
-    markFieldError(goInput);
-  }
-
-  // nome
-  const nomeInp = document.getElementById("nome");
-  if (!nomeInp.value.trim()){
-    ok = false;
-    markFieldError(nomeInp);
-  }
-
-  if (!ok) {
-    toast("⚠️ Revise os campos destacados.", "warn", 2500);
-    pulseAnim(containerMain, "anim-shake");
-  }
-
-  return ok;
 }
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
-
-  // validação com animação
-  if (!validarFormularioAntesDeEnviar()) return;
-
-  setSending(true);
-  mensagem.textContent = "";
-  mensagem.className = "mensagem";
 
   try {
     const pecas = [];
@@ -923,12 +883,11 @@ form.addEventListener("submit", async e => {
     const nisBloqueados = await verificarBloqueios(nisPedido);
 
     if (nisBloqueados.length) {
-      const msg = `❌ Pedido não permitido. NI sem saldo: ${nisBloqueados.join(", ")}`;
-      mensagem.innerHTML = `❌ Pedido não permitido<br>NI sem saldo: <strong>${nisBloqueados.join(", ")}</strong><br>`;
+      mensagem.innerHTML = `
+        ❌ Pedido não permitido<br>
+        NI sem saldo: <strong>${nisBloqueados.join(", ")}</strong><br>
+      `;
       mensagem.className = "mensagem bloqueio";
-      toast(msg, "error", 3500);
-      pulseAnim(containerMain, "anim-shake");
-      setSending(false);
       return;
     }
 
@@ -936,7 +895,7 @@ form.addEventListener("submit", async e => {
       ? "DEVOLUCAO"
       : "PEDIDO";
 
-    await addDoc(collection(db,"pedidos"),{
+    const pedidoPayload = {
       manutencao: manutencaoSelect.value,
       go: goInput.value,
       nome: document.getElementById("nome").value,
@@ -946,45 +905,73 @@ form.addEventListener("submit", async e => {
       categoria: manutencaoSelect.value === "EPI/Uniforme" ? "EPI" : "CONVENCIONAL",
       status:"Pendente",
       criadoEm:new Date()
-    });
+      // se quiser registrar no Firestore sem impactar nada:
+      // clientHash: undefined (set abaixo)
+    };
 
-    notificarTelegram({
-      nome: document.getElementById("nome").value,
-      manutencao: manutencaoSelect.value,
-      go: goInput.value,
-      pecas,
-      tipo: tipoPedido
-    });
+    const hash = calcPedidoHash(pedidoPayload);
+    pedidoPayload.clientHash = hash;
 
-    mensagem.textContent = "✅ Pedido enviado com sucesso!";
-    mensagem.className = "mensagem sucesso";
-    toast("✅ Pedido enviado com sucesso!", "success", 2600);
+    // anti-dupe: se já foi enviado recentemente ou já está na fila
+    if (wasSentRecently(hash) || queueHasHash(hash)) {
+      mensagem.textContent = "⚠️ Esse pedido já foi enviado (ou está na fila). Aguarde a sincronização.";
+      mensagem.className = "mensagem bloqueio";
+      renderOfflineBar();
+      return;
+    }
 
-    form.reset();
+    // OFFLINE: salva na fila e sai
+    if (!navigator.onLine) {
+      const ok = enqueuePedido(pedidoPayload, hash);
 
-    // volta a ter GO obrigatório conforme regra
-    manutencaoSelect.dispatchEvent(new Event("change"));
+      if (!ok) {
+        mensagem.textContent = "⚠️ Esse pedido já está na fila (ou foi enviado recentemente).";
+        mensagem.className = "mensagem bloqueio";
+        return;
+      }
 
-    // remove peças extras e dá highlight na primeira
-    const pecasEls = document.querySelectorAll(".peca");
-    pecasEls.forEach((el, idx) => { if (idx > 0) el.remove(); });
-    const first = document.querySelector(".peca");
-    if (first) pulseAnim(first, "anim-highlight");
+      mensagem.textContent = "📥 Sem internet: pedido salvo e será enviado automaticamente quando a conexão voltar.";
+      mensagem.className = "mensagem sucesso";
+
+      form.reset();
+      manutencaoSelect.dispatchEvent(new Event("change"));
+      return;
+    }
+
+    // ONLINE: tenta enviar normal
+    try {
+      await trySendPedidoOnline(pedidoPayload, hash);
+
+      mensagem.textContent = "✅ Pedido enviado com sucesso!";
+      mensagem.className = "mensagem sucesso";
+
+      form.reset();
+      manutencaoSelect.dispatchEvent(new Event("change"));
+
+    } catch (err) {
+      console.error("Falha ao enviar (instabilidade). Salvando na fila:", err);
+
+      const ok = enqueuePedido(pedidoPayload, hash);
+      if (ok) {
+        mensagem.textContent = "📥 Instabilidade: pedido salvo e será enviado assim que possível.";
+        mensagem.className = "mensagem sucesso";
+        syncQueue();
+      } else {
+        mensagem.textContent = "⚠️ Esse pedido já está na fila (ou foi enviado recentemente).";
+        mensagem.className = "mensagem bloqueio";
+      }
+
+      form.reset();
+      manutencaoSelect.dispatchEvent(new Event("change"));
+    }
 
   } catch (err) {
     console.error(err);
     mensagem.textContent = "❌ Erro ao enviar pedido";
     mensagem.className = "mensagem erro";
-    toast("❌ Erro ao enviar pedido. Tente novamente.", "error", 3200);
-    pulseAnim(containerMain, "anim-shake");
-  } finally {
-    setSending(false);
   }
 });
 
-/* =========================================================
-   MENU
-========================================================= */
 window.abrirMenu = () => {
   document.querySelector(".sidebar").classList.add("active");
   document.querySelector(".menu-overlay").classList.add("active");
