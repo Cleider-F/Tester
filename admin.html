@@ -735,7 +735,11 @@ footer{
   <section class="panel" id="painel" style="display:none">
     <div class="panel-header">
       <div class="h">📦 Pedidos Recebidos</div>
-      <small>aprovar, reprovar, reservar e editar NI</small>
+      <div class="actionbar-right">
+          <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
+          <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
+        </div>
+      </div>
     </div>
 
     <div class="panel-body">
@@ -748,11 +752,7 @@ footer{
           <button class="pill-btn" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
         </div>
 
-        <div class="actionbar-right">
-          <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
-          <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
-        </div>
-      </div>
+        
 
       <!-- RELATÓRIOS -->
       <div class="relatorio-box" id="relatorioBox" style="display:none;">
