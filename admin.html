@@ -63,7 +63,7 @@ body{
     radial-gradient(1200px 320px at 10% -10%, rgba(37,99,235,.30), transparent 55%),
     radial-gradient(900px 280px at 90% 0%, rgba(22,163,74,.18), transparent 60%),
     linear-gradient(180deg, var(--navy-2), var(--navy-1));
-  box-shadow: 0 10px 22px rgba(2, 6, 23, .26);
+  box-shadow: none;
 }
 .topbar-inner{
   max-width: var(--max);
@@ -94,7 +94,7 @@ body{
   place-items:center;
   background: rgba(255,255,255,.10);
   border:1px solid rgba(255,255,255,.14);
-  box-shadow: 0 6px 14px rgba(0,0,0,.14);
+  box-shadow: none;
 }
 .icon-ctl:active{ transform: scale(.98); }
 
@@ -126,7 +126,7 @@ body{
   border-radius: 999px;
   background: rgba(255,255,255,.10);
   border: 1px solid rgba(255,255,255,.14);
-  box-shadow: 0 6px 14px rgba(0,0,0,.12);
+  box-shadow: none;
   font-size: 12px;
   font-weight: 900;
   line-height: 1;
@@ -176,7 +176,7 @@ body{
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
   overflow: visible;
   margin-top: 12px;
 }
@@ -291,7 +291,7 @@ input, select{
   font-size: 14px;
   background:#fff;
   border: 1px solid rgba(229,231,235,.95);
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
   display:flex;
   align-items:center;
   gap:10px;
@@ -346,7 +346,7 @@ input, select{
   display:flex;
   align-items:center;
   gap:10px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
   user-select:none;
 }
 .tab small{
@@ -397,7 +397,7 @@ input, select{
   border: 1px solid rgba(229,231,235,.95);
   border-radius: 18px;
   background: #fff;
-  box-shadow: var(--shadow-soft);
+  box-shadow: none;
   overflow:hidden;
 }
 .order-card::before{
@@ -539,7 +539,7 @@ input, select{
   z-index:1001;
   display:flex;
   flex-direction:column;
-  box-shadow: 30px 0 80px rgba(0,0,0,.35);
+  box-shadow: none;
 }
 .sidebar.active{ transform:translateX(0); }
 
@@ -732,13 +732,14 @@ footer{
   </section>
 
   <!-- PAINEL -->
+    <!-- PAINEL -->
   <section class="panel" id="painel" style="display:none">
     <div class="panel-header">
       <div class="h">📦 Pedidos Recebidos</div>
+
       <div class="actionbar-right">
-          <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
-          <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
-        </div>
+        <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
+        <button class="pill-btn" type="button" onclick="location.reload()">🔄 Atualizar</button>
       </div>
     </div>
 
@@ -747,25 +748,24 @@ footer{
       <!-- ACTION BAR -->
       <div class="actionbar">
         <div class="actionbar-left">
-          <button class="pill-btn" onclick="logout()">🚪 Sair</button>
-          <button class="pill-btn" onclick="toggleRelatorio()">📊 Relatórios</button>
-          <button class="pill-btn" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
+          <button class="pill-btn" type="button" onclick="logout()">🚪 Sair</button>
+          <button class="pill-btn" type="button" onclick="toggleRelatorio()">📊 Relatórios</button>
+          <button class="pill-btn" type="button" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
         </div>
-
-        
+      </div>
 
       <!-- RELATÓRIOS -->
       <div class="relatorio-box" id="relatorioBox" style="display:none;">
-        <button class="btn btn-primary" onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
-        <button class="btn btn-primary" onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
+        <button class="btn btn-primary" type="button" onclick="gerarRelatorioDia()">📄 Relatório do dia</button>
+        <button class="btn btn-primary" type="button" onclick="gerarRelatorioPeriodo()">📄 Relatório por período</button>
         <input type="date" id="inicio">
         <input type="date" id="fim">
       </div>
 
       <!-- NOTIFICAÇÕES -->
       <div class="notificacao-box" id="notificacaoBox" style="display:none;">
-        <button class="btn btn-dark" id="btnNovo" onclick="toggleNotificacao('novo', this)"></button>
-        <button class="btn btn-dark" id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
+        <button class="btn btn-dark" id="btnNovo" type="button" onclick="toggleNotificacao('novo', this)"></button>
+        <button class="btn btn-dark" id="btnStatus" type="button" onclick="toggleNotificacao('status', this)"></button>
       </div>
 
       <!-- TABS -->
@@ -779,6 +779,7 @@ footer{
       <div class="cards" id="lista"></div>
     </div>
   </section>
+
 
   <footer>Criado e Desenvolvido por Cleider Filho</footer>
 </main>
