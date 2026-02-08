@@ -20,7 +20,6 @@
 
   --navy-1:#0b1220;
   --navy-2:#0f1b33;
-  --navy-3:#13264a;
 
   --primary:#16a34a;
   --primary-hover:#15803d;
@@ -35,8 +34,6 @@
   --shadow-soft:0 4px 14px rgba(15, 23, 42, .08);
 
   --radius:18px;
-  --radius-sm:14px;
-
   --max:520px;
 }
 
@@ -50,7 +47,7 @@ body{
 }
 
 /* =========================================================
-   TOPBAR (dark header like template 2)
+   TOPBAR
 ========================================================= */
 .topbar{
   position: sticky;
@@ -64,7 +61,6 @@ body{
     linear-gradient(180deg, var(--navy-2), var(--navy-1));
   box-shadow: 0 10px 22px rgba(2, 6, 23, .28);
 }
-
 .topbar-inner{
   max-width: var(--max);
   margin: 0 auto;
@@ -73,14 +69,12 @@ body{
   justify-content:space-between;
   gap:12px;
 }
-
 .brand{
   display:flex;
   align-items:center;
   gap:10px;
   min-width:0;
 }
-
 .brand img{
   width:38px;
   height:38px;
@@ -89,7 +83,6 @@ body{
   background: rgba(255,255,255,.06);
   padding:6px;
 }
-
 .brand .title{
   display:flex;
   flex-direction:column;
@@ -110,12 +103,6 @@ body{
   text-overflow:ellipsis;
 }
 
-.topbar-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
 .menu-btn{
   appearance:none;
   border:none;
@@ -133,26 +120,12 @@ body{
 }
 .menu-btn:active{ transform: scale(.98); }
 
-.suzano-mini{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  opacity:.95;
-  font-size:12px;
-}
-.suzano-mini img{
-  height:18px;
-  width:auto;
-  object-fit:contain;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
-}
-
 /* =========================================================
    LAYOUT
 ========================================================= */
 .page{
   max-width: var(--max);
-  margin: -10px auto 96px; /* bottom space for bottom nav */
+  margin: -10px auto 104px;
   padding: 0 14px 20px;
 }
 
@@ -161,10 +134,9 @@ body{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-soft);
-  overflow:hidden;
+  overflow: visible; /* ✅ IMPORTANTE: permite dropdown aparecer */
   margin-top: 12px;
 }
-
 .card-header{
   display:flex;
   align-items:center;
@@ -174,7 +146,6 @@ body{
   border-bottom:1px solid rgba(229,231,235,.7);
   background: linear-gradient(180deg, rgba(249,250,251,.9), rgba(255,255,255,1));
 }
-
 .card-header .h{
   display:flex;
   align-items:center;
@@ -186,9 +157,9 @@ body{
   color: var(--muted);
   font-size:12px;
 }
-
 .card-body{
   padding: 14px;
+  overflow: visible; /* ✅ */
 }
 
 label{
@@ -230,7 +201,7 @@ input:disabled{
 }
 
 /* =========================================================
-   PEÇAS LIST
+   PEÇAS
 ========================================================= */
 .peca{
   border: 1px solid rgba(229,231,235,.9);
@@ -239,6 +210,7 @@ input:disabled{
   padding: 12px;
   margin-top: 10px;
   position:relative;
+  overflow: visible; /* ✅ */
 }
 .peca + .peca{ margin-top: 12px; }
 
@@ -262,7 +234,7 @@ input:disabled{
 }
 
 /* =========================================================
-   BUTTONS (app style)
+   BUTTONS
 ========================================================= */
 .btn{
   border:none;
@@ -298,28 +270,13 @@ input:disabled{
 }
 .btn-danger:hover{ background: linear-gradient(180deg, #e73c3c, var(--danger-hover)); }
 
-.btn-ghost{
-  background:#0b1220;
-  color:#fff;
-}
-.btn-ghost:hover{ background:#111827; }
-
-.btn-small{
-  padding: 10px 12px;
-  border-radius: 14px;
-  font-size: 14px;
-  width: auto;
-  box-shadow:none;
-}
-
-/* remove button inside peça */
 .remover{
   width:100%;
   margin-top: 12px;
 }
 
 /* =========================================================
-   TOGGLE DEVOLUÇÃO (compact app style)
+   TOGGLE DEVOLUÇÃO
 ========================================================= */
 .toggle-container{
   display:flex;
@@ -332,13 +289,11 @@ input:disabled{
   border-radius: 16px;
   background: #f8fafc;
 }
-
 .toggle-label{
   font-size: 14px;
   color: #0f172a;
   font-weight: 650;
 }
-
 .switch{
   position:relative;
   width: 50px;
@@ -374,9 +329,12 @@ input:disabled{
 }
 
 /* =========================================================
-   AUTOCOMPLETE (better overlay)
+   AUTOCOMPLETE (✅ volta a aparecer)
 ========================================================= */
-.autocomplete-box{ position:relative; }
+.autocomplete-box{
+  position:relative;
+  overflow: visible; /* ✅ */
+}
 .sugestoes{
   position:absolute;
   left:0;
@@ -386,9 +344,9 @@ input:disabled{
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow);
-  max-height: 200px;
+  max-height: 220px;
   overflow:auto;
-  z-index: 50;
+  z-index: 3000; /* ✅ acima de tudo */
   padding: 6px;
 }
 .sugestoes div{
@@ -422,7 +380,7 @@ input:disabled{
 }
 
 /* =========================================================
-   SIDEBAR / OVERLAY (keep your logic)
+   SIDEBAR / OVERLAY
 ========================================================= */
 .menu-overlay{
   position:fixed;
@@ -488,7 +446,7 @@ input:disabled{
 }
 
 /* =========================================================
-   BOTTOM NAV (app style)
+   BOTTOM NAV (4 items + active highlight)
 ========================================================= */
 .bottom-nav{
   position: fixed;
@@ -500,15 +458,13 @@ input:disabled{
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255,255,255,.08);
 }
-
 .bottom-nav .inner{
   max-width: var(--max);
   margin:0 auto;
   display:grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap:10px;
 }
-
 .nav-btn{
   display:flex;
   flex-direction:column;
@@ -522,16 +478,27 @@ input:disabled{
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,.08);
   background: rgba(255,255,255,.06);
+  transition: .15s;
 }
 .nav-btn:hover{ background: rgba(255,255,255,.10); }
-.nav-btn span.icon{ font-size: 18px; }
+.nav-btn span.icon{ font-size: 18px; line-height: 1; }
+
+.nav-btn.active{
+  color:#fff;
+  background: rgba(37,99,235,.28);
+  border-color: rgba(37,99,235,.45);
+  box-shadow: 0 10px 18px rgba(37,99,235,.15);
+}
+.nav-btn.active .icon{
+  filter: drop-shadow(0 6px 12px rgba(37,99,235,.35));
+}
 
 /* =========================================================
    FOOTER
 ========================================================= */
 footer{
   max-width: var(--max);
-  margin: 10px auto 110px;
+  margin: 10px auto 120px;
   padding: 0 14px;
   text-align:center;
   font-size: 11px;
@@ -556,12 +523,7 @@ footer{
       </div>
     </div>
 
-    <div class="topbar-actions">
-      <div class="suzano-mini">
-        <span style="opacity:.85;">suzano</span>
-      </div>
-      <button class="menu-btn" onclick="abrirMenu()" aria-label="Abrir menu">☰</button>
-    </div>
+    <button class="menu-btn" onclick="abrirMenu()" aria-label="Abrir menu">☰</button>
   </div>
 </header>
 
@@ -681,20 +643,24 @@ footer{
   </form>
 </main>
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM NAV (4 items) -->
 <nav class="bottom-nav" aria-label="Acessos">
   <div class="inner">
-    <a class="nav-btn" href="admin.html">
+    <a class="nav-btn" data-nav="pedido" href="index.html">
+      <span class="icon">📝</span>
+      <span>Pedido</span>
+    </a>
+    <a class="nav-btn" data-nav="tecnicos" href="admin.html">
       <span class="icon">🔐</span>
-      <span>Área de Técnicos</span>
+      <span>Técnicos</span>
     </a>
-    <a class="nav-btn" href="acompanhamento.html">
+    <a class="nav-btn" data-nav="acomp" href="acompanhamento.html">
       <span class="icon">📦</span>
-      <span>Acompanhamento</span>
+      <span>Acomp.</span>
     </a>
-    <a class="nav-btn" href="painel-almoxarife.html">
+    <a class="nav-btn" data-nav="painel" href="painel-almoxarife.html">
       <span class="icon">🖥️</span>
-      <span>Painel Almox.</span>
+      <span>Painel</span>
     </a>
   </div>
 </nav>
@@ -787,10 +753,12 @@ async function carregarAprendizadoNI() {
     ni: d.data().ni
   }));
 }
-
 await carregarAprendizadoNI();
 await carregarNisBloqueados();
 
+/* =========================================================
+   AUTOCOMPLETE PEÇAS + INDICAÇÃO "SEM SALDO" (igual original)
+========================================================= */
 window.sugerirPecas = (textarea) => {
   const termo = normalizar(textarea.value);
   const box = textarea.parentElement.querySelector(".sugestoes");
@@ -802,10 +770,14 @@ window.sugerirPecas = (textarea) => {
 
   let resultados = [];
 
+  // firestore aprendizado_ni
   aprendizadoNI.forEach(i => {
-    if (i.descricao.includes(termo)) resultados.push({ produto: i.descricao, ni: i.ni });
+    if (i.descricao.includes(termo)) {
+      resultados.push({ produto: i.descricao, ni: i.ni });
+    }
   });
 
+  // lista_NI.js
   if (window.LISTA_NI) {
     window.LISTA_NI.forEach(i => {
       const prodNorm = normalizar(i.produto);
@@ -821,20 +793,21 @@ window.sugerirPecas = (textarea) => {
 
   box.innerHTML = resultados.map(r => {
     const bloqueado = r.ni && nisBloqueadosCache.has(String(r.ni));
+
     return `
       <div
         onclick="${bloqueado ? "" : `selecionarPeca(this,'${r.produto}','${r.ni}')`}"
         style="${bloqueado ? "opacity:.6; cursor:not-allowed;" : ""}"
       >
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-          <div style="font-weight:650;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%;">
-            ${r.produto}
-          </div>
-          <div style="font-size:12px;color:#6b7280;flex:0 0 auto;">
-            NI ${r.ni}
-            ${bloqueado ? `<span style="color:#b91c1c;font-weight:800;"> • 🚫 Sem saldo</span>` : ``}
-          </div>
-        </div>
+        ${r.produto}
+        <span style="font-size:11px;color:#6b7280">
+          | NI ${r.ni}
+        </span>
+        ${
+          bloqueado
+            ? `<span style="color:#b91c1c;font-size:11px;font-weight:bold"> 🚫 Sem saldo</span>`
+            : ""
+        }
       </div>
     `;
   }).join("");
@@ -842,6 +815,9 @@ window.sugerirPecas = (textarea) => {
   box.style.display="block";
 };
 
+/* =========================================================
+   AUTOCOMPLETE SOLICITANTE (igual original)
+========================================================= */
 window.sugerirSolicitante = (input) => {
   const termo = normalizar(input.value);
   const box = input.parentElement.querySelector(".sugestoes");
@@ -855,7 +831,10 @@ window.sugerirSolicitante = (input) => {
     .filter(n => normalizar(n).includes(termo))
     .slice(0,6);
 
-  if (!resultados.length) { box.style.display = "none"; return; }
+  if (!resultados.length) {
+    box.style.display = "none";
+    return;
+  }
 
   box.innerHTML = resultados
     .map(n => `<div onclick="selecionarSolicitante(this,'${n}')">${n}</div>`)
@@ -878,6 +857,9 @@ window.selecionarPeca = (el, produto, ni) => {
   el.parentElement.style.display="none";
 };
 
+/* =========================================================
+   TELEGRAM + BLOQUEIO (igual original)
+========================================================= */
 const TELEGRAM_TOKEN = "8229775934:AAEEIKF5ffP_rVvbosRilvPyb3wZ0fVBFLU";
 const TELEGRAM_CHAT_ID = "-1003671947511";
 
@@ -898,7 +880,7 @@ ${titulo}
 ${pedido.pecas.map(p => `- ${p.descricao} | NI: ${p.ni || "NÃO INFORMADO"} | Qtd: ${p.quantidade}`).join("\n")}
 `;
 
-  fetch(\`https://api.telegram.org/bot\${TELEGRAM_TOKEN}/sendMessage\`,{
+  fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: texto })
@@ -933,6 +915,7 @@ form.addEventListener("submit", async e => {
       });
     });
 
+    // 🔒 VERIFICA BLOQUEIOS
     const nisPedido = pecas.map(p => p.ni).filter(Boolean);
     const nisBloqueados = await verificarBloqueios(nisPedido);
 
@@ -978,11 +961,13 @@ form.addEventListener("submit", async e => {
   }
 });
 
+/* =========================================================
+   MENU + ACTIVE STATES
+========================================================= */
 window.abrirMenu = () => {
   document.querySelector(".sidebar").classList.add("active");
   document.querySelector(".menu-overlay").classList.add("active");
 };
-
 window.fecharMenu = () => {
   document.querySelector(".sidebar").classList.remove("active");
   document.querySelector(".menu-overlay").classList.remove("active");
@@ -993,6 +978,21 @@ document.querySelectorAll(".sidebar nav a").forEach(a=>{
     a.classList.add("ativo");
   }
 });
+
+// Bottom nav: marca ativo conforme página
+(function marcarNavAtiva(){
+  const path = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  const map = {
+    "index.html": "pedido",
+    "admin.html": "tecnicos",
+    "acompanhamento.html": "acomp",
+    "painel-almoxarife.html": "painel"
+  };
+  const key = map[path] || "pedido";
+  document.querySelectorAll(".nav-btn").forEach(a=>{
+    if (a.dataset.nav === key) a.classList.add("active");
+  });
+})();
 </script>
 
 </body>
