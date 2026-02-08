@@ -9,7 +9,7 @@
 
 <style>
 /* =========================================================
-   THEME (mesma base do index)
+   THEME (igual ao index)
 ========================================================= */
 :root{
   --bg:#f8fafc;
@@ -32,7 +32,7 @@
 
   --warn:#f59e0b;
 
-  /* sombras mais leves (do ajuste que você gostou) */
+  /* sombras leves */
   --shadow: 0 6px 16px rgba(15, 23, 42, .06);
   --shadow-soft: 0 2px 8px rgba(15, 23, 42, .05);
 
@@ -51,7 +51,7 @@ body{
 }
 
 /* =========================================================
-   TOPBAR (estilo preview)
+   TOPBAR (preview)
 ========================================================= */
 .topbar{
   position: sticky;
@@ -65,7 +65,6 @@ body{
     linear-gradient(180deg, var(--navy-2), var(--navy-1));
   box-shadow: 0 10px 22px rgba(2, 6, 23, .28);
 }
-
 .topbar-inner{
   max-width: var(--max);
   margin: 0 auto;
@@ -81,7 +80,6 @@ body{
   gap:12px;
   min-width:0;
 }
-
 .brand .home{
   width:44px;
   height:44px;
@@ -95,7 +93,6 @@ body{
   box-shadow: 0 8px 18px rgba(0,0,0,.16);
   font-size: 20px;
 }
-
 .brand .title{
   display:flex;
   flex-direction:column;
@@ -122,6 +119,35 @@ body{
   gap:10px;
 }
 
+/* mini pills de status no topo */
+.top-pills{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding: 9px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 8px 18px rgba(0,0,0,.12);
+  user-select:none;
+}
+.pill .dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background: rgba(255,255,255,.70);
+}
+.pill.pend .dot{ background: rgba(245,158,11,.95); }
+.pill.apr  .dot{ background: rgba(34,197,94,.95); }
+.pill.res  .dot{ background: rgba(59,130,246,.95); }
+
 .logo-suzano{
   display:flex;
   align-items:center;
@@ -138,6 +164,44 @@ body{
   filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
 }
 
+/* botão do sino + badge */
+.icon-btn{
+  position:relative;
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  color:#fff;
+  background: rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  width:42px;
+  height:42px;
+  border-radius: 14px;
+  font-size:20px;
+  display:grid;
+  place-items:center;
+  box-shadow: 0 8px 18px rgba(0,0,0,.16);
+}
+.icon-btn:active{ transform: scale(.98); }
+.badge{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background: #ef4444;
+  color:#fff;
+  font-size: 11px;
+  font-weight: 900;
+  border: 2px solid rgba(11,18,32,.95);
+  box-shadow: 0 10px 18px rgba(0,0,0,.18);
+}
+
+/* hamburger */
 .menu-btn{
   appearance:none;
   border:none;
@@ -156,17 +220,13 @@ body{
 .menu-btn:active{ transform: scale(.98); }
 
 /* =========================================================
-   CONTAINER
+   PAGE / PANELS
 ========================================================= */
 .page{
   max-width: var(--max);
   margin: -10px auto 104px;
   padding: 0 14px 22px;
 }
-
-/* =========================================================
-   CARDS / PAINÉIS
-========================================================= */
 .panel{
   background: var(--card);
   border: 1px solid var(--border);
@@ -175,7 +235,6 @@ body{
   overflow: visible;
   margin-top: 12px;
 }
-
 .panel-header{
   display:flex;
   align-items:center;
@@ -185,25 +244,22 @@ body{
   border-bottom:1px solid rgba(229,231,235,.7);
   background: #fff;
 }
-
 .panel-header .h{
   display:flex;
   align-items:center;
   gap:10px;
-  font-weight: 800;
+  font-weight: 900;
   font-size: 16px;
 }
-
 .panel-header small{
   color: var(--muted);
   font-size: 12px;
 }
-
 .panel-body{
   padding: 14px;
 }
 
-/* login box */
+/* login */
 .login{
   max-width: 520px;
   margin: 14px auto 0;
@@ -212,11 +268,10 @@ body{
 label{
   display:block;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   color:#111827;
   margin: 10px 0 6px;
 }
-
 input, select{
   width:100%;
   padding: 12px 12px;
@@ -228,7 +283,7 @@ input, select{
 }
 
 /* =========================================================
-   BUTTONS
+   BUTTONS / PILLS
 ========================================================= */
 .btn{
   border:none;
@@ -236,7 +291,7 @@ input, select{
   border-radius: 16px;
   padding: 12px 14px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 900;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -250,26 +305,18 @@ input, select{
   background: linear-gradient(180deg, #22c55e, var(--primary));
   color:#fff;
 }
-.btn-primary:hover{ background: linear-gradient(180deg, #1fb457, var(--primary-hover)); }
-
 .btn-secondary{
   background: linear-gradient(180deg, #3b82f6, var(--secondary));
   color:#fff;
 }
-.btn-secondary:hover{ background: linear-gradient(180deg, #2f75f2, var(--secondary-hover)); }
-
 .btn-danger{
   background: linear-gradient(180deg, #ef4444, var(--danger));
   color:#fff;
 }
-.btn-danger:hover{ background: linear-gradient(180deg, #e73c3c, var(--danger-hover)); }
-
 .btn-dark{
   background: #0b1220;
   color:#fff;
 }
-.btn-dark:hover{ background:#111827; }
-
 .btn-muted{
   background:#e5e7eb;
   color:#111827;
@@ -277,32 +324,37 @@ input, select{
 }
 .btn-muted:hover{ background:#d1d5db; }
 
-.btn-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  align-items:center;
-}
-
-/* =========================================================
-   TOOLBAR (Ferramentas)
-========================================================= */
-.toolbar{
+/* barra de ações estilo "app" */
+.actionbar{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
   align-items:center;
   justify-content:space-between;
 }
-
-.toolbar-left, .toolbar-right{
+.actionbar-left, .actionbar-right{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
   align-items:center;
 }
+.pill-btn{
+  border:none;
+  cursor:pointer;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 14px;
+  background:#fff;
+  border: 1px solid rgba(229,231,235,.95);
+  box-shadow: var(--shadow-soft);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.pill-btn:hover{ background:#f8fafc; }
 
-/* caixas de relatórios / notificações */
+/* caixas relatórios/notificações */
 .relatorio-box,
 .notificacao-box{
   margin-top: 12px;
@@ -315,29 +367,39 @@ input, select{
   gap:10px;
   align-items:center;
 }
-.relatorio-box input{ width:auto; }
+.relatorio-box input{ width:auto; border-radius: 999px; }
 .notificacao-box button{
-  background:#111827;
+  background:#0b1220;
   color:#fff;
+  border-radius: 999px;
 }
 
 /* =========================================================
-   FILTER CHIPS (Todos / Pendentes / Aprovados / Reservados)
+   FILTER TABS (desktop) + carousel (mobile)
 ========================================================= */
 .filters{
+  margin-top: 12px;
   display:flex;
-  flex-wrap:wrap;
   gap:10px;
   align-items:center;
-  margin-top: 12px;
+  padding-bottom: 4px;
 }
 
-.chip{
-  border:1px solid var(--border);
+/* mobile: scroll horizontal */
+.filters{
+  overflow-x:auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar{ display:none; }
+
+.tab{
+  flex: 0 0 auto;
+  border:1px solid rgba(229,231,235,.95);
   background:#fff;
   padding: 10px 12px;
-  border-radius: 16px;
-  font-weight: 800;
+  border-radius: 999px;
+  font-weight: 900;
   cursor:pointer;
   display:flex;
   align-items:center;
@@ -345,37 +407,47 @@ input, select{
   box-shadow: var(--shadow-soft);
   user-select:none;
 }
-.chip small{
+.tab small{
   font-weight: 900;
   opacity:.9;
-  padding: 4px 8px;
+  padding: 4px 9px;
   border-radius: 999px;
   border: 1px solid rgba(15,23,42,.08);
   background: rgba(15,23,42,.04);
 }
 
-.chip.active{
+.tab.active{
   color:#fff;
-  border-color: rgba(37,99,235,.35);
-  background: rgba(37,99,235,.22);
+  background: rgba(37,99,235,.26);
+  border-color: rgba(37,99,235,.40);
 }
-.chip.active small{
+.tab.active small{
   background: rgba(255,255,255,.14);
   border-color: rgba(255,255,255,.18);
   color:#fff;
 }
 
-.chip.todos{ }
-.chip.pendentes{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.25); }
-.chip.aprovados{ background: rgba(22,163,74,.14); border-color: rgba(22,163,74,.25); }
-.chip.reservados{ background: rgba(37,99,235,.14); border-color: rgba(37,99,235,.25); }
+/* cores por tab */
+.tab.pend{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.20); }
+.tab.apr{  background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.20); }
+.tab.res{  background: rgba(37,99,235,.12); border-color: rgba(37,99,235,.20); }
 
-.chip.pendentes.active{ background: rgba(245,158,11,.26); border-color: rgba(245,158,11,.35); }
-.chip.aprovados.active{ background: rgba(22,163,74,.24); border-color: rgba(22,163,74,.35); }
-.chip.reservados.active{ background: rgba(37,99,235,.24); border-color: rgba(37,99,235,.35); }
+.tab.pend.active{ background: rgba(245,158,11,.24); border-color: rgba(245,158,11,.35); }
+.tab.apr.active{  background: rgba(22,163,74,.22); border-color: rgba(22,163,74,.35); }
+.tab.res.active{  background: rgba(37,99,235,.22); border-color: rgba(37,99,235,.35); }
+
+/* desktop: deixa com cara de abas */
+@media(min-width: 900px){
+  .filters{
+    overflow: visible;
+  }
+  .tab{
+    border-radius: 16px;
+  }
+}
 
 /* =========================================================
-   CARDS GRID
+   CARDS
 ========================================================= */
 .cards{
   display:grid;
@@ -392,7 +464,6 @@ input, select{
   box-shadow: var(--shadow-soft);
   overflow:hidden;
 }
-
 .order-card::before{
   content:"";
   position:absolute;
@@ -400,17 +471,11 @@ input, select{
   width:6px;
   background: #e5e7eb;
 }
-
-.order-card.pendente{
-  background: #fffaf0;
-}
+.order-card.pendente{ background:#fffaf0; }
 .order-card.pendente::before{ background: var(--warn); }
-
 .order-card.aprovado::before{ background: var(--primary); }
 .order-card.reprovado::before{ background: var(--danger); }
-.order-card.reservado{
-  background:#eff6ff;
-}
+.order-card.reservado{ background:#eff6ff; }
 .order-card.reservado::before{ background: var(--secondary); }
 
 .card-top{
@@ -433,7 +498,6 @@ input, select{
   border: 1px solid rgba(15,23,42,.08);
   background: rgba(15,23,42,.04);
 }
-
 .status-pill.pendente{ color:#7c4a03; background: rgba(245,158,11,.16); border-color: rgba(245,158,11,.25); }
 .status-pill.aprovado{ color:#065f46; background: rgba(22,163,74,.16); border-color: rgba(22,163,74,.25); }
 .status-pill.reprovado{ color:#991b1b; background: rgba(220,38,38,.14); border-color: rgba(220,38,38,.22); }
@@ -453,20 +517,13 @@ input, select{
 }
 .btn-excluir:hover{ background: rgba(220,38,38,.10); border-color: rgba(220,38,38,.18); }
 
-.card-body-inner{
-  padding: 12px;
-}
+.card-body-inner{ padding: 12px; }
 
-.info{
-  margin-bottom:8px;
-  font-size: 15px;
-}
+.info{ margin-bottom:8px; font-size: 15px; }
 .info b{
   display:block;
   color:#374151;
   font-size: 12px;
-  letter-spacing:.2px;
-  text-transform: none;
   margin-bottom: 2px;
 }
 
@@ -476,7 +533,7 @@ input, select{
   padding:10px;
   border-radius: 14px;
   text-align:center;
-  font-weight: 800;
+  font-weight: 900;
   color:#0f172a;
 }
 
@@ -524,7 +581,7 @@ input, select{
 }
 
 /* =========================================================
-   SIDEBAR / OVERLAY (mantido)
+   SIDEBAR / OVERLAY
 ========================================================= */
 .menu-overlay{
   position:fixed;
@@ -568,7 +625,6 @@ input, select{
   border-radius: 12px;
   cursor:pointer;
 }
-
 .sidebar nav{
   display:flex;
   flex-direction:column;
@@ -587,7 +643,7 @@ input, select{
 .sidebar nav a.ativo{ background: rgba(37,99,235,.35); border-color: rgba(37,99,235,.40); }
 
 /* =========================================================
-   BOTTOM NAV (igual index)
+   BOTTOM NAV (4 itens)
 ========================================================= */
 .bottom-nav{
   position: fixed;
@@ -633,9 +689,6 @@ input, select{
   filter: drop-shadow(0 6px 12px rgba(37,99,235,.35));
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
 footer{
   text-align:center;
   margin: 16px 0 110px;
@@ -650,31 +703,26 @@ footer{
   from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-
 @keyframes glowYellow {
   0%   { box-shadow: 0 0 0 rgba(245,158,11,0); }
   30%  { box-shadow: 0 0 0 6px rgba(245,158,11,.25); }
   100% { box-shadow: 0 0 0 rgba(245,158,11,0); }
 }
-
 @keyframes glowGreen {
   0%   { box-shadow: 0 0 0 rgba(22,163,74,0); }
   30%  { box-shadow: 0 0 0 6px rgba(22,163,74,.22); }
   100% { box-shadow: 0 0 0 rgba(22,163,74,0); }
 }
-
 @keyframes glowBlue {
   0%   { box-shadow: 0 0 0 rgba(37,99,235,0); }
   30%  { box-shadow: 0 0 0 6px rgba(37,99,235,.22); }
   100% { box-shadow: 0 0 0 rgba(37,99,235,0); }
 }
-
 @keyframes bounceSmall {
   0%   { transform: scale(1); }
   35%  { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
-
 .anim-new { animation: slideIn .25s ease-out, glowYellow 1.1s ease-out; }
 .anim-approved { animation: glowGreen 1.2s ease-out, bounceSmall .35s ease-out; }
 .anim-reserved { animation: glowBlue 1.2s ease-out, bounceSmall .35s ease-out; }
@@ -699,9 +747,23 @@ footer{
     </div>
 
     <div class="topbar-actions">
+      <!-- pills com contadores (pend/apr/res) -->
+      <div class="top-pills" id="topPills" style="display:none;">
+        <div class="pill pend"><span class="dot"></span> Pend. <span id="topPend">0</span></div>
+        <div class="pill apr"><span class="dot"></span> Apr. <span id="topApr">0</span></div>
+        <div class="pill res"><span class="dot"></span> Res. <span id="topRes">0</span></div>
+      </div>
+
+      <!-- sino com badge (pendentes) -->
+      <button class="icon-btn" type="button" title="Notificações" onclick="toggleNotificacaoBox()">
+        🔔
+        <span class="badge" id="bellBadge">0</span>
+      </button>
+
       <div class="logo-suzano">
         <img src="suzano-logo.png" alt="Suzano">
       </div>
+
       <button class="menu-btn" onclick="abrirMenu()" aria-label="Abrir menu">☰</button>
     </div>
   </div>
@@ -752,17 +814,17 @@ footer{
 
     <div class="panel-body">
 
-      <!-- TOOLBAR -->
-      <div class="toolbar">
-        <div class="toolbar-left btn-row">
-          <button class="btn btn-dark" onclick="logout()">🚪 Sair</button>
-          <button class="btn btn-muted" onclick="toggleRelatorio()">📊 Relatórios</button>
-          <button class="btn btn-muted" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
+      <!-- ACTION BAR (pills) -->
+      <div class="actionbar">
+        <div class="actionbar-left">
+          <button class="pill-btn" onclick="logout()">🚪 Sair</button>
+          <button class="pill-btn" onclick="toggleRelatorio()">📊 Relatórios</button>
+          <button class="pill-btn" onclick="toggleNotificacaoBox()">🔔 Notificações</button>
         </div>
 
-        <div class="toolbar-right btn-row">
-          <a class="btn btn-muted" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
-          <button class="btn btn-secondary" onclick="location.reload()">🔄 Atualizar</button>
+        <div class="actionbar-right">
+          <a class="pill-btn" href="admin-epi.html" title="EPI's e Uniformes">🦺 EPI</a>
+          <button class="pill-btn" onclick="location.reload()">🔄 Atualizar</button>
         </div>
       </div>
 
@@ -780,20 +842,12 @@ footer{
         <button class="btn btn-dark" id="btnStatus" onclick="toggleNotificacao('status', this)"></button>
       </div>
 
-      <!-- FILTERS -->
-      <div class="filters">
-        <div class="chip todos active" id="chipTodos" onclick="setFiltro('TODOS')">
-          📋 Todos <small id="countTodos">0</small>
-        </div>
-        <div class="chip pendentes" id="chipPendentes" onclick="setFiltro('Pendente')">
-          🟠 Pendentes <small id="countPendentes">0</small>
-        </div>
-        <div class="chip aprovados" id="chipAprovados" onclick="setFiltro('Aprovado')">
-          🟢 Aprovados <small id="countAprovados">0</small>
-        </div>
-        <div class="chip reservados" id="chipReservados" onclick="setFiltro('Reservado')">
-          🔵 Reservados <small id="countReservados">0</small>
-        </div>
+      <!-- TABS / CAROUSEL -->
+      <div class="filters" aria-label="Filtros">
+        <div class="tab active" id="tabTodos" onclick="setFiltro('TODOS')">📋 Todos <small id="countTodos">0</small></div>
+        <div class="tab pend" id="tabPend" onclick="setFiltro('Pendente')">🟠 Pendentes <small id="countPendentes">0</small></div>
+        <div class="tab apr" id="tabApr" onclick="setFiltro('Aprovado')">🟢 Aprovados <small id="countAprovados">0</small></div>
+        <div class="tab res" id="tabRes" onclick="setFiltro('Reservado')">🔵 Reservados <small id="countReservados">0</small></div>
       </div>
 
       <div class="cards" id="lista"></div>
@@ -803,7 +857,7 @@ footer{
   <footer>Criado e Desenvolvido por Cleider Filho</footer>
 </main>
 
-<!-- BOTTOM NAV (4 itens, ativo no Admin) -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav" aria-label="Acessos">
   <div class="inner">
     <a class="nav-btn" data-nav="pedido" href="index.html">
@@ -856,6 +910,29 @@ const db = getFirestore(app);
 const messaging = getMessaging(app);
 
 /* =========================================================
+   ELEMENTOS UI
+========================================================= */
+const loginBox = document.getElementById("loginBox");
+const painel = document.getElementById("painel");
+const lista = document.getElementById("lista");
+
+const bellBadge = document.getElementById("bellBadge");
+const topPills = document.getElementById("topPills");
+const topPend = document.getElementById("topPend");
+const topApr  = document.getElementById("topApr");
+const topRes  = document.getElementById("topRes");
+
+const tabTodos = document.getElementById("tabTodos");
+const tabPend  = document.getElementById("tabPend");
+const tabApr   = document.getElementById("tabApr");
+const tabRes   = document.getElementById("tabRes");
+
+const countTodos = document.getElementById("countTodos");
+const countPendentes = document.getElementById("countPendentes");
+const countAprovados = document.getElementById("countAprovados");
+const countReservados = document.getElementById("countReservados");
+
+/* =========================================================
    SERVICE WORKER
 ========================================================= */
 let swRegistration = null;
@@ -863,8 +940,8 @@ let swRegistration = null;
 (async () => {
   if ("serviceWorker" in navigator) {
     swRegistration = await navigator.serviceWorker.register(
-      "/firebase-messaging-sw.js",
-      { scope: "/" }
+      "/PedidosCMCApp/firebase-messaging-sw.js",
+      { scope: "/PedidosCMCApp/" }
     );
 
     ajustarBotaoNotificacao("novo", document.getElementById("btnNovo"));
@@ -894,7 +971,6 @@ async function ajustarBotaoNotificacao(tipo, botao) {
     serviceWorkerRegistration: swRegistration
   });
 
-  console.log("TOKEN FCM:", token);
   if (!token) return;
 
   const ref = doc(db, "admin_push_tokens", `${token}_${tipo}`);
@@ -948,6 +1024,10 @@ async function toggleNotificacao(tipo, botao) {
 }
 
 window.toggleNotificacao = toggleNotificacao;
+window.toggleNotificacaoBox = () => {
+  const box = document.getElementById("notificacaoBox");
+  box.style.display = box.style.display === "none" ? "flex" : "none";
+};
 
 /* =========================================================
    TELEGRAM
@@ -987,9 +1067,6 @@ const USUARIOS = {
   "reginaldo2026": "Reginaldo Bocafoli"
 };
 
-const loginBox = document.getElementById("loginBox");
-const painel = document.getElementById("painel");
-
 window.login = () => {
   const senha = document.getElementById("senha").value;
   if (!USUARIOS[senha]) return alert("Senha inválida");
@@ -1000,11 +1077,11 @@ window.login = () => {
   loginBox.style.display="none";
   painel.style.display="block";
 
-  iniciarListenerPedidos(); // ✅ realtime
+  iniciarListenerPedidos(); // realtime
 };
 
 window.logout = ()=>{
-  if (unsubscribePedidos) unsubscribePedidos(); // ✅ desliga listener
+  if (unsubscribePedidos) unsubscribePedidos();
   localStorage.clear();
   location.reload();
 };
@@ -1016,29 +1093,21 @@ const norm = t =>
   t.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
 
 /* =========================================================
-   FILTROS (NOVO - apenas UI, não perde funcionalidades)
+   FILTROS (abas)
 ========================================================= */
-let filtroAtual = "TODOS";       // TODOS | "Pendente" | "Aprovado" | "Reservado"
-let ultimosPedidos = [];         // cache do snapshot
+let filtroAtual = "TODOS";   // TODOS | Pendente | Aprovado | Reservado
+let ultimosPedidos = [];
 
 window.setFiltro = (filtro) => {
   filtroAtual = filtro;
 
-  // ativa visualmente chip selecionado
-  const chips = [
-    ["TODOS", "chipTodos"],
-    ["Pendente", "chipPendentes"],
-    ["Aprovado", "chipAprovados"],
-    ["Reservado", "chipReservados"],
-  ];
+  // ativa a aba
+  tabTodos.classList.toggle("active", filtroAtual === "TODOS");
+  tabPend.classList.toggle("active", filtroAtual === "Pendente");
+  tabApr.classList.toggle("active", filtroAtual === "Aprovado");
+  tabRes.classList.toggle("active", filtroAtual === "Reservado");
 
-  chips.forEach(([val, id]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.toggle("active", val === filtroAtual);
-  });
-
-  // re-renderiza com o cache atual
+  // re-renderiza com cache
   renderizarPedidos(aplicarFiltro(ultimosPedidos));
 };
 
@@ -1047,20 +1116,43 @@ function aplicarFiltro(pedidos){
   return pedidos.filter(p => p.status === filtroAtual);
 }
 
+/* =========================================================
+   CONTADORES + BADGE (tabs + topbar)
+========================================================= */
+function setBadge(el, value){
+  if (!el) return;
+  const n = Number(value || 0);
+  if (n > 0){
+    el.textContent = String(n);
+    el.style.display = "inline-flex";
+  } else {
+    el.style.display = "none";
+  }
+}
+
 function atualizarContadores(pedidos){
   const total = pedidos.length;
   const pend = pedidos.filter(p => p.status === "Pendente").length;
   const apr  = pedidos.filter(p => p.status === "Aprovado").length;
   const res  = pedidos.filter(p => p.status === "Reservado").length;
 
-  document.getElementById("countTodos").textContent = total;
-  document.getElementById("countPendentes").textContent = pend;
-  document.getElementById("countAprovados").textContent = apr;
-  document.getElementById("countReservados").textContent = res;
+  countTodos.textContent = total;
+  countPendentes.textContent = pend;
+  countAprovados.textContent = apr;
+  countReservados.textContent = res;
+
+  // top pills
+  topPills.style.display = "flex";
+  topPend.textContent = pend;
+  topApr.textContent = apr;
+  topRes.textContent = res;
+
+  // badge no sino = pendentes
+  setBadge(bellBadge, pend);
 }
 
 /* =========================================================
-   ANIMAÇÕES POR MUDANÇA (docChanges) - mantido
+   ANIMAÇÕES por docChanges (mantido)
 ========================================================= */
 const prevStatusById = new Map();
 let primeiraCarga = true;
@@ -1120,16 +1212,15 @@ function processarMudancas(snapshot){
    PEDIDOS (REALTIME) - mantido
 ========================================================= */
 let unsubscribePedidos = null;
-const lista = document.getElementById("lista");
 
-// cache simples para EPI
+// cache EPI
 const cacheUltimaEPI = new Map();
 function limparCacheUltimaEPI(){ cacheUltimaEPI.clear(); }
 
 async function renderizarPedidos(pedidos){
   lista.innerHTML = "";
 
-  // Pendentes primeiro (mantido)
+  // pendentes primeiro
   pedidos.sort((a,b)=>{
     if(a.status==="Pendente" && b.status!=="Pendente") return -1;
     if(a.status!=="Pendente" && b.status==="Pendente") return 1;
@@ -1182,7 +1273,7 @@ async function renderizarPedidos(pedidos){
       `;
     }
 
-    const statusLower = (p.status || "").toLowerCase(); // pendente/aprovado/reprovado/reservado
+    const statusLower = (p.status || "").toLowerCase();
 
     lista.innerHTML += `
       <div class="order-card ${statusLower}" id="card-${p.id}">
@@ -1253,17 +1344,14 @@ function iniciarListenerPedidos(){
     q,
     async (snap) => {
       const pedidos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      ultimosPedidos = pedidos;
 
-      ultimosPedidos = pedidos;                 // cache
-      atualizarContadores(ultimosPedidos);      // ✅ atualiza chips
-
+      atualizarContadores(ultimosPedidos);
       await renderizarPedidos(aplicarFiltro(ultimosPedidos));
 
       processarMudancas(snap);
     },
-    (err) => {
-      console.error("Erro onSnapshot(pedidos):", err);
-    }
+    (err) => console.error("Erro onSnapshot(pedidos):", err)
   );
 }
 
@@ -1317,7 +1405,6 @@ async function buscarUltimaSolicitacaoEPI({ nome, ni, pedidoAtualId }) {
   );
 
   const snap = await getDocs(q);
-
   let ultimaData = null;
 
   snap.forEach(docSnap => {
@@ -1425,7 +1512,6 @@ window.gerarRelatorioPeriodo = async () => {
   const pdf = new jsPDF("landscape");
 
   const snap = await getDocs(collection(db, "pedidos"));
-
   const rows = [];
 
   snap.forEach(d => {
@@ -1450,7 +1536,6 @@ window.gerarRelatorioPeriodo = async () => {
   });
 
   rows.sort((a, b) => b.criado - a.criado);
-
   const body = rows.map(r => r.dados);
 
   if (body.length === 0) {
@@ -1464,11 +1549,6 @@ window.gerarRelatorioPeriodo = async () => {
   });
 
   pdf.save("relatorio-pedidos.pdf");
-};
-
-window.toggleNotificacaoBox = () => {
-  const box = document.getElementById("notificacaoBox");
-  box.style.display = box.style.display === "none" ? "flex" : "none";
 };
 
 /* =========================================================
@@ -1540,7 +1620,7 @@ onSnapshot(statsRef, (snap) => {
 });
 
 /* =========================================================
-   MENU (mantido)
+   MENU + ACTIVE STATES
 ========================================================= */
 window.abrirMenu = () => {
   document.querySelector(".sidebar").classList.add("active");
@@ -1557,9 +1637,7 @@ document.querySelectorAll(".sidebar nav a").forEach(a=>{
   }
 });
 
-/* =========================================================
-   Bottom nav ativo (admin)
-========================================================= */
+/* Bottom nav ativo (admin) */
 (function marcarNavAtiva(){
   const path = (location.pathname.split("/").pop() || "admin.html").toLowerCase();
   const map = {
