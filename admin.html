@@ -1068,31 +1068,34 @@ const USUARIOS = {
 // LOGIN
 window.login = async function(){
 
-    const senha = document.getElementById("senha").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+  if(!senha){
+    alert("Digite a senha");
+    return;
+  }
 
-    if(!senha){
-        alert("Digite usuário e senha");
-        return;
-    }
+  const snap = await getDocs(
+    query(
+      collection(db,"perfis"),
+      where("senha","==",senha),
+      where("ativo","==",true),
+      limit(1)
+    )
+  );
 
-    const snap = await getDocs(
-        query(
-            collection(db,"perfis"),
-            where("senha","==",senha),
-            where("ativo","==",true)
-        )
-    );
+  if(!snap.empty){
 
-    if(!snap.empty){
+    const docPerfil = snap.docs[0];
+    const nome = docPerfil.id; // ✅ docId = nome do usuário
 
-        localStorage.setItem("logado","true");
-        localStorage.setItem("usuario",nome);
+    localStorage.setItem("logado","true");
+    localStorage.setItem("usuario", nome);
 
-        window.location.href = "./admin.html";
-        return;
-    }
+    window.location.href = "./admin.html";
+    return;
+  }
 
-    alert("Senha inválida");
+  alert("Senha inválida");
 };
 
 
