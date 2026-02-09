@@ -1065,23 +1065,43 @@ const USUARIOS = {
   "reginaldo2026": "Reginaldo Bocafoli"
 };
 
-window.login = () => {
-  const senha = document.getElementById("senha").value;
-  if (!USUARIOS[senha]) return alert("Senha inválida");
+// LOGIN
+window.login = async function(){
 
-  localStorage.setItem("admin","true");
-  localStorage.setItem("usuario_nome",USUARIOS[senha]);
+    const senha = document.getElementById("senha").value.trim();
 
-  loginBox.style.display="none";
-  painel.style.display="block";
+    if(!senha){
+        alert("Digite usuário e senha");
+        return;
+    }
 
-  iniciarListenerPedidos(); // realtime
+    const snap = await getDocs(
+        query(
+            collection(db,"perfis"),
+            where("senha","==",senha),
+            where("ativo","==",true)
+        )
+    );
+
+    if(!snap.empty){
+
+        localStorage.setItem("logado","true");
+        localStorage.setItem("usuario",nome);
+
+        window.location.href = "./admin.html";
+        return;
+    }
+
+    alert("Senha inválida");
 };
 
-window.logout = ()=>{
-  if (unsubscribePedidos) unsubscribePedidos();
-  localStorage.clear();
-  location.reload();
+
+// LOGOUT
+window.logout = function(){
+
+    localStorage.clear();
+    window.location.href = "./index.html";
+
 };
 
 /* =========================================================
