@@ -1082,7 +1082,7 @@ window.login = async function(){
     const nome = docPerfil.id; // ✅ docId = nome do usuário
 
     localStorage.setItem("logado","true");
-    localStorage.setItem("usuario", nome);
+    localStorage.setItem("usuario_nome", nome);
 
     window.location.href = "./admin.html";
     return;
@@ -1565,7 +1565,7 @@ window.gerarRelatorioPeriodo = async () => {
 /* =========================================================
    AUTOLOGIN (mantido)
 ========================================================= */
-if(localStorage.getItem("admin")==="true"){
+if(localStorage.getItem("logado")==="true"){
   loginBox.style.display="none";
   painel.style.display="block";
   iniciarListenerPedidos();
