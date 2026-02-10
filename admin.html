@@ -1569,7 +1569,7 @@ window.gerarRelatorioPeriodo = async () => {
 
   // expirou ou sessão antiga sem timestamp
   if (isAdmin) {
-    if (typeof unsubscribePedidos === "function") unsubscribePedidos();
+    if (unsubscribePedidos) unsubscribePedidos();
     localStorage.removeItem("admin");
     localStorage.removeItem("usuario_nome");
     localStorage.removeItem("admin_login_at");
