@@ -921,6 +921,8 @@ const countPendentes = document.getElementById("countPendentes");
 const countAprovados = document.getElementById("countAprovados");
 const countReservados = document.getElementById("countReservados");
 
+const ADMIN_EXP_MS = 1 * 60 * 1000; // 1 min dias
+
 /* =========================================================
    SERVICE WORKER
 ========================================================= */
@@ -1059,45 +1061,32 @@ const USUARIOS = {
 };
 
 // LOGIN
-window.login = async function(){
+window.login = () => {
+  const senha = document.getElementById("senha").value;
+  if (!USUARIOS[senha]) return alert("Senha inválida");
 
-  const senha = document.getElementById("senha").value.trim();
-  if(!senha){
-    alert("Digite a senha");
-    return;
-  }
+  localStorage.setItem("admin","true");
+  localStorage.setItem("usuario_nome",USUARIOS[senha]);
 
-  const snap = await getDocs(
-    query(
-      collection(db,"perfis"),
-      where("senha","==",senha),
-      where("ativo","==",true),
-      limit(1)
-    )
-  );
+  // ✅ marca quando logou (pra expirar)
+  localStorage.setItem("admin_login_at", String(Date.now()));
 
-  if(!snap.empty){
+  loginBox.style.display="none";
+  painel.style.display="block";
 
-    const docPerfil = snap.docs[0];
-    const nome = docPerfil.id; // ✅ docId = nome do usuário
-
-    localStorage.setItem("logado","true");
-    localStorage.setItem("usuario_nome", nome);
-
-    window.location.href = "./admin.html";
-    return;
-  }
-
-  alert("Senha inválida");
+  iniciarListenerPedidos(); // realtime
 };
 
 
 // LOGOUT
-window.logout = function(){
+window.logout = ()=>{
+  if (unsubscribePedidos) unsubscribePedidos();
 
-    localStorage.clear();
-    window.location.href = "./admin.html";
+  localStorage.removeItem("admin");
+  localStorage.removeItem("usuario_nome");
+  localStorage.removeItem("admin_login_at");
 
+  location.reload();
 };
 
 /* =========================================================
@@ -1565,11 +1554,29 @@ window.gerarRelatorioPeriodo = async () => {
 /* =========================================================
    AUTOLOGIN (mantido)
 ========================================================= */
-if(localStorage.getItem("logado")==="true"){
-  loginBox.style.display="none";
-  painel.style.display="block";
-  iniciarListenerPedidos();
-}
+(function autoLoginComPrazo(){
+  const isAdmin = localStorage.getItem("admin") === "true";
+  const loginAt = Number(localStorage.getItem("admin_login_at") || 0);
+
+  const valido = isAdmin && loginAt > 0 && (Date.now() - loginAt) <= ADMIN_EXP_MS;
+
+  if (valido) {
+    loginBox.style.display="none";
+    painel.style.display="block";
+    iniciarListenerPedidos();
+    return;
+  }
+
+  // expirou ou sessão antiga sem timestamp
+  if (isAdmin) {
+    if (typeof unsubscribePedidos === "function") unsubscribePedidos();
+    localStorage.removeItem("admin");
+    localStorage.removeItem("usuario_nome");
+    localStorage.removeItem("admin_login_at");
+  }
+
+  // mantém loginBox visível (não faz nada)
+})();
 
 /* =========================================================
    APROVAR TODOS (mantido)
