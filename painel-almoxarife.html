@@ -747,14 +747,22 @@ const db = firebase.firestore();
 const ALMOX_LOGIN_KEY = "almoxLogado";
 const ALMOX_LOGIN_AT_KEY = "almoxLoginEm";
 const ALMOX_USER_KEY = "almoxUsuario";
-const ALMOX_EXP_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
+const ALMOX_EXP_MS = 15 * 60 * 1000; // 15 minutos
 
 // 🔐 Cada senha identifica um usuário
 // ⚠️ Em GitHub Pages isso fica visível no código.
 const ALMOX_CREDENCIAIS = [
   { pass: "cleider", user: "Cleider Filho" },
-  { pass: "5678", user: "Almoxarife 1" },
-  { pass: "9999", user: "Almoxarife 2" }
+  { pass: "breno2026", user: "Breno" },
+  { pass: "oliveira2026", user: "Jhonatan Oliveira" },
+  { pass: "canporezi2026", user: "Vicente Camporezi" },
+  { pass: "valdineia2026", user: "Valdineia" },
+  { pass: "mariana2026", user: "Mariana" },
+  { pass: "igor2026", user: "Igor" },
+  { pass: "hagata2026", user: "Hagata" },
+  { pass: "lucas2026", user: "Lucas" },
+  { pass: "eliane2026", user: "Eliane" },
+  { pass: "eduardo2026", user: "Eduardo" }
 ];
 
 function setUserChip(nome){
